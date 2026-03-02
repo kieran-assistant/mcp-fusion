@@ -112,12 +112,17 @@ describe('Schema Collision — Primitive Type Conflicts', () => {
 // ============================================================================
 
 describe('Schema Collision — Enum Conflicts', () => {
-    it('should reject enum vs string', () => {
+    it('should widen enum vs string to plain string (superset)', () => {
         const builder = new GroupedToolBuilder('enum_vs_string')
             .action({ name: 'a', schema: z.object({ status: z.enum(['active', 'archived']) }), handler: dummyHandler })
             .action({ name: 'b', schema: z.object({ status: z.string() }), handler: dummyHandler });
 
-        expect(() => builder.buildToolDefinition()).toThrow(/Schema conflict for field "status"/);
+        // Enum-vs-plain-string widens to plain string (superset)
+        expect(() => builder.buildToolDefinition()).not.toThrow();
+        const def = builder.buildToolDefinition();
+        const statusProp = (def.inputSchema.properties as any)?.status;
+        expect(statusProp.type).toBe('string');
+        expect(statusProp.enum).toBeUndefined();
     });
 
     it('should merge enum with different values (union)', () => {
@@ -330,7 +335,12 @@ describe('Schema Collision — CommonSchema vs Action Conflicts', () => {
                 handler: dummyHandler,
             });
 
-        expect(() => builder.buildToolDefinition()).toThrow(/Schema conflict for field "region"/);
+        // Enum-vs-plain-string widens to plain string (the superset)
+        expect(() => builder.buildToolDefinition()).not.toThrow();
+        const def = builder.buildToolDefinition();
+        const regionProp = (def.inputSchema.properties as any)?.region;
+        expect(regionProp.type).toBe('string');
+        expect(regionProp.enum).toBeUndefined();
     });
 
     it('should reject boolean in action conflicting with commonSchema number', () => {
@@ -687,12 +697,16 @@ describe('Schema Collision — Enum Merge (Union)', () => {
         expect(kindProp.enum).toHaveLength(4);
     });
 
-    it('should still reject enum vs non-enum (presence mismatch)', () => {
-        const builder = new GroupedToolBuilder('enum_vs_plain_still_throws')
+    it('should widen enum vs non-enum to plain string (superset)', () => {
+        const builder = new GroupedToolBuilder('enum_vs_plain_still_widens')
             .action({ name: 'a', schema: z.object({ val: z.enum(['x', 'y']) }), handler: dummyHandler })
             .action({ name: 'b', schema: z.object({ val: z.string() }), handler: dummyHandler });
 
-        expect(() => builder.buildToolDefinition()).toThrow(/Schema conflict for field "val"/);
+        expect(() => builder.buildToolDefinition()).not.toThrow();
+        const def = builder.buildToolDefinition();
+        const valProp = (def.inputSchema.properties as any)?.val;
+        expect(valProp.type).toBe('string');
+        expect(valProp.enum).toBeUndefined();
     });
 
     it('should still reject base type conflicts (string vs number)', () => {

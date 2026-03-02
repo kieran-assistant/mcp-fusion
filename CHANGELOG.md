@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.3] - 2026-03-02
+
+### Fixed
+
+- **Enum vs non-enum field conflict blocks OpenAPI imports** — `assertFieldCompatibility()` threw when one action declared an enum for a field and another declared the same field as a plain string. In OpenAPI specs, this naturally occurs when the same parameter has constrained values in one endpoint and unconstrained in another. The non-enum declaration (superset) now wins — the enum constraint is dropped, widening the field to accept any value of the base type.
+
+### Test Suite
+
+- **3 updated tests** — enum-vs-string conflict tests now validate widening behavior
+
+---
+
 ## [3.1.2] - 2026-03-02
 
 ### Fixed

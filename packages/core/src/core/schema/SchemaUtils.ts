@@ -105,13 +105,16 @@ export function assertFieldCompatibility(
             `type "${incType}" conflicts with previously declared type "${exType}"`);
     }
 
-    // 2. Enum presence mismatch (enum vs plain string, for example)
+    // 2. Enum presence mismatch → WIDEN to non-enum (drop constraint)
+    //    Plain string is a superset of enum-constrained string.
+    //    Essential for OpenAPI imports where the same field name has enum
+    //    in one endpoint and plain string in another.
     const exHasEnum = exEnum !== undefined;
     const incHasEnum = incEnum !== undefined;
     if (exHasEnum !== incHasEnum) {
-        throw conflictError(field, actionKey,
-            `${incHasEnum ? 'enum' : 'non-enum'} declaration conflicts with ` +
-            `previously declared ${exHasEnum ? 'enum' : 'non-enum'}`);
+        // Return the non-enum version (superset)
+        const nonEnum = exHasEnum ? inc : ex;
+        return { ...nonEnum };
     }
 
     // 3. Enum value-set mismatch → MERGE (union) instead of throwing
