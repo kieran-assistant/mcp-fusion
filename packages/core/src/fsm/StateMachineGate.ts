@@ -163,6 +163,20 @@ async function loadXState(): Promise<typeof import('xstate') | null> {
 }
 
 /**
+ * Reset the XState module cache so that `loadXState()` will
+ * re-attempt the dynamic import on next call.
+ *
+ * Intended for test environments where `xstate` availability
+ * may change between test suites via dynamic mocking.
+ *
+ * @public
+ */
+export function resetXStateCache(): void {
+    xstateLoadAttempted = false;
+    xstateModule = null;
+}
+
+/**
  * Pre-load `xstate` at boot time (optional optimization).
  *
  * Call during server startup to avoid the first-use dynamic import latency.

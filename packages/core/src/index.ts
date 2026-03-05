@@ -351,7 +351,7 @@ export type { StringifyFn, JsonSerializer } from './core/serialization/index.js'
 
 // ── FSM State Gate (Temporal Anti-Hallucination) ─────────
 /** @category FSM */
-export { StateMachineGate, initFsmEngine } from './fsm/StateMachineGate.js';
+export { StateMachineGate, initFsmEngine, resetXStateCache } from './fsm/StateMachineGate.js';
 /** @category FSM */
 export type {
     FsmConfig, FsmStateStore, FsmSnapshot, TransitionResult,

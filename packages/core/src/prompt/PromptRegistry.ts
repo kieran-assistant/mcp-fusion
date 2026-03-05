@@ -307,6 +307,10 @@ export class PromptRegistry<TContext = void> {
                 const lastIndex = allNames.indexOf(decoded.after);
                 if (lastIndex !== -1) {
                     startIndex = lastIndex + 1; // start from the next item
+                } else {
+                    // Cursor target was removed between pages — find nearest successor
+                    const successor = allNames.findIndex(n => n > decoded.after);
+                    startIndex = successor !== -1 ? successor : allNames.length;
                 }
             }
         }

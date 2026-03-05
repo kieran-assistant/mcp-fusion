@@ -364,11 +364,11 @@ describe('suggestActions adversarial', () => {
 
 describe('PostProcessor adversarial', () => {
     it('should handle postProcessResult with ToolResponse-like but wrong shape', () => {
-        // Has content but items don't have type/text — isToolResponse still says true
+        // Has content but items don't have type/text — isToolResponse now rejects this (Bug #58 fix)
         const weird = { content: [{ foo: 'bar' }] };
         const result = postProcessResult(weird, undefined);
-        // isToolResponse checks only for content array — passes through
-        expect(result).toBe(weird);
+        // Falls through to priority 4 (raw data), gets serialized as JSON
+        expect(result.content[0]!.text).toContain('foo');
     });
 
     it('should handle postProcessResult with Symbol', () => {

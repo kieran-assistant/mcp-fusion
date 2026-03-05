@@ -166,10 +166,19 @@ export function postProcessResult(
  * @internal
  */
 export function isToolResponse(value: unknown): value is ToolResponse {
-    return (
-        typeof value === 'object' &&
-        value !== null &&
-        'content' in value &&
-        Array.isArray((value as { content: unknown }).content)
-    );
+    if (
+        typeof value !== 'object' ||
+        value === null ||
+        !('content' in value) ||
+        !Array.isArray((value as { content: unknown }).content)
+    ) {
+        return false;
+    }
+
+    const content = (value as { content: unknown[] }).content;
+    // Empty content array is valid (e.g. fire-and-forget)
+    if (content.length === 0) return true;
+    // First element must have a string `type` property
+    const first = content[0] as Record<string, unknown> | undefined;
+    return first != null && typeof first.type === 'string';
 }

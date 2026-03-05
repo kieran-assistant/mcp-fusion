@@ -153,11 +153,41 @@ function invalidateModule(filePath: string): void {
 
     // CJS cache invalidation (when running in CJS mode)
     if (typeof require !== 'undefined' && require.cache) {
-        delete require.cache[absolutePath];
+        invalidateCjsTree(absolutePath);
     }
 
     // ESM modules can't be uncached directly — the caller must
     // re-import with a cache-busting query parameter.
+}
+
+/**
+ * Recursively invalidate a CJS module and all modules that depend on it.
+ *
+ * Walks `require.cache` to find modules whose `children` include the
+ * changed module (i.e., importers / dependents), and removes them so
+ * the next `require()` re-evaluates the entire dependency chain.
+ *
+ * @internal
+ */
+function invalidateCjsTree(entryPath: string): void {
+    const visited = new Set<string>();
+    const queue = [entryPath];
+
+    while (queue.length > 0) {
+        const current = queue.pop()!;
+        if (visited.has(current)) continue;
+        visited.add(current);
+        delete require.cache[current];
+
+        // Find all cached modules that imported `current`
+        for (const [key, mod] of Object.entries(require.cache)) {
+            if (!mod) continue;
+            const children: Array<{ id: string }> = (mod as any).children ?? [];
+            if (children.some(c => c.id === current)) {
+                queue.push(key);
+            }
+        }
+    }
 }
 
 /**
@@ -292,6 +322,11 @@ export function createDevServer(config: DevServerConfig): DevServer {
                     const fullPath = join(absoluteDir, filename);
                     void performReload(relative(process.cwd(), fullPath));
                 }, debounce);
+            });
+
+            watcher.on('error', (err) => {
+                // eslint-disable-next-line no-console
+                console.error(`[fusion dev] Watcher error: ${err instanceof Error ? err.message : String(err)}`);
             });
 
             // eslint-disable-next-line no-console

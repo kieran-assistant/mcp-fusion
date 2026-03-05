@@ -530,8 +530,7 @@ function createToolCallHandler<TContext>(hCtx: HandlerContext<TContext>) {
 
         try {
         if (hCtx.isFlat) {
-            const exposition = hCtx.recompile();
-            const flatRoute = exposition.routingMap.get(name);
+            // Reuse exposition compiled above for telemetry (avoid double recompile)
             if (flatRoute) {
                 const enrichedArgs = { ...args, [flatRoute.discriminator]: flatRoute.actionKey };
                 result = await flatRoute.builder.execute(ctx, enrichedArgs, progressSink, signal);

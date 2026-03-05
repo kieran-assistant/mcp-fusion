@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.16] - 2026-03-05
+
+### Fixed
+
+- `coercePromptArgs` no longer coerces empty string `""` to `0` for ZodNumber fields — leaves it unset so Zod correctly rejects it as missing
+- `PromptRegistry.listPrompts` cursor now finds the nearest successor when the cursor target is removed between pages, preventing silent restart from page 1
+- `isToolResponse` type guard now verifies that `content[0]` has a string `type` property, preventing domain objects with `content` arrays from bypassing the MVA pipeline
+- `ServerAttachment` flat-mode tool dispatch reuses the exposition compiled for telemetry routing instead of calling `recompile()` twice per call
+- `DevServer.invalidateModule` now recursively invalidates transitive CJS dependents (`require.cache` children), ensuring hot-reload propagates through import chains
+- `DevServer` file watcher now registers an `'error'` handler to prevent unhandled `ENOSPC`/filesystem errors from crashing the process
+- `StateMachineGate` now exports `resetXStateCache()` to allow test environments to re-trigger xstate dynamic import after mock changes
+
 ## [3.1.15] - 2026-03-05
 
 ### Fixed

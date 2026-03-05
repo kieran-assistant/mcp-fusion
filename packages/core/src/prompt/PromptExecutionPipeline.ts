@@ -121,6 +121,7 @@ export function coercePromptArgs(
                     : Boolean(value);
                 break;
             case 'ZodNumber':
+                if (value === '') break; // leave missing — let Zod reject
                 coerced[key] = Number(value);
                 break;
             case 'ZodEnum':
