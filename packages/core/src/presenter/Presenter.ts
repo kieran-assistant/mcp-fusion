@@ -150,6 +150,7 @@ export class Presenter<T> {
     private _sealed = false;
     private _compiledStringify: StringifyFn | undefined;
     private _compiledRedactor: RedactFn | undefined;
+    private _redactConfig: RedactConfig | undefined;
     private _redactPaths: readonly string[] = [];
 
     /** @internal Use {@link createPresenter} factory instead */
@@ -548,6 +549,7 @@ export class Presenter<T> {
             paths,
             ...(censor !== undefined ? { censor } : {}),
         };
+        this._redactConfig = config;
         this._compiledRedactor = compileRedactor(config);
         this._redactPaths = paths;
 
@@ -763,6 +765,18 @@ export class Presenter<T> {
      * @internal
      */
     private _applyRedaction(data: T | T[], isArray: boolean): T | T[] {
+        // Lazy recompilation: if redactPII was called before fast-redact loaded
+        // (e.g., top-level Presenter declared before initFusion()), retry now.
+        if (!this._compiledRedactor && this._redactConfig) {
+            this._compiledRedactor = compileRedactor(this._redactConfig);
+            if (!this._compiledRedactor) {
+                console.warn(
+                    `[mcp-fusion] Presenter "${this.name}": PII redaction configured but fast-redact is not available. ` +
+                    `Data will pass through WITHOUT redaction. Ensure initFusion() completes before .make() is called, ` +
+                    `or install fast-redact as a dependency.`,
+                );
+            }
+        }
         if (!this._compiledRedactor) return data;
 
         if (isArray) {

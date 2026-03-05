@@ -83,7 +83,7 @@ export class FluentRouter<TContext> {
      * @returns `this` for chaining
      */
     tags(...tags: string[]): this {
-        this._tags = tags;
+        this._tags.push(...tags);
         return this;
     }
 

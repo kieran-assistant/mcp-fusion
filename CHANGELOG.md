@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.12] - 2026-03-05
+
+### Fixed
+
+- **`redactPII()` silently fails when `fast-redact` not loaded asynchronously (Bug #37)** — `compileRedactor()` called the synchronous `getFastRedact()` which returns `null` if the async `loadFastRedact()` hasn't completed yet. Presenters declared at module top-level (before `initFusion()`) received `_compiledRedactor = undefined` and PII passed to the wire without redaction or warning. Fixed by making `_applyRedaction` lazily retry compilation on first use and emitting a `console.warn` when redaction is configured but `fast-redact` remains unavailable.
+
+- **`createGroup.execute()` discards validated/transformed Zod data (Bug #38)** — After `schema.safeParse(args)` succeeded, the handler was called with the raw `args` instead of `result.data`. Zod transforms (`.transform(Number)`), defaults (`.default('foo')`), and strip (`.strip()`) were silently discarded. Fixed by passing `result.data ?? args` to the handler chain.
+
+- **`FluentEnum.default()` does not mark field as optional (Bug #39)** — `FluentString`, `FluentNumber`, and `FluentBoolean` all set `this._optional = true` in `.default()`, but `FluentEnum.default()` did not. The Zod schema remained `required` despite having a default, causing contradictory contracts for the LLM. Fixed by adding `this._optional = true` to `FluentEnum.default()`.
+
+- **`FluentRouter.tags()` replaces instead of accumulating (Bug #40)** — Same pattern as Bug #11: `this._tags = tags` (assignment) instead of `this._tags.push(...tags)` (accumulation). Chaining `.tags('auth').tags('admin')` discarded `'auth'`. Fixed by changing to `this._tags.push(...tags)` consistent with `FluentToolBuilder` and `GroupedToolBuilder`.
+
 ## [3.1.11] - 2026-03-05
 
 ### Fixed

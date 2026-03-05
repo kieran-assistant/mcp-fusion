@@ -220,6 +220,8 @@ export function createGroup<TContext = void>(config: GroupConfig<TContext>): Com
                     'INVALID_PARAMS',
                 );
             }
+            // Use result.data to preserve Zod transforms, defaults, and strip behavior
+            return chain(ctx, result.data ?? args);
         }
 
         return chain(ctx, args);

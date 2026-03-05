@@ -300,7 +300,7 @@ export class FluentEnum<V extends string = string> implements FluentDescriptor {
     /** Set human-readable description */
     describe(text: string): this { this._desc = text; return this; }
     /** Set default value (appended to description for LLM) */
-    default(value: V): this { this._default = value; return this; }
+    default(value: V): this { this._default = value; this._optional = true; return this; }
     /** Add a single LLM few-shot example (AI-First DX) */
     example(value: V): this {
         if (!this._examples) this._examples = [];
