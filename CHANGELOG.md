@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.22] - 2026-03-06
+
+### Fixed
+
+- `prisma-gen` `emitFindUnique()` now generates `findUnique` + null-check returning an error response — previously used `findUniqueOrThrow`, which leaked Prisma's opaque `PrismaClientKnownRequestError` (P2025) to the LLM
+- `PromptRegistry` interceptor builder `prependSystem` and `appendSystem` now use `role: 'assistant'` — previously all four methods used `role: 'user'`, making system/user insertion functionally identical
+- `materializeContract()` now integrates `EntitlementScanner` to populate real handler entitlements from static source analysis — previously returned hardcoded all-false placeholder, leaving downstream blast-radius analysis blind
+- `profileResponse()` overhead token slice now uses `.slice(-overheadBlocks)` to correctly measure trailing overhead blocks — previously sliced from the beginning, inverting data and overhead counts
+- `scaffold()` now skips the generic RBAC `auth.ts` push when `vector === 'oauth'` — previously wrote it twice (generic first, then OAuth-specific), causing wasted I/O and inflated progress count
+- CLI `parseArgs` now validates that flag-value arguments (`--server`, `--name`, `--cwd`, `--transport`, `--vector`, `--dir`, `--token`, `--server-id`) are followed by an actual value — previously consumed the next flag silently (e.g. `--server --dir ./src` set server to `"--dir"`)
+- `ask()` now listens for the readline `close` event and resolves with the fallback value — previously, if stdin was piped or closed (Ctrl+D/EOF), the returned Promise would hang forever
+
 ## [3.1.21] - 2026-03-06
 
 ### Fixed

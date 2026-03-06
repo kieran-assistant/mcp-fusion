@@ -1504,15 +1504,11 @@ describe('CLI: parseArgs edge cases', () => {
     });
 
     it('handles --server without value (dangling flag)', async () => {
-        const args = parseArgs(['node', 'fusion', 'lock', '--server']);
-        expect(args.command).toBe('lock');
-        expect(args.server).toBeUndefined();
+        expect(() => parseArgs(['node', 'fusion', 'lock', '--server'])).toThrow(/missing value/i);
     });
 
     it('handles --name without value', async () => {
-        const args = parseArgs(['node', 'fusion', 'lock', '--name']);
-        expect(args.command).toBe('lock');
-        expect(args.name).toBeUndefined();
+        expect(() => parseArgs(['node', 'fusion', 'lock', '--name'])).toThrow(/missing value/i);
     });
 
     it('handles paths with spaces', async () => {

@@ -219,9 +219,11 @@ export function profileResponse(
     const totalTokens = blockProfiles.reduce((sum, b) => sum + b.estimatedTokens, 0);
 
     // Split tokens into overhead vs data
-    const overheadTokens = blockProfiles
-        .slice(0, overheadBlocks)
-        .reduce((sum, b) => sum + b.estimatedTokens, 0);
+    const overheadTokens = overheadBlocks > 0
+        ? blockProfiles
+            .slice(-overheadBlocks)
+            .reduce((sum, b) => sum + b.estimatedTokens, 0)
+        : 0;
     const dataTokens = totalTokens - overheadTokens;
     // Bug #46 fix: when ALL blocks are overhead (dataTokens === 0),
     // report Infinity instead of 0 to correctly trigger OVERHEAD WARNING

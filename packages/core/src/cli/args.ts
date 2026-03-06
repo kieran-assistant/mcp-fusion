@@ -4,6 +4,17 @@
  */
 import type { IngestionVector, TransportLayer } from './types.js';
 
+// ─── Helpers ─────────────────────────────────────────────────────
+
+/** @internal Consume the next arg, throwing if it looks like a flag or is missing */
+function consumeValue(args: string[], i: number, flag: string): string {
+    const next = args[i + 1];
+    if (next === undefined || next.startsWith('-')) {
+        throw new Error(`Missing value for ${flag}`);
+    }
+    return next;
+}
+
 // ─── Types ───────────────────────────────────────────────────────
 
 /** @internal exported for testing */
@@ -74,24 +85,29 @@ export function parseArgs(argv: string[]): CliArgs {
                 break;
             case '-s':
             case '--server':
-                result.server = args[++i];
+                result.server = consumeValue(args, i, arg);
+                i++;
                 break;
             case '-n':
             case '--name':
-                result.name = args[++i];
+                result.name = consumeValue(args, i, arg);
+                i++;
                 break;
             case '--cwd':
-                result.cwd = args[++i] ?? process.cwd();
+                result.cwd = consumeValue(args, i, arg);
+                i++;
                 break;
             case '-h':
             case '--help':
                 result.help = true;
                 break;
             case '--transport':
-                result.transport = args[++i] as TransportLayer;
+                result.transport = consumeValue(args, i, arg) as TransportLayer;
+                i++;
                 break;
             case '--vector':
-                result.vector = args[++i] as IngestionVector;
+                result.vector = consumeValue(args, i, arg) as IngestionVector;
+                i++;
                 break;
             case '--testing':
                 result.testing = true;
@@ -101,17 +117,20 @@ export function parseArgs(argv: string[]): CliArgs {
                 break;
             case '-d':
             case '--dir':
-                result.dir = args[++i];
+                result.dir = consumeValue(args, i, arg);
+                i++;
                 break;
             case '-y':
             case '--yes':
                 result.yes = true;
                 break;
             case '--token':
-                result.token = args[++i];
+                result.token = consumeValue(args, i, arg);
+                i++;
                 break;
             case '--server-id':
-                result.serverId = args[++i];
+                result.serverId = consumeValue(args, i, arg);
+                i++;
                 break;
             default:
                 if (!seenCommand) {

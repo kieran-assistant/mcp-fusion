@@ -1062,14 +1062,12 @@ describe('parseArgs — edge cases & error paths', () => {
         expect(args.command).toBe('unknown-cmd');
     });
 
-    it('handles --transport without value (undefined)', () => {
-        const args = parseArgs(['node', 'fusion', 'create', 'srv', '--transport']);
-        expect(args.transport).toBeUndefined();
+    it('handles --transport without value (throws)', () => {
+        expect(() => parseArgs(['node', 'fusion', 'create', 'srv', '--transport'])).toThrow(/missing value/i);
     });
 
-    it('handles --vector without value (undefined)', () => {
-        const args = parseArgs(['node', 'fusion', 'create', 'srv', '--vector']);
-        expect(args.vector).toBeUndefined();
+    it('handles --vector without value (throws)', () => {
+        expect(() => parseArgs(['node', 'fusion', 'create', 'srv', '--vector'])).toThrow(/missing value/i);
     });
 
     it('accepts invalid transport string at parse level (validation is in collectConfig)', () => {

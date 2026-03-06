@@ -232,14 +232,16 @@ function emitFindUnique(
 
     // WHERE with tenant isolation
     if (annotations.tenantKeyField) {
-        lines.push(`                return await ctx.prisma.${prismaModel}.findUniqueOrThrow({`);
+        lines.push(`                const result = await ctx.prisma.${prismaModel}.findUnique({`);
         lines.push(`                    where: { ${idName}: args.${idName}, ${annotations.tenantKeyField}: ctx.${annotations.tenantKeyField} },`);
         lines.push(`                });`);
     } else {
-        lines.push(`                return await ctx.prisma.${prismaModel}.findUniqueOrThrow({`);
+        lines.push(`                const result = await ctx.prisma.${prismaModel}.findUnique({`);
         lines.push(`                    where: { ${idName}: args.${idName} },`);
         lines.push(`                });`);
     }
+    lines.push(`                if (!result) return { content: [{ type: 'text', text: '${toPascalCase(prismaModel)} not found' }], isError: true };`);
+    lines.push(`                return result;`);
 
     lines.push(`            },`);
     lines.push(`        },`);

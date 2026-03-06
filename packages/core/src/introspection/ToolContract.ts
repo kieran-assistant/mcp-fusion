@@ -23,6 +23,7 @@
  */
 import { type ToolBuilder } from '../core/types.js';
 import { sha256, canonicalize } from './canonicalize.js';
+import { scanSource, buildEntitlements } from './EntitlementScanner.js';
 
 // ============================================================================
 // Contract Types
@@ -201,15 +202,29 @@ export async function materializeContract<TContext>(
     // Token Economics
     const tokenEconomics = computeTokenEconomics(metadata, behavior);
 
-    // Entitlements — placeholder (real AST analysis in EntitlementScanner)
-    const entitlements: HandlerEntitlements = {
-        filesystem: false,
-        network: false,
-        subprocess: false,
-        crypto: false,
-        codeEvaluation: false,
-        raw: [],
-    };
+    // Entitlements — real static analysis via EntitlementScanner
+    let entitlements: HandlerEntitlements;
+    try {
+        const builderAny = builder as unknown as Record<string, unknown>;
+        const actions: readonly { handler?: (...a: unknown[]) => unknown }[] =
+            typeof builderAny['getActions'] === 'function'
+                ? (builderAny as unknown as { getActions(): readonly { handler?: (...a: unknown[]) => unknown }[] }).getActions()
+                : [];
+
+        const combinedSource = actions
+            .filter(a => typeof a.handler === 'function')
+            .map(a => a.handler!.toString())
+            .join('\n');
+
+        if (combinedSource.length > 0) {
+            const matches = scanSource(combinedSource);
+            entitlements = buildEntitlements(matches);
+        } else {
+            entitlements = { filesystem: false, network: false, subprocess: false, crypto: false, codeEvaluation: false, raw: [] };
+        }
+    } catch {
+        entitlements = { filesystem: false, network: false, subprocess: false, crypto: false, codeEvaluation: false, raw: [] };
+    }
 
     return { surface, behavior, tokenEconomics, entitlements };
 }

@@ -60,13 +60,23 @@ export function inferWatchDir(serverPath: string): string {
  * @internal exported for testing
  */
 export function ask(
-    rl: { question: (q: string, cb: (a: string) => void) => void },
+    rl: { question: (q: string, cb: (a: string) => void) => void; once?: (event: string, cb: () => void) => void },
     prompt: string,
     fallback: string,
 ): Promise<string> {
     return new Promise((resolve) => {
+        let resolved = false;
+        rl.once?.('close', () => {
+            if (!resolved) {
+                resolved = true;
+                resolve(fallback);
+            }
+        });
         rl.question(`  ${ansi.cyan('◇')} ${prompt} ${ansi.dim(`(${fallback})`)} `, (answer: string) => {
-            resolve(answer.trim() || fallback);
+            if (!resolved) {
+                resolved = true;
+                resolve(answer.trim() || fallback);
+            }
         });
     });
 }

@@ -84,7 +84,9 @@ function buildFileList(config: ProjectConfig): ScaffoldFile[] {
     files.push({ path: 'src/prompts/greet.ts', content: tpl.greetPromptTs() });
 
     // ── Middleware ────────────────────────────────────────
-    files.push({ path: 'src/middleware/auth.ts', content: tpl.authMiddlewareTs() });
+    if (config.vector !== 'oauth') {
+        files.push({ path: 'src/middleware/auth.ts', content: tpl.authMiddlewareTs() });
+    }
 
     // ── Testing ──────────────────────────────────────────
     if (config.testing) {
