@@ -861,7 +861,7 @@ export async function attachToServer<TContext>(
                 cachedBuilders = builders;
                 // Bug #131: route diagnostic warnings through debug observer
                 const warnFn = debug
-                    ? (msg: string) => debug({ type: 'error', tool: '', action: '', error: new Error(msg), durationMs: 0 })
+                    ? (msg: string) => debug({ type: 'error', tool: '', action: '', error: msg, step: 'route', timestamp: Date.now() })
                     : undefined;
                 cachedResult = compileExposition(builders, toolExposition, actionSeparator, warnFn);
                 return cachedResult;

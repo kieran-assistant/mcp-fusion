@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.29] - 2026-03-06
+
+### Fixed
+
+- `SandboxEngine.execute()` now rejects code exceeding 64 KB (`MAX_CODE_LENGTH = 65 536`) before spawning an isolate — previously, arbitrarily large payloads were forwarded to V8, risking host-side OOM (Bug #132)
+- `SandboxEngine` now emits telemetry for `OUTPUT_TOO_LARGE` results via `_emitTelemetry()` — previously, the early-return path skipped the telemetry call, creating a blind spot in observability (Bug #133)
+- `FluentToolBuilder` branded `ToolResponse` cast now uses an intermediate `unknown` to satisfy TS2352 under strict mode
+- `ServerAttachment` debug warnFn now passes `error` as `string` (matching `ErrorEvent` interface) and includes the required `step` and `timestamp` fields
+- `StateSyncBuilder._cachedLayer` field declaration now includes explicit `| undefined` to satisfy `exactOptionalPropertyTypes: true`
+
 ## [3.1.28] - 2026-03-06
 
 ### Fixed

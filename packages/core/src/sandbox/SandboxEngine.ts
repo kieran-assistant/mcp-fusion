@@ -133,6 +133,7 @@ export type SandboxResult<T = unknown> =
 const DEFAULT_TIMEOUT_MS = 5_000;
 const DEFAULT_MEMORY_LIMIT_MB = 128;
 const DEFAULT_MAX_OUTPUT_BYTES = 1_048_576; // 1MB
+const MAX_CODE_LENGTH = 65_536; // 64KB — generous for any legitimate sandbox function
 
 // ── Lazy Require ─────────────────────────────────────────
 
@@ -271,6 +272,18 @@ export class SandboxEngine {
             };
         }
 
+        // ── Step 0b: Code length guard ──────────────────
+        // Prevent host-side OOM before V8 is even involved.
+        // The V8 memoryLimit only bounds the isolate heap, not the host.
+        if (code.length > MAX_CODE_LENGTH) {
+            return {
+                ok: false,
+                error: `Code length (${code.length} chars) exceeds maximum (${MAX_CODE_LENGTH} chars). ` +
+                    'Sandbox functions should be small, pure transformations.',
+                code: 'INVALID_CODE',
+            };
+        }
+
         // ── Step 1: Fail-fast guard ─────────────────────
         const guard = validateSandboxCode(code);
         if (!guard.ok) {
@@ -333,12 +346,14 @@ export class SandboxEngine {
             if (typeof rawResult === 'string') {
                 const outputByteLength = new TextEncoder().encode(rawResult).byteLength;
                 if (outputByteLength > this._maxOutputBytes) {
-                    return {
+                    const oversized: SandboxResult<T> = {
                         ok: false,
                         error: `Output size (${outputByteLength} bytes) exceeds limit (${this._maxOutputBytes} bytes). ` +
                             'Use more selective filters to reduce the result set.',
                         code: 'OUTPUT_TOO_LARGE',
                     };
+                    this._emitTelemetry(oversized);
+                    return oversized;
                 }
             }
 

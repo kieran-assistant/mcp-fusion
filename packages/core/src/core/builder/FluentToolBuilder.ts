@@ -749,7 +749,7 @@ export class FluentToolBuilder<
             if (typeof result === 'object' && result !== null) {
                 // Brand check — reliable, no false positives (Bug #127)
                 if (TOOL_RESPONSE_BRAND in result) {
-                    return result as ToolResponse;
+                    return result as unknown as ToolResponse;
                 }
                 // Shape heuristic — backward compat for manually constructed ToolResponse
                 if (
