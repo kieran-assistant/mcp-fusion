@@ -53,6 +53,7 @@ export class StateSyncBuilder {
     private _defaults: { cacheControl?: CacheDirective } = {};
     private _onInvalidation?: (event: InvalidationEvent) => void;
     private _notificationSink?: (notification: ResourceNotification) => void | Promise<void>;
+    private _cachedLayer?: StateSyncLayer;  // Bug #114 fix
 
     /**
      * Set global default cache-control directives.
@@ -77,6 +78,7 @@ export class StateSyncBuilder {
         if (built.cacheControl) {
             this._defaults.cacheControl = built.cacheControl;
         }
+        this._cachedLayer = undefined;
         return this;
     }
 
@@ -95,6 +97,7 @@ export class StateSyncBuilder {
         const builder = new PolicyBuilder();
         fn(builder);
         this._policies.push({ match, ...builder.build() });
+        this._cachedLayer = undefined;
         return this;
     }
 
@@ -103,6 +106,7 @@ export class StateSyncBuilder {
      */
     onInvalidation(fn: (event: InvalidationEvent) => void): this {
         this._onInvalidation = fn;
+        this._cachedLayer = undefined;
         return this;
     }
 
@@ -111,6 +115,7 @@ export class StateSyncBuilder {
      */
     notificationSink(fn: (notification: ResourceNotification) => void | Promise<void>): this {
         this._notificationSink = fn;
+        this._cachedLayer = undefined;
         return this;
     }
 
@@ -134,6 +139,7 @@ export class StateSyncBuilder {
 
     /**
      * Shortcut for build() to align with other builders.
+     * Bug #114 fix: cache the result so `sync.layer === sync.layer` is true.
      */
-    get layer() { return this.build(); }
+    get layer() { return this._cachedLayer ??= this.build(); }
 }

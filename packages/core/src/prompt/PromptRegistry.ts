@@ -389,13 +389,13 @@ export class PromptRegistry<TContext = void> {
 
         const interceptorBuilder = {
             prependSystem(text: string) {
-                prepended.push({ role: 'assistant', content: { type: 'text', text } });
+                prepended.push({ role: 'user', content: { type: 'text', text } });
             },
             prependUser(text: string) {
                 prepended.push({ role: 'user', content: { type: 'text', text } });
             },
             appendSystem(text: string) {
-                appended.push({ role: 'assistant', content: { type: 'text', text } });
+                appended.push({ role: 'user', content: { type: 'text', text } });
             },
             appendUser(text: string) {
                 appended.push({ role: 'user', content: { type: 'text', text } });

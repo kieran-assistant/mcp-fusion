@@ -17,7 +17,7 @@ const testPrompt = definePrompt<Ctx>('role-test', {
 // ── Tests ────────────────────────────────────────────────
 
 describe('Bug #92 — PromptRegistry interceptor builder roles', () => {
-    it('prependSystem uses role "assistant"', async () => {
+    it('prependSystem uses role "user"', async () => {
         const registry = new PromptRegistry<Ctx>();
         registry.register(testPrompt);
 
@@ -27,11 +27,11 @@ describe('Bug #92 — PromptRegistry interceptor builder roles', () => {
 
         const result = await registry.routeGet(ctx(), 'role-test', {});
         const firstMessage = result.messages[0];
-        expect(firstMessage.role).toBe('assistant');
+        expect(firstMessage.role).toBe('user');
         expect(firstMessage.content).toEqual({ type: 'text', text: 'system instruction' });
     });
 
-    it('appendSystem uses role "assistant"', async () => {
+    it('appendSystem uses role "user"', async () => {
         const registry = new PromptRegistry<Ctx>();
         registry.register(testPrompt);
 
@@ -41,7 +41,7 @@ describe('Bug #92 — PromptRegistry interceptor builder roles', () => {
 
         const result = await registry.routeGet(ctx(), 'role-test', {});
         const lastMessage = result.messages[result.messages.length - 1];
-        expect(lastMessage.role).toBe('assistant');
+        expect(lastMessage.role).toBe('user');
     });
 
     it('prependUser and appendUser still use role "user"', async () => {

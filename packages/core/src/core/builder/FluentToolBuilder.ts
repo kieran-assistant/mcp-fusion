@@ -668,6 +668,13 @@ export class FluentToolBuilder<
 
         // Parse name: 'domain.action' → tool='domain', action='action'
         const dotIndex = this._name.indexOf('.');
+        // Bug #109 fix: reject multi-dot names early with a clear error.
+        if (dotIndex > 0 && this._name.indexOf('.', dotIndex + 1) !== -1) {
+            throw new Error(
+                `Tool name '${this._name}' has too many dot-separated segments. ` +
+                `Only one dot is allowed (e.g. 'group.action'). Use f.router() for nested prefixes.`,
+            );
+        }
         const toolName = dotIndex > 0 ? this._name.slice(0, dotIndex) : this._name;
         const actionName = dotIndex > 0 ? this._name.slice(dotIndex + 1) : 'default';
 

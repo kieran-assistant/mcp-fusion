@@ -67,7 +67,7 @@ describe('Prompt Interceptors', () => {
         // First message should be the compliance header
         expect(result.messages).toHaveLength(3);
         expect(result.messages[0]).toEqual({
-            role: 'assistant',
+            role: 'user',
             content: {
                 type: 'text',
                 text: '[COMPLIANCE] Tenant: acme-corp | User: editor',

@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.26] - 2026-03-06
+
+### Fixed
+
+- `FluentToolBuilder` now rejects tool names with more than one dot-separated segment (e.g. `'admin.users.list'`) at build time — previously parsed only the first dot, producing a malformed action name that crashed `GroupedToolBuilder`
+- `ContextDerivation` (`defineMiddleware`) now blocks `constructor` and `prototype` keys alongside `__proto__` — previously only `__proto__` was guarded, inconsistent with the inline middleware path in `FluentToolBuilder` which blocks all three
+- `PromptRegistry` `prependSystem()` and `appendSystem()` interceptor helpers now emit `role: 'user'` — previously used `role: 'assistant'`, making the LLM believe it had already produced the injected system content
+- `GroupedToolBuilder.action()` now throws on duplicate action names — previously silently pushed a second entry with the same key, creating a dead-code handler behind an ambiguous discriminator enum
+- `FluentPromptBuilder.tags()` now appends via `push(...tags)` — previously replaced the entire array on each call, so `.tags('a').tags('b')` yielded `['b']` instead of `['a', 'b']`
+- `StateSyncBuilder.layer` getter now caches the built `StateSyncLayer` instance and invalidates on mutation — previously called `this.build()` on every access, returning a new object each time (`sync.layer === sync.layer` was `false`)
+
 ## [3.1.25] - 2026-03-06
 
 ### Fixed

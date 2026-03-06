@@ -704,6 +704,14 @@ export class GroupedToolBuilder<TContext = void, TCommon extends Record<string, 
                 `The framework uses dots internally for group.action compound keys.`
             );
         }
+        // Bug #112 fix: reject duplicate action names instead of silently
+        // registering two actions with the same discriminator key.
+        if (this._actions.some(a => a.key === config.name)) {
+            throw new Error(
+                `Duplicate action name "${config.name}" on builder "${this._name}". ` +
+                `Each action must have a unique name within its tool.`,
+            );
+        }
         this._actions.push({
             key: config.name,
             groupName: undefined,
