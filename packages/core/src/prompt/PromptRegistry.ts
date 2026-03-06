@@ -308,9 +308,9 @@ export class PromptRegistry<TContext = void> {
                 if (lastIndex !== -1) {
                     startIndex = lastIndex + 1; // start from the next item
                 } else {
-                    // Cursor target was removed between pages — find nearest successor
-                    const successor = allNames.findIndex(n => n > decoded.after);
-                    startIndex = successor !== -1 ? successor : allNames.length;
+                    // Cursor target was removed between pages — skip to end
+                    // (insertion-order keys are not sorted, so lexicographic successor is meaningless)
+                    startIndex = allNames.length;
                 }
             }
         }

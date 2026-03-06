@@ -9,8 +9,9 @@
  * All pagination tests register once and iterate without mutation.
  * No test ever removed a prompt between page requests.
  *
- * Fix: When cursor target is missing, use `findIndex(n => n > decoded.after)`
- * to locate the nearest lexicographic successor instead of restarting.
+ * Fix: When cursor target is missing, skip to end of list instead of
+ * restarting from page 1. Lexicographic successor is meaningless for
+ * insertion-ordered Map keys (see Bug #106).
  */
 import { describe, it, expect } from 'vitest';
 import { z } from 'zod';
@@ -45,11 +46,13 @@ describe('PromptRegistry cursor stability on mutation (Bug #57)', () => {
             registry.register(makePrompt(n));
         }
 
-        // Page 2 should continue from 'c' (successor), NOT restart from 'a'
+        // Page 2 should NOT restart from 'a' (original bug). Now skips to end
+        // since cursor target 'b' was removed and insertion-order has no
+        // meaningful lexicographic successor (Bug #106 fix).
         const page2 = await registry.listPrompts({ cursor: page1.nextCursor });
         const page2Names = page2.prompts.map(p => p.name);
         expect(page2Names).not.toContain('a'); // no duplicate from page 1
-        expect(page2Names[0]).toBe('c'); // continues correctly
+        expect(page2.prompts).toHaveLength(0); // skips to end when target removed
     });
 
     it('should return empty when cursor target and all successors are removed', async () => {

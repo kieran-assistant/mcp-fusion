@@ -199,11 +199,14 @@ export class ApiKeyManager {
      * @internal
      */
     private static _timingSafeCompare(a: string, b: string): boolean {
-        if (a.length !== b.length) return false;
-        try {
-            return crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b));
-        } catch {
-            return false;
+        const encoder = new TextEncoder();
+        const bufA = encoder.encode(a);
+        const bufB = encoder.encode(b);
+        const maxLen = Math.max(bufA.length, bufB.length);
+        let diff = bufA.length ^ bufB.length;
+        for (let i = 0; i < maxLen; i++) {
+            diff |= (bufA[i] ?? 0) ^ (bufB[i] ?? 0);
         }
+        return diff === 0;
     }
 }

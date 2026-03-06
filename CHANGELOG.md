@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.24] - 2026-03-06
+
+### Fixed
+
+- `ApiKeyManager._timingSafeCompare` now uses constant-time XOR accumulation over both buffers — previously early-returned on length mismatch, leaking key length via timing side-channel
+- `MiddlewareCompiler.isAsyncGeneratorFunction` now includes a duck-type fallback checking `Symbol.asyncIterator` on the function prototype — previously only checked `Symbol.toStringTag` and `constructor.name`, which fail for transpiled async generators
+- `PromptRegistry.listPrompts` cursor fallback now skips to end of list when cursor target is removed — previously used lexicographic `>` comparison on insertion-ordered Map keys, which could return incorrect pages
+
 ## [3.1.23] - 2026-03-06
 
 ### Fixed

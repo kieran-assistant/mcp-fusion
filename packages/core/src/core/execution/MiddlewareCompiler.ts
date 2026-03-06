@@ -31,8 +31,14 @@ type ChainFn<TContext> = (ctx: TContext, args: Record<string, unknown>) => Promi
 function isAsyncGeneratorFunction(fn: unknown): boolean {
     if (typeof fn !== 'function') return false;
     // Symbol.toStringTag is set by the engine on async generator functions
-    return (fn as { [Symbol.toStringTag]?: string })[Symbol.toStringTag] === 'AsyncGeneratorFunction'
-        || fn.constructor.name === 'AsyncGeneratorFunction';
+    if ((fn as { [Symbol.toStringTag]?: string })[Symbol.toStringTag] === 'AsyncGeneratorFunction') return true;
+    if (fn.constructor?.name === 'AsyncGeneratorFunction') return true;
+    // Duck-type fallback for transpiled code: check the prototype
+    if (typeof fn.prototype === 'object' && fn.prototype !== null
+        && Symbol.asyncIterator in fn.prototype) {
+        return true;
+    }
+    return false;
 }
 
 /**
