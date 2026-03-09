@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://site-assets.vinkius.com/vk/logo-v-black-square.png" width="80" height="80">
-  <img src="https://site-assets.vinkius.com/vk/logo-v-black-square.png" style="border-radius:8px;background:#000000;padding:10px;border:1px solid #414141;" width="80" height="80" alt="Vurb.ts">
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/86ae1b28-a938-4e12-af29-bfc60a55dbe8" >
+  <img src="https://github.com/user-attachments/assets/86ae1b28-a938-4e12-af29-bfc60a55dbe8" style="border-radius:8px;background:#000000;padding:10px;border:1px solid #414141;"  alt="Vurb.ts">
 </picture>
 
 # Vurb.ts
