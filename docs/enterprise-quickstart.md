@@ -19,7 +19,7 @@ Each stage has one job. If any stage throws, everything after it is skipped — 
 ## Step 1 — Scaffold with Lightspeed {#step-1-scaffold}
 
 ```bash
-npx @vurb/core create secure-api --vector oauth --transport sse --yes
+vurb create secure-api --vector oauth --transport sse --yes
 cd secure-api
 ```
 

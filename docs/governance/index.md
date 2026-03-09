@@ -6,7 +6,7 @@ description: "Cryptographic surface integrity, behavioral lockfiles, and zero-tr
 # Capability Governance
 
 ::: info Prerequisites
-Install Vurb.ts before following this guide: `npm install @vurb/core @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx @vurb/core create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install @vurb/core @modelcontextprotocol/sdk zod` — or scaffold a project with [`vurb create`](/quickstart-lightspeed).
 :::
 
 - [What the Protocol Cannot Answer](#the-gap)
@@ -87,13 +87,13 @@ Every module is a pure function. Side-effectful I/O (disk, network) is clearly s
 ## Try It in 60 Seconds {#quick-start}
 
 ```bash
-npx @vurb/core lock --server ./src/server.ts
+vurb lock --server ./src/server.ts
 ```
 
 This generates `vurb.lock` — a deterministic, git-diffable artifact that captures every tool's behavioral surface. Schemas, system rules, middleware chains, entitlements, token economics — all of it, in a single committed file.
 
 ```bash
-npx @vurb/core lock --check --server ./src/server.ts
+vurb lock --check --server ./src/server.ts
 ```
 
 This gates your CI build. If anyone changes a tool's behavioral surface without updating the lockfile, the build fails. The pull request diff shows exactly what changed:

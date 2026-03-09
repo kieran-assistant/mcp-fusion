@@ -19,7 +19,7 @@ If you're adding Vurb.ts to an existing Node.js project, the install above is al
 The CLI creates a complete project with all dependencies pre-installed:
 
 ```bash
-npx @vurb/core create my-server
+vurb create my-server
 ```
 
 The interactive wizard runs:
@@ -42,7 +42,7 @@ The interactive wizard runs:
 Skip the wizard with `--yes` for defaults, or pass flags directly. For example, if you want to give Claude Desktop or Cursor secure access to your database, you can automatically generate a **Postgres SQL Agent MCP** through Prisma schemas without risking raw SQL injection vulnerabilities:
 
 ```bash
-npx @vurb/core create my-api --vector prisma --transport sse --yes
+vurb create my-api --vector prisma --transport sse --yes
 ```
 
 > **Pro-Tip**: The `--vector prisma` command is the absolute fastest way to bridge **Prisma to MCP**. It leverages the MVA Presenter architecture to build an **Egress Firewall**, ensuring internal columns (like `password_hash` or `ssn`) are stripped from memory before they ever reach the LLM Context Window.
@@ -161,7 +161,7 @@ Add to your `.vscode/mcp.json`:
 For network-accessible servers (multi-client, remote deployment):
 
 ```bash
-npx @vurb/core create my-api --transport sse
+vurb create my-api --transport sse
 cd my-api
 Vurb.ts dev
 # Server running on http://localhost:3001/sse
@@ -312,13 +312,13 @@ The `--vector` flag changes what gets scaffolded:
 
 ```bash
 # Database-driven MCP server
-npx @vurb/core create inventory-api --vector prisma --transport sse
+vurb create inventory-api --vector prisma --transport sse
 
 # n8n workflow bridge
-npx @vurb/core create ops-bridge --vector n8n
+vurb create ops-bridge --vector n8n
 
 # Authenticated API
-npx @vurb/core create secure-api --vector oauth
+vurb create secure-api --vector oauth
 ```
 
 Each vector adds its dependencies to `package.json` and environment variables to `.env.example` automatically.

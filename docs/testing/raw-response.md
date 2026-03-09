@@ -6,7 +6,7 @@ description: "Protocol-level MCP transport inspection — verify the wire format
 # Raw Response
 
 ::: info Prerequisites
-Install Vurb.ts before following this guide: `npm install @vurb/core @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx @vurb/core create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install @vurb/core @modelcontextprotocol/sdk zod` — or scaffold a project with [`vurb create`](/quickstart-lightspeed).
 :::
 
 The `MvaTestResult.rawResponse` field gives you direct access to the raw MCP `ToolResponse` object — the exact data structure that would be sent over the wire to the MCP client.

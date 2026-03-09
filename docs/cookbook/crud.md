@@ -1,7 +1,7 @@
 # CRUD Tools
 
 ::: info Prerequisites
-Install Vurb.ts before following this recipe: `npm install @vurb/core @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx @vurb/core create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install @vurb/core @modelcontextprotocol/sdk zod` — or scaffold a project with [`vurb create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -16,7 +16,7 @@ Install Vurb.ts before following this recipe: `npm install @vurb/core @modelcont
 Every SaaS application has entities — projects, invoices, users, tasks. Vurb.ts's Fluent API makes defining CRUD operations for these entities a joy. Instead of writing verbose JSON schemas or tangled Zod objects, you declare your tool's intent with semantic verbs and chainable parameter methods.
 
 > [!TIP]
-> Already using Prisma? Skip manual tool definitions — [@vurb/prisma-gen](/prisma-gen) auto-generates CRUD tools directly from your `prisma/schema.prisma`. Scaffold a Prisma project with `npx @vurb/core create my-api --vector prisma`.
+> Already using Prisma? Skip manual tool definitions — [@vurb/prisma-gen](/prisma-gen) auto-generates CRUD tools directly from your `prisma/schema.prisma`. Scaffold a Prisma project with `vurb create my-api --vector prisma`.
 
 By the end of this page you'll have a complete, production-ready CRUD module that any developer can read and understand in seconds.
 

@@ -23,7 +23,7 @@ Structured perception for AI agents. Zero hallucination. Zero data leaks.
 ## Get Started in 5 Seconds
 
 ```bash
-npx @vurb/core create my-server
+vurb create my-server
 cd my-server && vurb dev
 ```
 
@@ -51,13 +51,13 @@ Choose a vector to scaffold exactly the project you need:
 
 ```bash
 # Database-driven server with Presenter egress firewall
-npx @vurb/core create my-api --vector prisma --transport sse --yes
+vurb create my-api --vector prisma --transport sse --yes
 
 # Bridge your n8n workflows to any MCP client
-npx @vurb/core create ops-bridge --vector n8n --yes
+vurb create ops-bridge --vector n8n --yes
 
 # REST API → MCP in one command
-npx @vurb/core create petstore --vector openapi --yes
+vurb create petstore --vector openapi --yes
 ```
 
 Drop a file in `src/tools/`, restart — it's a live MCP tool. No central import file, no merge conflicts:
@@ -456,8 +456,8 @@ return f.error('NOT_FOUND', `Project '${input.id}' not found`)
 Nine modules for SOC2-auditable AI deployments:
 
 ```bash
-npx @vurb/core lock --server ./src/server.ts       # Generate vurb.lock
-npx @vurb/core lock --check --server ./src/server.ts  # Gate CI builds
+vurb lock --server ./src/server.ts       # Generate vurb.lock
+vurb lock --check --server ./src/server.ts  # Gate CI builds
 ```
 
 - **Capability Lockfile** — deterministic, git-diffable artifact capturing every tool's behavioral contract
@@ -542,8 +542,8 @@ n8n handles the Stripe/Salesforce/webhook logic. Vurb.ts provides typing, Presen
 ## Inspector — Real-Time Dashboard
 
 ```bash
-npx @vurb/core inspect        # Auto-discover and connect
-npx @vurb/core inspect --demo  # Built-in simulator
+vurb inspect        # Auto-discover and connect
+vurb inspect --demo  # Built-in simulator
 ```
 
 ```

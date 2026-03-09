@@ -1,7 +1,7 @@
 # Tool Exposition Strategies
 
 ::: info Prerequisites
-Install Vurb.ts before following this recipe: `npm install @vurb/core @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx @vurb/core create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install @vurb/core @modelcontextprotocol/sdk zod` — or scaffold a project with [`vurb create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)

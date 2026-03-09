@@ -6,7 +6,7 @@ description: "LLM-as-a-Judge evaluation framework for detecting semantic drift i
 # Semantic Probing
 
 ::: info Prerequisites
-Install Vurb.ts before following this guide: `npm install @vurb/core @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx @vurb/core create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install @vurb/core @modelcontextprotocol/sdk zod` — or scaffold a project with [`vurb create`](/quickstart-lightspeed).
 :::
 
 - [Creating Probes](#probes)

@@ -1,7 +1,7 @@
 # MVA Convention
 
 ::: info Prerequisites
-Install Vurb.ts before following this guide: `npm install @vurb/core @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx @vurb/core create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install @vurb/core @modelcontextprotocol/sdk zod` — or scaffold a project with [`vurb create`](/quickstart-lightspeed).
 :::
 
 The MVA Convention maps each architectural layer — Model, View, Agent — to a file-system layout. Two generators produce this layout automatically: the OpenAPI generator creates three directories, the Prisma generator creates a flat structure.

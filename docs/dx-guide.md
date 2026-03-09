@@ -1,7 +1,7 @@
 # Developer Experience Guide
 
 ::: info Prerequisites
-Install Vurb.ts before following this guide: `npm install @vurb/core @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx @vurb/core create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install @vurb/core @modelcontextprotocol/sdk zod` — or scaffold a project with [`vurb create`](/quickstart-lightspeed).
 :::
 
 `initVurb()` for type inference, JSON descriptors instead of Zod imports, `autoDiscover()` for file-based routing, `createDevServer()` for hot reload, and Standard Schema support for any validator.

@@ -29,19 +29,19 @@ MCP servers communicate over **stdio**, which means traditional debugging tools 
 
 ```bash
 # Launch interactive TUI (auto-discovers running server)
-npx @vurb/core inspect
+vurb inspect
 
 # Short alias
-npx @vurb/core insp
+vurb insp
 
 # Built-in simulator (no server needed — great for demos)
-npx @vurb/core insp --demo
+vurb insp --demo
 
 # Headless stderr output (ECS / K8s / CI)
-npx @vurb/core insp --out stderr
+vurb insp --out stderr
 
 # Connect to a specific server PID
-npx @vurb/core insp --pid 12345
+vurb insp --pid 12345
 ```
 
 ::: tip Zero Configuration

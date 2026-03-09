@@ -3,7 +3,7 @@
 Manual setup for when you need full control over every file.
 
 ::: tip Looking for the fast path?
-[Quickstart — Lightspeed](/quickstart-lightspeed) scaffolds a complete project with one command: `npx @vurb/core create my-server`
+[Quickstart — Lightspeed](/quickstart-lightspeed) scaffolds a complete project with one command: `vurb create my-server`
 :::
 
 ## Install {#install}
@@ -104,7 +104,7 @@ Connect to any MCP client:
 
 ### Cursor
 
-Add `.cursor/mcp.json` to your project root (or use [`npx @vurb/core create`](/quickstart-lightspeed) which generates it automatically):
+Add `.cursor/mcp.json` to your project root (or use [`vurb create`](/quickstart-lightspeed) which generates it automatically):
 
 ```json
 {
