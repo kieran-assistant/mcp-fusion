@@ -1,7 +1,7 @@
 /**
- * @vinkius-core/mcp-fusion-vercel
+ * @vurb/vercel
  *
- * Vercel adapter for MCP Fusion.
+ * Vercel adapter for Vurb.
  *
  * @module
  */

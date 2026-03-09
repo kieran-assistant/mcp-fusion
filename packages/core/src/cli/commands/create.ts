@@ -1,5 +1,5 @@
 /**
- * `fusion create` — interactive project scaffolding wizard.
+ * `vurb create` — interactive project scaffolding wizard.
  * @module
  */
 import { resolve } from 'node:path';
@@ -62,7 +62,7 @@ export async function collectConfig(args: CliArgs): Promise<ProjectConfig | null
     const rl = createInterface({ input: process.stdin, output: process.stdout });
 
     try {
-        process.stderr.write(`\n  ${ansi.bold('MCP Fusion')} ${ansi.dim('— Create a new MCP server')}\n\n`);
+        process.stderr.write(`\n  ${ansi.bold('Vurb')} ${ansi.dim('— Create a new MCP server')}\n\n`);
 
         const name = args.projectName ?? await ask(rl, 'Project name?', 'my-mcp-server');
 
@@ -123,9 +123,9 @@ export async function commandCreate(args: CliArgs, reporter?: ProgressReporter):
 
     const steps = [`cd ${config.name}`];
     if (config.transport === 'sse') {
-        steps.push('fusion dev', '# then connect Cursor or Claude to http://localhost:3001/sse');
+        steps.push('vurb dev', '# then connect Cursor or Claude to http://localhost:3001/mcp');
     } else {
-        steps.push('fusion dev');
+        steps.push('vurb dev');
     }
     if (config.testing) steps.push('npm test');
 
@@ -135,5 +135,5 @@ export async function commandCreate(args: CliArgs, reporter?: ProgressReporter):
         process.stderr.write(`    ${ansi.cyan('$')} ${step}\n`);
     }
     process.stderr.write(`\n  ${ansi.dim('Cursor:')} .cursor/mcp.json is pre-configured — open in Cursor and go.\n`);
-    process.stderr.write(`  ${ansi.dim('Docs:')}   ${ansi.cyan('https://mcp-fusion.vinkius.com/')}\n\n`);
+    process.stderr.write(`  ${ansi.dim('Docs:')}   ${ansi.cyan('https://vurb.vinkius.com/')}\n\n`);
 }

@@ -8,7 +8,7 @@
 
 ## Introduction {#introduction}
 
-A Capability Lockfile is a **snapshot of your MCP server's behavioral surface** — every tool, its parameters, annotations, prompts, and an integrity digest — frozen in `mcp-fusion.lock`. It serves as the single source of truth for what your server exposes.
+A Capability Lockfile is a **snapshot of your MCP server's behavioral surface** — every tool, its parameters, annotations, prompts, and an integrity digest — frozen in `vurb.lock`. It serves as the single source of truth for what your server exposes.
 
 This is the MCP equivalent of `package-lock.json` — it ensures that your tool surface doesn't change unexpectedly between deploys.
 
@@ -25,24 +25,24 @@ This is the MCP equivalent of `package-lock.json` — it ensures that your tool 
 
 ## Generating with the CLI {#generating}
 
-Use the built-in `fusion lock` command. It loads your server entrypoint, compiles tool contracts, discovers prompts, computes behavioral digests, and writes `mcp-fusion.lock`:
+Use the built-in `Vurb.ts lock` command. It loads your server entrypoint, compiles tool contracts, discovers prompts, computes behavioral digests, and writes `vurb.lock`:
 
 ```bash
-fusion lock --server ./src/server.ts
+Vurb.ts lock --server ./src/server.ts
 ```
 
 Output:
 
 ```text
-  fusion lock — Generating mcp-fusion.lock
+  Vurb.ts lock — Generating vurb.lock
 
   ● Resolving server entrypoint — my-mcp-server (42ms)
   ● Compiling tool contracts — 18 tools (15ms)
   ● Discovering prompts — 3 prompts (2ms)
   ● Computing behavioral digests (8ms)
-  ● Writing mcp-fusion.lock (3ms)
+  ● Writing vurb.lock (3ms)
 
-✓ mcp-fusion.lock generated (18 tools, 3 prompts).
+✓ vurb.lock generated (18 tools, 3 prompts).
   Integrity: sha256-abc123...
 ```
 
@@ -59,7 +59,7 @@ The CLI auto-discovers the `ToolRegistry` from your module. It supports common e
 ```typescript
 // All of these are auto-detected:
 export const registry = new ToolRegistry();
-export const fusion = initFusion();
+export const Vurb.ts = initVurb();
 export default { registry };
 ```
 
@@ -68,13 +68,13 @@ export default { registry };
 Use `--check` to verify the lockfile matches the current server. Exits `0` if up-to-date, `1` if stale:
 
 ```bash
-fusion lock --check --server ./src/server.ts
+Vurb.ts lock --check --server ./src/server.ts
 ```
 
 If the tool surface has changed:
 
 ```text
-  fusion lock — Verifying mcp-fusion.lock
+  Vurb.ts lock — Verifying vurb.lock
 
   ● Resolving server entrypoint — my-mcp-server
   ● Compiling tool contracts — 18 tools
@@ -101,11 +101,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
       - run: npm ci
-      - run: npx fusion lock --check --server ./src/server.ts
+      - run: npx Vurb.ts lock --check --server ./src/server.ts
 ```
 
 > [!TIP]
-> Commit `mcp-fusion.lock` to version control. After a deliberate breaking change, regenerate the lockfile with `fusion lock --server ./src/server.ts` and commit it.
+> Commit `vurb.lock` to version control. After a deliberate breaking change, regenerate the lockfile with `Vurb.ts lock --server ./src/server.ts` and commit it.
 
 ## Registry API {#registry}
 

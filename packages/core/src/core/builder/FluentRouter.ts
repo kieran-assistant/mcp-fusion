@@ -7,7 +7,7 @@
  *
  * @example
  * ```typescript
- * const f = initFusion<AppContext>();
+ * const f = initVurb<AppContext>();
  *
  * const users = f.router('users')
  *     .describe('User management')

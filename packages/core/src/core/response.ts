@@ -6,7 +6,7 @@
  *
  * @example
  * ```typescript
- * import { success, error, toonSuccess } from '@vinkius-core/mcp-fusion';
+ * import { success, error, toonSuccess } from 'vurb';
  *
  * // String response
  * return success('Project created');
@@ -36,7 +36,7 @@ import { type StringifyFn } from './serialization/JsonSerializer.js';
  *
  * @internal
  */
-export const TOOL_RESPONSE_BRAND: unique symbol = Symbol.for('mcp-fusion.ToolResponse');
+export const TOOL_RESPONSE_BRAND: unique symbol = Symbol.for('vurb.ToolResponse');
 
 // ============================================================================
 // XML Safety
@@ -82,7 +82,7 @@ export function escapeXmlAttr(str: string): string {
 /**
  * Standard MCP tool response.
  *
- * Every handler in mcp-fusion must return this shape.
+ * Every handler in vurb must return this shape.
  * Use the helper functions ({@link success}, {@link error}, {@link toonSuccess})
  * instead of constructing this manually.
  *

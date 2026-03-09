@@ -1,7 +1,7 @@
 # Context-Aware Rules
 
 ::: info Prerequisites
-Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -15,14 +15,14 @@ Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-
 
 In a traditional MCP server, domain rules live in the system prompt — sent on every turn regardless of relevance. "amount_cents is in CENTS" appears even when the agent is just listing projects. This wastes context window space and dilutes attention.
 
-MCP Fusion's system rules travel **with the data**. They appear only when the entity is in the response — a technique called **Context Tree-Shaking**. And because rules can be dynamic functions, they adapt to the user's role, tenant configuration, and locale in real-time.
+Vurb.ts's system rules travel **with the data**. They appear only when the entity is in the response — a technique called **Context Tree-Shaking**. And because rules can be dynamic functions, they adapt to the user's role, tenant configuration, and locale in real-time.
 
 ## Static Rules {#static}
 
 For rules that always apply to an entity, pass an array of strings to `.rules()`:
 
 ```typescript
-import { createPresenter, t } from '@vinkius-core/mcp-fusion';
+import { createPresenter, t } from 'Vurb.ts';
 
 const InvoicePresenter = createPresenter('Invoice')
   .schema({

@@ -10,7 +10,7 @@
  *
  * @example
  * ```typescript
- * import { ToolConverterBase, Tool } from '@vinkius-core/mcp-fusion';
+ * import { ToolConverterBase, Tool } from 'vurb';
  *
  * interface ToolDto { id: string; label: string }
  *

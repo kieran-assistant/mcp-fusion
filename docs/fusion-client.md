@@ -1,7 +1,7 @@
-# FusionClient
+# VurbClient
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -18,16 +18,16 @@ Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-f
 
 MCP tool calls are stringly-typed — you pass a tool name and an `arguments` object, and hope the shape is correct. There's no compile-time validation, no autocomplete, nothing stopping you from sending `"projetcs.create"` (typo) or missing a required field.
 
-FusionClient brings **tRPC-style type inference** to MCP. Export a router type from the server, import it on the client — every `client.execute()` call gets full autocomplete and compile-time argument validation. Zero runtime cost.
+VurbClient brings **tRPC-style type inference** to MCP. Export a router type from the server, import it on the client — every `client.execute()` call gets full autocomplete and compile-time argument validation. Zero runtime cost.
 
 ## Server — Export the Router Type {#server}
 
 ```typescript
 // server.ts
-import { initFusion, createTypedRegistry } from '@vinkius-core/mcp-fusion';
-import type { InferRouter } from '@vinkius-core/mcp-fusion';
+import { initVurb, createTypedRegistry } from 'Vurb.ts';
+import type { InferRouter } from 'Vurb.ts';
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 const listProjects = f.query('projects.list')
   .describe('List projects')
@@ -57,10 +57,10 @@ export type AppRouter = InferRouter<typeof registry>;
 
 ```typescript
 // agent.ts
-import { createFusionClient } from '@vinkius-core/mcp-fusion';
+import { createVurbClient } from 'Vurb.ts';
 import type { AppRouter } from './server.js';
 
-const client = createFusionClient<AppRouter>(transport);
+const client = createVurbClient<AppRouter>(transport);
 
 const result = await client.execute('projects.create', {
   workspace_id: 'ws_1',
@@ -88,10 +88,10 @@ transport.callTool('projects', { action: 'create', workspace_id: 'ws_1', name: '
 
 ## Transport {#transport}
 
-Any object implementing `FusionTransport`:
+Any object implementing `VurbTransport`:
 
 ```typescript
-interface FusionTransport {
+interface VurbTransport {
   callTool(name: string, args: Record<string, unknown>): Promise<ToolResponse>;
 }
 ```
@@ -102,19 +102,19 @@ interface FusionTransport {
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 
 const mcpClient = new Client(/* ... */);
-const transport: FusionTransport = {
+const transport: VurbTransport = {
   callTool: (name, args) => mcpClient.callTool({ name, arguments: args }),
 };
-const client = createFusionClient<AppRouter>(transport);
+const client = createVurbClient<AppRouter>(transport);
 ```
 
 **Direct Registry (testing):**
 
 ```typescript
-const transport: FusionTransport = {
+const transport: VurbTransport = {
   callTool: (name, args) => registry.routeCall(testContext, name, args),
 };
-const client = createFusionClient<AppRouter>(transport);
+const client = createVurbClient<AppRouter>(transport);
 ```
 
 ## Client Middleware {#middleware}
@@ -122,7 +122,7 @@ const client = createFusionClient<AppRouter>(transport);
 Onion-pattern interceptors for every outgoing call:
 
 ```typescript
-import type { ClientMiddleware } from '@vinkius-core/mcp-fusion';
+import type { ClientMiddleware } from 'Vurb.ts';
 
 const authMiddleware: ClientMiddleware = async (action, args, next) => {
   return next(action, { ...args, _token: await getToken() });
@@ -135,7 +135,7 @@ const logMiddleware: ClientMiddleware = async (action, args, next) => {
   return result;
 };
 
-const client = createFusionClient<AppRouter>(transport, {
+const client = createVurbClient<AppRouter>(transport, {
   middleware: [authMiddleware, logMiddleware],
 });
 ```
@@ -144,17 +144,17 @@ Compiled once at creation — O(1) per call.
 
 ## Error Handling {#errors}
 
-Enable `throwOnError` to parse `<tool_error>` XML into `FusionClientError`:
+Enable `throwOnError` to parse `<tool_error>` XML into `VurbClientError`:
 
 ```typescript
-import { createFusionClient, FusionClientError } from '@vinkius-core/mcp-fusion';
+import { createVurbClient, VurbClientError } from 'Vurb.ts';
 
-const client = createFusionClient<AppRouter>(transport, { throwOnError: true });
+const client = createVurbClient<AppRouter>(transport, { throwOnError: true });
 
 try {
   await client.execute('billing.get_invoice', { id: 'inv_999' });
 } catch (err) {
-  if (err instanceof FusionClientError) {
+  if (err instanceof VurbClientError) {
     err.code;             // 'NOT_FOUND'
     err.message;          // 'Invoice inv_999 not found.'
     err.recovery;         // 'Call billing.list first.'
@@ -181,6 +181,6 @@ Parallel by default (`Promise.all`). Use `{ sequential: true }` for ordered exec
 
 ## API Reference {#api}
 
-**Runtime:** `createFusionClient(transport, options?)`, `createTypedRegistry<TContext>()`, `FusionClientError`.
+**Runtime:** `createVurbClient(transport, options?)`, `createTypedRegistry<TContext>()`, `VurbClientError`.
 
-**Types:** `FusionClient<TRouter>`, `FusionTransport`, `InferRouter<T>`, `TypedToolRegistry<TContext, TBuilders>`, `ClientMiddleware` (`(action, args, next) => Promise<ToolResponse>`), `FusionClientOptions` (`{ middleware?, throwOnError? }`), `RouterMap`.
+**Types:** `VurbClient<TRouter>`, `VurbTransport`, `InferRouter<T>`, `TypedToolRegistry<TContext, TBuilders>`, `ClientMiddleware` (`(action, args, next) => Promise<ToolResponse>`), `VurbClientOptions` (`{ middleware?, throwOnError? }`), `RouterMap`.

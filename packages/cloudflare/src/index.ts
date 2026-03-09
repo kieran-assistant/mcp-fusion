@@ -1,7 +1,7 @@
 /**
- * @vinkius-core/mcp-fusion-cloudflare
+ * @vurb/cloudflare
  *
- * Cloudflare Workers adapter for MCP Fusion.
+ * Cloudflare Workers adapter for Vurb.
  *
  * @module
  */

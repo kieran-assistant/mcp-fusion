@@ -9,7 +9,7 @@
  *
  * @example
  * ```typescript
- * import { createTypedRegistry, createTool, success } from '@vinkius-core/mcp-fusion';
+ * import { createTypedRegistry, createTool, success } from 'vurb';
  *
  * interface AppContext { db: Database; user: User }
  *

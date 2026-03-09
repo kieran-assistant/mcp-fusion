@@ -12,15 +12,15 @@
 - [What Works on Vercel](#compatibility)
 - [Compatible Clients](#clients)
 
-Deploy your MCP Fusion server as a Next.js App Router route handler or standalone Vercel Function. Edge Runtime or Node.js — one line, zero transport config.
+Deploy your Vurb.ts server as a Next.js App Router route handler or standalone Vercel Function. Edge Runtime or Node.js — one line, zero transport config.
 
 ```typescript
 // app/api/mcp/route.ts — the entire file
-import { initFusion } from '@vinkius-core/mcp-fusion';
-import { vercelAdapter } from '@vinkius-core/mcp-fusion-vercel';
+import { initVurb } from 'Vurb.ts';
+import { vercelAdapter } from '@vurb/vercel';
 
 interface AppContext { tenantId: string; dbUrl: string }
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 const listUsers = f.query('users.list')
   .describe('List users in tenant')
@@ -83,10 +83,10 @@ vercelAdapter({ registry, contextFactory })
 ## Installation {#installation}
 
 ```bash
-npm install @vinkius-core/mcp-fusion-vercel
+npm install @vurb/vercel
 ```
 
-Peer dependencies: `@vinkius-core/mcp-fusion` (^2.0.0), `@modelcontextprotocol/sdk` (^1.12.0).
+Peer dependencies: `Vurb.ts` (^2.0.0), `@modelcontextprotocol/sdk` (^1.12.0).
 
 ## Architecture {#architecture}
 
@@ -96,7 +96,7 @@ The adapter splits work between two phases to minimize per-request CPU cost:
 ┌──────────────────────────────────────────────────────────┐
 │  COLD START (once per function instance)                  │
 │                                                          │
-│  const f = initFusion<AppContext>()                      │
+│  const f = initVurb<AppContext>()                      │
 │  const tool = f.query('name').handle(...)                │
 │  const registry = f.registry()                           │
 │  registry.register(tool)                                 │
@@ -131,14 +131,14 @@ Build tools exactly as you would for a Node.js MCP server. Nothing changes:
 
 ```typescript
 // src/tools.ts
-import { initFusion } from '@vinkius-core/mcp-fusion';
+import { initVurb } from 'Vurb.ts';
 
 interface AppContext {
   tenantId: string;
   dbUrl: string;
 }
 
-export const f = initFusion<AppContext>();
+export const f = initVurb<AppContext>();
 
 export const listProjects = f.query('projects.list')
   .describe('List projects in the current workspace')
@@ -169,7 +169,7 @@ export const createProject = f.action('projects.create')
 
 ```typescript
 // app/api/mcp/route.ts
-import { vercelAdapter } from '@vinkius-core/mcp-fusion-vercel';
+import { vercelAdapter } from '@vurb/vercel';
 import { f, listProjects, createProject } from '@/tools';
 
 // ── Cold Start: compile once ──
@@ -293,7 +293,7 @@ const listProjects = f.query('projects.list')
 | Option | Type | Default | Description |
 |---|---|---|---|
 | `registry` | `RegistryLike` | _(required)_ | Pre-compiled `ToolRegistry` with all tools registered |
-| `serverName` | `string` | `'mcp-fusion-vercel'` | MCP server name (visible in capabilities negotiation) |
+| `serverName` | `string` | `'Vurb.ts-vercel'` | MCP server name (visible in capabilities negotiation) |
 | `serverVersion` | `string` | `'1.0.0'` | MCP server version string |
 | `contextFactory` | `(req) => T` | — | Creates application context per request |
 | `attachOptions` | `Record<string, unknown>` | `{}` | Additional options forwarded to `registry.attachToServer()` |
@@ -348,7 +348,7 @@ const uploadFile = f.action('files.upload')
 
 ## What Works on Vercel {#compatibility}
 
-Everything in MCP Fusion that doesn't require a filesystem or long-lived process:
+Everything in Vurb.ts that doesn't require a filesystem or long-lived process:
 
 | Feature | Support | Notes |
 |---|---|---|
@@ -371,7 +371,7 @@ The stateless JSON-RPC endpoint works with any HTTP-capable MCP client:
 - **Vercel AI SDK** — direct JSON-RPC calls
 - **Custom agents** — standard `POST` with JSON-RPC payload
 - **Claude Desktop** — via proxy or direct HTTP config
-- **FusionClient** — the built-in tRPC-style client
+- **VurbClient** — the built-in tRPC-style client
 
 ```typescript
 // Calling from any HTTP client

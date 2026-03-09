@@ -1,5 +1,5 @@
 // ============================================================================
-// SchemaInferrer — WebhookConfig → Zod schema for MCP Fusion tools
+// SchemaInferrer — WebhookConfig → Zod schema for Vurb tools
 // ============================================================================
 
 import { z, type ZodTypeAny } from 'zod';

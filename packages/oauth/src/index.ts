@@ -2,7 +2,7 @@
  * @vinkius-core/oauth — OAuth 2.0 Device Authorization Grant for MCP Servers
  *
  * Implements RFC 8628 (Device Authorization Grant) with secure token persistence,
- * automatic polling, and mcp-fusion middleware integration.
+ * automatic polling, and vurb middleware integration.
  *
  * @example
  * ```ts

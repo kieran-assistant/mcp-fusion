@@ -43,11 +43,11 @@ describe('System Tools', () => {
     describe('Echo Tool', () => {
         it('should echo the message back', async () => {
             const result = await tester.callAction('system', 'echo', {
-                message: 'hello fusion',
+                message: 'hello vurb',
             });
 
             expect(result.isError).toBe(false);
-            expect(result.data).toHaveProperty('echo', 'hello fusion');
+            expect(result.data).toHaveProperty('echo', 'hello vurb');
             expect(result.data).toHaveProperty('receivedAt');
         });
     });

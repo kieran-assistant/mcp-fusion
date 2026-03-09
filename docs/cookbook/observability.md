@@ -1,7 +1,7 @@
 # Observability
 
 ::: info Prerequisites
-Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -11,7 +11,7 @@ Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-
 
 ## Introduction {#introduction}
 
-Production MCP servers need observability: how many tool calls per minute, which tools are slowest, which tenants are most active. MCP Fusion doesn't ship a built-in observability layer — instead, the middleware system gives you full control to integrate with any stack: structured logging, Prometheus, Datadog, StatsD, or Sentry.
+Production MCP servers need observability: how many tool calls per minute, which tools are slowest, which tenants are most active. Vurb.ts doesn't ship a built-in observability layer — instead, the middleware system gives you full control to integrate with any stack: structured logging, Prometheus, Datadog, StatsD, or Sentry.
 
 The pattern is simple: create a shared middleware that captures timing and context, then apply it to all your tools via a [functional group](/cookbook/functional-groups). These patterns work identically on Stdio, [Vercel Edge Functions](/vercel-adapter) (pass `debug` via `attachOptions`), and [Cloudflare Workers](/cloudflare-adapter) (use `executionCtx.waitUntil()` to flush metrics without blocking the response).
 
@@ -20,9 +20,9 @@ The pattern is simple: create a shared middleware that captures timing and conte
 A single middleware that logs every tool call:
 
 ```typescript
-import { initFusion } from '@vinkius-core/mcp-fusion';
+import { initVurb } from 'Vurb.ts';
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 const withLogging = f.middleware(async (ctx) => {
   const start = Date.now();

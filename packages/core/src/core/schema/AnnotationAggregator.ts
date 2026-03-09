@@ -24,9 +24,14 @@ export function aggregateAnnotations<TContext>(
 ): Record<string, unknown> {
     const result: AggregatedAnnotations = {};
 
-    // Copy explicit annotations
+    // Copy explicit annotations using explicit loop to guard against
+    // __proto__/constructor/prototype keys (prototype pollution defense).
+    // Matches the pattern in ContextDerivation, FluentToolBuilder, and ExecutionPipeline.
     if (explicitAnnotations) {
-        Object.assign(result, explicitAnnotations);
+        for (const [key, value] of Object.entries(explicitAnnotations)) {
+            if (key === '__proto__' || key === 'constructor' || key === 'prototype') continue;
+            (result as Record<string, unknown>)[key] = value;
+        }
     }
 
     // Per-action aggregation (only override if not explicitly set)

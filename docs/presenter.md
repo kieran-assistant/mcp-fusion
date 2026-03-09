@@ -1,20 +1,20 @@
 # Presenter
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 The Presenter separates what the agent sees from how data is fetched. Your handler returns raw data. The Presenter validates, strips, enriches, truncates, and governs the response. Define `InvoicePresenter` once — every tool and prompt that touches invoices uses the same schema, rules, and affordances. 
 
 By enforcing strict Zod structures over raw database queries, the Presenter acts as ultimate **Data Exfiltration Prevention**. Furthermore, its capability to dynamically tree-shake rules and truncate responses ensures maximum **Context Window Optimization** without relying on perfect LLM behavior.
 
-This is the **View** in the [MVA (Model-View-Agent)](/mva-pattern) pattern. Presenters can also be [auto-generated from OpenAPI response schemas](/openapi-gen) via `@vinkius-core/mcp-fusion-openapi-gen`.
+This is the **View** in the [MVA (Model-View-Agent)](/mva-pattern) pattern. Presenters can also be [auto-generated from OpenAPI response schemas](/openapi-gen) via `@vurb/openapi-gen`.
 
 ## Defining a Presenter {#minimal}
 
 ::: code-group
 ```typescript [Fluent (recommended)]
-import { createPresenter, t } from '@vinkius-core/mcp-fusion';
+import { createPresenter, t } from 'Vurb.ts';
 
 export const UserPresenter = createPresenter('User')
   .schema({
@@ -25,7 +25,7 @@ export const UserPresenter = createPresenter('User')
   });
 ```
 ```typescript [Declarative]
-import { definePresenter } from '@vinkius-core/mcp-fusion';
+import { definePresenter } from 'Vurb.ts';
 import { z } from 'zod';
 
 export const UserPresenter = definePresenter({
@@ -45,7 +45,7 @@ export const UserPresenter = definePresenter({
 The `t` namespace provides Zod-backed type helpers that eliminate `import { z } from 'zod'` for 95% of use cases. Every `t.*` value IS a real ZodType — `.describe()`, `.optional()`, `.nullable()` all work.
 
 ```typescript
-import { createPresenter, t } from '@vinkius-core/mcp-fusion';
+import { createPresenter, t } from 'Vurb.ts';
 
 const InvoicePresenter = createPresenter('Invoice')
   .schema({
@@ -143,7 +143,7 @@ const InvoicePresenter = createPresenter('Invoice')
 
 ::: code-group
 ```typescript [Shorthand — .ui()]
-import { createPresenter, t, ui } from '@vinkius-core/mcp-fusion';
+import { createPresenter, t, ui } from 'Vurb.ts';
 
 const InvoicePresenter = createPresenter('Invoice')
   .schema({ id: t.string, amount_cents: t.number })
@@ -220,7 +220,7 @@ HATEOAS-style hints based on the data's current state. Use the `suggest()` helpe
 
 ::: code-group
 ```typescript [Shorthand — suggest()]
-import { createPresenter, t, suggest } from '@vinkius-core/mcp-fusion';
+import { createPresenter, t, suggest } from 'Vurb.ts';
 
 const InvoicePresenter = createPresenter('Invoice')
   .schema({ id: t.string, status: t.enum('pending', 'overdue', 'paid') })
@@ -294,7 +294,7 @@ The handler's only job is to query data. The framework calls `presenter.make(dat
 `PromptMessage.fromView()` decomposes a Presenter's output into prompt messages:
 
 ```typescript
-import { definePrompt, PromptMessage } from '@vinkius-core/mcp-fusion';
+import { definePrompt, PromptMessage } from 'Vurb.ts';
 
 const AuditPrompt = definePrompt<AppContext>('audit', {
   args: { invoiceId: 'string' } as const,
@@ -343,7 +343,7 @@ The fluent `createPresenter()` is the recommended API. Both shorthand aliases an
 | `.suggest((item) => [...])` | `.suggestActions((item) => {...})` | HATEOAS suggestions |
 
 ```typescript
-import { createPresenter, t, suggest, ui } from '@vinkius-core/mcp-fusion';
+import { createPresenter, t, suggest, ui } from 'Vurb.ts';
 
 export const InvoicePresenter = createPresenter('Invoice')
   .schema({
@@ -388,7 +388,7 @@ return builder.build();
 When validation fails, a `PresenterValidationError` is thrown with per-field details:
 
 ```typescript
-import { PresenterValidationError } from '@vinkius-core/mcp-fusion';
+import { PresenterValidationError } from 'Vurb.ts';
 
 try {
   InvoicePresenter.make(badData);

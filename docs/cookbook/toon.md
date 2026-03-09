@@ -1,7 +1,7 @@
 # TOON — Token-Optimized Responses
 
 ::: info Prerequisites
-Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -20,9 +20,9 @@ TOON (Token-Oriented Object Notation) replaces JSON structure with pipe-delimite
 Replace `success(data)` with `toonSuccess(data)` to encode the response as TOON:
 
 ```typescript
-import { initFusion, toonSuccess } from '@vinkius-core/mcp-fusion';
+import { initVurb, toonSuccess } from 'Vurb.ts';
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 export const listUsers = f.query('users.list')
   .describe('List all users')
@@ -58,7 +58,7 @@ Same data. Half the tokens. The LLM reads it perfectly.
 When your tool has many actions and the description consumes too many tokens in `tools/list`, use `.toonDescription()` to TOON-encode the metadata itself:
 
 ```typescript
-import { createTool, success } from '@vinkius-core/mcp-fusion';
+import { createTool, success } from 'Vurb.ts';
 import { z } from 'zod';
 
 const api = createTool<AppContext>('api')

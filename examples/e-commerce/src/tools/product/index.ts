@@ -1,7 +1,7 @@
 /**
  * Product CRUD Tools — Fluent API
  */
-import { f } from '../../fusion.js';
+import { f } from '../../vurb.js';
 import { ProductPresenter, ProductListPresenter } from '../../presenters/ProductPresenter.js';
 import { productRepo } from '../../db.js';
 

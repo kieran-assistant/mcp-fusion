@@ -11,7 +11,7 @@
  */
 import { describe, it, expect, vi } from 'vitest';
 import * as crypto from 'node:crypto';
-import type { ToolResponse } from '@vinkius-core/mcp-fusion';
+import type { ToolResponse } from 'vurb';
 import { requireJwt } from '../src/middleware.js';
 
 // ── JWT Helper ───────────────────────────────────────────

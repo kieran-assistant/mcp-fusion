@@ -2,103 +2,550 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://site-assets.vinkius.com/vk/logo-v-black-square.png" width="80" height="80">
-  <img src="https://site-assets.vinkius.com/vk/logo-v-black-square.png" style="border-radius:8px;background:#000000;padding:10px;border:1px solid #414141;" width="80" height="80" alt="MCP Fusion">
+  <img src="https://site-assets.vinkius.com/vk/logo-v-black-square.png" style="border-radius:8px;background:#000000;padding:10px;border:1px solid #414141;" width="80" height="80" alt="Vurb.ts">
 </picture>
 
-# MCP Fusion
+# Vurb.ts
 
-**The framework for AI-native MCP servers.**<br>
-Type-safe tools, Presenters for LLM perception, governance lockfiles, and zero boilerplate.
+**The MVA framework for production MCP servers.**<br>
+Structured perception for AI agents. Zero hallucination. Zero data leaks.
 
-[![npm version](https://img.shields.io/npm/v/@vinkius-core/mcp-fusion.svg?color=0ea5e9)](https://www.npmjs.com/package/@vinkius-core/mcp-fusion)
-[![Downloads](https://img.shields.io/npm/dw/@vinkius-core/mcp-fusion)](https://www.npmjs.com/package/@vinkius-core/mcp-fusion)
+[![npm version](https://img.shields.io/npm/v/vurb.svg?color=0ea5e9)](https://www.npmjs.com/package/vurb)
+[![Downloads](https://img.shields.io/npm/dw/vurb)](https://www.npmjs.com/package/vurb)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7+-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![MCP Standard](https://img.shields.io/badge/MCP-Standard-purple)](https://modelcontextprotocol.io/)
-[![License](https://img.shields.io/badge/License-Apache_2.0-green)](https://github.com/vinkius-labs/mcp-fusion/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/License-Apache_2.0-green)](https://github.com/vinkius-labs/vurb.ts/blob/main/LICENSE)
 
-[Documentation](https://mcp-fusion.vinkius.com/) · [Quick Start](https://mcp-fusion.vinkius.com/quickstart-lightspeed) · [API Reference](https://mcp-fusion.vinkius.com/api/)
+[Documentation](https://vurb.vinkius.com/) · [Quick Start](https://vurb.vinkius.com/quickstart-lightspeed) · [API Reference](https://vurb.vinkius.com/api/)
 
 </div>
 
 ---
 
-## Quick Start
+## Get Started in 5 Seconds
 
 ```bash
-npx fusion create my-server
-cd my-server && fusion dev
+npx Vurb.ts create my-server
+cd my-server && Vurb.ts dev
 ```
 
-14 files scaffolded in 6ms — file-based routing, Presenters, Prompts, middleware, Cursor integration, and tests. Ready to go.
-
-## The MVA Pattern
-
-MCP Fusion separates three concerns that raw MCP servers mix into a single handler:
+That's it. A production-ready MCP server with file-based routing, Presenters, middleware, tests, and pre-configured connections for **Cursor**, **Claude Desktop**, **Claude Code**, **Windsurf**, **Cline**, and **VS Code + GitHub Copilot**.
 
 ```
-Model (Zod Schema) → View (Presenter) → Agent (LLM)
-   validates            perceives          acts
+  Project name?  › my-server
+  Transport?     › stdio
+  Vector?        › vanilla
+
+  ● Scaffolding project — 14 files (6ms)
+  ● Installing dependencies...
+  ✔ Done — Vurb.ts dev to start
 ```
 
-The **handler** returns raw data. The **Presenter** shapes what the agent sees. The **middleware** governs access. Works with any MCP client — Cursor, Claude Desktop, Claude Code, Windsurf, Cline, VS Code + GitHub Copilot.
+Choose a vector to scaffold exactly the project you need:
 
-## Why MCP Fusion
+| Vector | What it scaffolds |
+|---|---|
+| `vanilla` | `autoDiscover()` file-based routing. Zero external deps |
+| `prisma` | Prisma schema + CRUD tools with field-level security |
+| `n8n` | n8n workflow bridge — auto-discover webhooks as tools |
+| `openapi` | OpenAPI 3.x / Swagger 2.0 → full MVA tool generation |
+| `oauth` | RFC 8628 Device Flow authentication |
 
-- **Fluent API** — Semantic verbs (`f.query`, `f.mutation`, `f.action`) with type-chaining. Full IDE autocomplete in `.handle()` — zero manual interfaces.
-- **Presenters** — Egress firewall for LLMs. Zod-validated schemas strip undeclared fields in RAM. JIT system rules, server-rendered UI, cognitive guardrails, and HATEOAS-style next actions.
-- **Zero-Trust Sandbox** — V8 Isolate engine (`isolated-vm`). The LLM sends logic to your data instead of data to the LLM. Sealed execution — no `process`, `require`, `fs`, `net`.
-- **File-Based Routing** — Drop a file in `src/tools/`, it becomes a tool. No central import file, no merge conflicts.
-- **Testing** — In-memory pipeline testing without MCP transport. Schema validation, middleware, handler, presenter — all tested directly.
-- **Governance** — Capability lockfile (`mcp-fusion.lock`), contract diffing, HMAC attestation, semantic probing, entitlement scanning, blast radius analysis.
-- **State Sync** — RFC 7234-inspired cache-control for LLM agents. `invalidates()`, `cached()`, `stale()` — the agent knows whether its data is still valid.
-- **Inspector** — Real-time terminal dashboard via Shadow Socket (IPC). Zero stdio interference. Live tool registry, traffic log, X-RAY deep inspection, Late Guillotine token metrics.
-- **tRPC-Style Client** — Compile-time route validation with `InferRouter<typeof registry>`. Autocomplete for tool names, inputs, and responses.
-- **Adapters** — Deploy to Vercel, Cloudflare Workers, or plain Node.js.
+```bash
+# Database-driven server with Presenter egress firewall
+npx Vurb.ts create my-api --vector prisma --transport sse --yes
 
-## Code Example
+# Bridge your n8n workflows to any MCP client
+npx Vurb.ts create ops-bridge --vector n8n --yes
+
+# REST API → MCP in one command
+npx Vurb.ts create petstore --vector openapi --yes
+```
+
+Drop a file in `src/tools/`, restart — it's a live MCP tool. No central import file, no merge conflicts:
+
+```
+src/tools/
+├── billing/
+│   ├── get_invoice.ts  → billing.get_invoice
+│   └── pay.ts          → billing.pay
+├── users/
+│   ├── list.ts         → users.list
+│   └── ban.ts          → users.ban
+└── system/
+    └── health.ts       → system.health
+```
+
+---
+
+## Why Vurb.ts Exists
+
+Every raw MCP server does the same thing: `JSON.stringify()` the database result and ship it to the LLM. Three catastrophic consequences:
 
 ```typescript
-import { initFusion } from '@vinkius-core/mcp-fusion';
+// What every MCP tutorial teaches
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
+    const { name, arguments: args } = request.params;
+    if (name === 'get_invoice') {
+        const invoice = await db.invoices.findUnique(args.id);
+        return { content: [{ type: 'text', text: JSON.stringify(invoice) }] };
+        // AI receives: { password_hash, internal_margin, customer_ssn, ... }
+    }
+    // ...50 more if/else branches
+});
+```
 
-type AppContext = { db: PrismaClient; user: User };
-const f = initFusion<AppContext>();
+**Data exfiltration.** `JSON.stringify(invoice)` sends `password_hash`, `internal_margin`, `customer_ssn` — every column — straight to the LLM provider. One field = one GDPR violation.
 
-// Define a tool with one line
-export default f.query('system.health')
-    .describe('Returns server operational status')
-    .returns(SystemPresenter)
-    .handle(async (_, ctx) => ({
-        status: 'healthy',
-        uptime: process.uptime(),
-        version: '1.0.0',
+**Token explosion.** Every tool schema is sent on every turn, even when irrelevant. System prompt rules for every domain entity are sent globally, bloating context with wasted tokens.
+
+**Context DDoS.** An unbounded `findMany()` can dump thousands of rows into the context window. The LLM hallucinates. Your API bill explodes.
+
+---
+
+## The MVA Solution
+
+Vurb.ts replaces `JSON.stringify()` with a **Presenter** — a deterministic perception layer that controls exactly what the agent sees, knows, and can do next.
+
+```
+Handler (Model)          Presenter (View)              Agent (LLM)
+───────────────          ────────────────              ───────────
+Raw DB data        →     Zod-validated schema      →   Structured
+{ amount_cents,          + System rules                perception
+  password_hash,         + UI blocks (charts)          package
+  internal_margin,       + Suggested next actions
+  ssn, ... }             + PII redaction
+                         + Cognitive guardrails
+                         - password_hash  ← STRIPPED
+                         - internal_margin ← STRIPPED
+                         - ssn ← REDACTED
+```
+
+The result is not JSON — it's a **Perception Package**:
+
+```
+Block 1 — DATA:    {"id":"INV-001","amount_cents":45000,"status":"pending"}
+Block 2 — UI:      [ECharts gauge chart config]
+Block 3 — RULES:   "amount_cents is in CENTS. Divide by 100 for display."
+Block 4 — ACTIONS: → billing.pay: "Invoice is pending — process payment"
+Block 5 — EMBEDS:  [Client Presenter + LineItem Presenter composed]
+```
+
+No guessing. Undeclared fields rejected. Domain rules travel with data — not in the system prompt. Next actions computed from data state.
+
+---
+
+## Before vs. After
+
+**Before** — raw MCP:
+
+```typescript
+case 'get_invoice':
+    const invoice = await db.invoices.findUnique(args.id);
+    return { content: [{ type: 'text', text: JSON.stringify(invoice) }] };
+    // Leaks internal columns. No rules. No guidance.
+```
+
+**After** — Vurb.ts with MVA:
+
+```typescript
+import { createPresenter, suggest, ui, t } from 'Vurb.ts';
+
+const InvoicePresenter = createPresenter('Invoice')
+    .schema({
+        id:           t.string,
+        amount_cents: t.number.describe('Amount in cents — divide by 100'),
+        status:       t.enum('paid', 'pending', 'overdue'),
+    })
+    .rules(['CRITICAL: amount_cents is in CENTS. Divide by 100 for display.'])
+    .redactPII(['*.customer_ssn', '*.credit_card'])
+    .ui((inv) => [
+        ui.echarts({
+            series: [{ type: 'gauge', data: [{ value: inv.amount_cents / 100 }] }],
+        }),
+    ])
+    .suggest((inv) =>
+        inv.status === 'pending'
+            ? [suggest('billing.pay', 'Invoice pending — process payment')]
+            : [suggest('billing.archive', 'Invoice settled — archive it')]
+    )
+    .embed('client', ClientPresenter)
+    .embed('line_items', LineItemPresenter)
+    .limit(50);
+
+export default f.query('billing.get_invoice')
+    .describe('Get an invoice by ID')
+    .withString('id', 'Invoice ID')
+    .returns(InvoicePresenter)
+    .handle(async (input, ctx) => ctx.db.invoices.findUnique({
+        where: { id: input.id },
+        include: { client: true, line_items: true },
     }));
 ```
 
+The handler returns raw data. The Presenter shapes absolutely everything the agent perceives.
+
+---
+
+## Architecture
+
+### Egress Firewall — Schema as Security Boundary
+
+The Presenter's Zod schema acts as a whitelist. **Only declared fields pass through.** A database migration that adds `customer_ssn` doesn't change what the agent sees — the new column is invisible unless you explicitly declare it in the schema.
+
 ```typescript
-// Presenter — the egress firewall
-const SystemPresenter = createPresenter('System')
-    .schema({
-        status:  t.enum('healthy', 'degraded', 'down'),
-        uptime:  t.number.describe('Seconds since boot'),
-        version: t.string,
+const UserPresenter = createPresenter('User')
+    .schema({ id: t.string, name: t.string, email: t.string });
+// password_hash, tenant_id, internal_flags → STRIPPED at RAM level
+// A developer CANNOT accidentally expose a new column
+```
+
+### DLP Compliance Engine — PII Redaction
+
+GDPR / LGPD / HIPAA compliance built into the framework. `.redactPII()` compiles a V8-optimized redaction function via `fast-redact` that masks sensitive fields **after** UI blocks and rules have been computed (Late Guillotine Pattern) — the LLM receives `[REDACTED]` instead of real values.
+
+```typescript
+const PatientPresenter = createPresenter('Patient')
+    .schema({ name: t.string, ssn: t.string, diagnosis: t.string })
+    .redactPII(['ssn', 'diagnosis'])
+    .ui((patient) => [
+        ui.markdown(`**Patient:** ${patient.name}`),
+        // patient.ssn available for UI logic — but LLM sees [REDACTED]
+    ]);
+```
+
+Custom censors, wildcard paths (`'*.email'`, `'patients[*].diagnosis'`), and centralized PII field lists. **Zero-leak guarantee** — the developer cannot accidentally bypass redaction.
+
+### 8 Anti-Hallucination Mechanisms
+
+```
+① Action Consolidation    → groups operations behind fewer tools    → ↓ tokens
+② TOON Encoding           → pipe-delimited compact descriptions    → ↓ tokens
+③ Zod .strict()           → rejects hallucinated params at build   → ↓ retries
+④ Self-Healing Errors     → directed correction prompts            → ↓ retries
+⑤ Cognitive Guardrails    → .limit() truncates before LLM sees it → ↓ tokens
+⑥ Agentic Affordances     → HATEOAS next-action hints from data   → ↓ retries
+⑦ JIT Context Rules       → rules travel with data, not globally  → ↓ tokens
+⑧ State Sync              → RFC 7234 cache-control for agents     → ↓ requests
+```
+
+Each mechanism compounds. Fewer tokens in context, fewer requests per task, less hallucination, lower cost.
+
+### FSM State Gate — Temporal Anti-Hallucination
+
+**The first framework where it is physically impossible for an AI to execute tools out of order.**
+
+LLMs are chaotic — even with HATEOAS suggestions, a model can ignore them and call `cart.pay` with an empty cart. The FSM State Gate makes temporal hallucination structurally impossible: if the workflow state is `empty`, the `cart.pay` tool **doesn't exist** in `tools/list`. The LLM literally cannot call it.
+
+```typescript
+const gate = f.fsm({
+    id: 'checkout',
+    initial: 'empty',
+    states: {
+        empty:     { on: { ADD_ITEM: 'has_items' } },
+        has_items: { on: { CHECKOUT: 'payment', CLEAR: 'empty' } },
+        payment:   { on: { PAY: 'confirmed', CANCEL: 'has_items' } },
+        confirmed: { type: 'final' },
+    },
+});
+
+const pay = f.mutation('cart.pay')
+    .describe('Process payment')
+    .bindState('payment', 'PAY')  // Visible ONLY in 'payment' state
+    .handle(async (input, ctx) => ctx.db.payments.process(input.method));
+```
+
+| State | Visible Tools |
+|---|---|
+| `empty` | `cart.add_item`, `cart.view` |
+| `has_items` | `cart.add_item`, `cart.checkout`, `cart.view` |
+| `payment` | `cart.pay`, `cart.view` |
+| `confirmed` | `cart.view` |
+
+Three complementary layers: **Format** (Zod validates shape), **Guidance** (HATEOAS suggests the next tool), **Gate** (FSM physically removes wrong tools). XState v5 powered, serverless-ready with `fsmStore`.
+
+### Zero-Trust Sandbox — Computation Delegation
+
+The LLM sends JavaScript logic to your data instead of shipping data to the LLM. Code runs inside a sealed V8 isolate — **zero access** to `process`, `require`, `fs`, `net`, `fetch`, `Buffer`. Timeout kill, memory cap, output limit, automatic isolate recovery, and AbortSignal kill-switch (Connection Watchdog).
+
+```typescript
+export default f.query('analytics.compute')
+    .describe('Run a computation on server-side data')
+    .sandboxed({ timeout: 3000, memoryLimit: 64 })
+    .handle(async (input, ctx) => {
+        const data = await ctx.db.records.findMany();
+        const engine = f.sandbox({ timeout: 3000, memoryLimit: 64 });
+        try {
+            const result = await engine.execute(input.expression, data);
+            if (!result.ok) return f.error('VALIDATION_ERROR', result.error)
+                .suggest('Fix the JavaScript expression and retry.');
+            return result.value;
+        } finally { engine.dispose(); }
+    });
+```
+
+`.sandboxed()` auto-injects HATEOAS instructions into the tool description — the LLM knows exactly how to format its code. Prototype pollution contained. `constructor.constructor` escape blocked. One isolate per engine, new pristine context per call.
+
+### State Sync — Temporal Awareness for Agents
+
+LLMs have no sense of time. After `sprints.list` then `sprints.create`, the agent still believes the list is unchanged. Vurb.ts injects RFC 7234-inspired cache-control signals:
+
+```typescript
+const listSprints = f.query('sprints.list')
+    .stale()                              // no-store — always re-fetch
+    .handle(async (input, ctx) => ctx.db.sprints.findMany());
+
+const createSprint = f.action('sprints.create')
+    .invalidates('sprints.*', 'tasks.*')  // causal cross-domain invalidation
+    .withString('name', 'Sprint name')
+    .handle(async (input, ctx) => ctx.db.sprints.create(input));
+// After mutation: [System: Cache invalidated for sprints.*, tasks.* — caused by sprints.create]
+// Failed mutations emit nothing — state didn't change.
+```
+
+Registry-level policies with `f.stateSync()`, glob patterns (`*`, `**`), policy overlap detection, observability hooks, and MCP `notifications/resources/updated` emission.
+
+### Prompt Engine — Server-Side Templates
+
+MCP Prompts as executable server-side templates with the same Fluent API as tools. Middleware, hydration timeout, schema-informed coercion, interceptors, multi-modal messages, and the Presenter bridge:
+
+```typescript
+const IncidentAnalysis = f.prompt('incident_analysis')
+    .title('Incident Analysis')
+    .describe('Structured analysis of a production incident')
+    .tags('engineering', 'ops')
+    .input({
+        incident_id: { type: 'string', description: 'Incident ticket ID' },
+        severity: { enum: ['sev1', 'sev2', 'sev3'] as const },
     })
-    .rules(['Version follows semver. Compare with latest to suggest updates.']);
+    .use(requireAuth, requireRole('engineer'))
+    .timeout(10_000)
+    .handler(async (ctx, { incident_id, severity }) => {
+        const incident = await ctx.db.incidents.findUnique({ where: { id: incident_id } });
+        return {
+            messages: [
+                PromptMessage.system(`You are a Senior SRE. Severity: ${severity.toUpperCase()}.`),
+                ...PromptMessage.fromView(IncidentPresenter.make(incident, ctx)),
+                PromptMessage.user('Begin root cause analysis.'),
+            ],
+        };
+    });
 ```
+
+`PromptMessage.fromView()` decomposes any Presenter into prompt messages — same schema, same rules, same affordances in both tools and prompts. Multi-modal with `.image()`, `.audio()`, `.resource()`. Interceptors inject compliance footers after every handler. `PromptRegistry` with filtering, pagination, and lifecycle sync.
+
+### Agent Skills — Progressive Instruction Distribution
+
+**No other MCP framework has this.** Distribute domain expertise to AI agents on demand via MCP. Three-layer progressive disclosure — the agent searches a lightweight index, loads only the relevant SKILL.md, and reads auxiliary files on demand. Zero context window waste.
 
 ```typescript
-// Self-healing errors — the LLM can recover
-return f.error('NOT_FOUND', `Project "${input.id}" not found`)
-    .suggest('Use projects.list to find valid IDs')
-    .actions('projects.list', 'projects.search');
+import { SkillRegistry, autoDiscoverSkills, createSkillTools } from '@vurb/skills';
+
+const skills = new SkillRegistry();
+await autoDiscoverSkills(skills, './skills');
+const [search, load, readFile] = createSkillTools(f, skills);
+registry.registerAll(search, load, readFile);
 ```
 
-> **Full guide**: [mcp-fusion.vinkius.com/building-tools](https://mcp-fusion.vinkius.com/building-tools)
+Skills follow the [agentskills.io](https://agentskills.io) open standard — SKILL.md with YAML frontmatter. `skills.search` returns the lightweight index. `skills.load` returns full instructions. `skills.read_file` gives access to auxiliary files with **path traversal protection** (only files within the skill's directory). Custom search engines supported.
+
+```
+skills/
+├── deployment/
+│   ├── SKILL.md          # name, description, full instructions
+│   └── scripts/
+│       └── deploy.sh     # accessible via skills.read_file
+└── database-migration/
+    └── SKILL.md
+```
+
+### Fluent API — Semantic Verbs & Chainable Builders
+
+```typescript
+f.query('users.list')      // readOnly: true — no side effects
+f.action('users.create')   // neutral — creates or updates
+f.mutation('users.delete')  // destructive: true — triggers confirmation dialogs
+```
+
+Every builder method is chainable and fully typed. Types accumulate as you chain — the final `.handle()` has 100% accurate autocomplete with zero annotations:
+
+```typescript
+export const deploy = f.mutation('infra.deploy')
+    .describe('Deploy infrastructure')
+    .instructions('Use ONLY after the user explicitly requests deployment.')
+    .withEnum('env', ['staging', 'production'] as const, 'Target environment')
+    .concurrency({ max: 2, queueSize: 5 })
+    .egress(1_000_000)
+    .idempotent()
+    .invalidates('infra.*')
+    .returns(DeployPresenter)
+    .handle(async function* (input, ctx) {
+        yield progress(10, 'Cloning repository...');
+        await cloneRepo(ctx.repoUrl);
+        yield progress(90, 'Running tests...');
+        const results = await runTests();
+        yield progress(100, 'Done!');
+        return results;
+    });
+```
+
+`.instructions()` embeds prompt engineering. `.concurrency()` prevents backend overload. `.egress()` caps response size. `yield progress()` streams MCP progress notifications. `.cached()` / `.stale()` / `.invalidates()` control temporal awareness. `.sandboxed()` enables computation delegation. `.bindState()` enables FSM gating.
+
+### Middleware — Pre-Compiled, Zero-Allocation
+
+tRPC-style context derivation. Middleware chains compiled at registration time into a single nested function — O(1) dispatch, no array iteration, no per-request allocation:
+
+```typescript
+const requireAuth = f.middleware(async (ctx) => {
+    const user = await db.getUser(ctx.token);
+    if (!user) throw new Error('Unauthorized');
+    return { user, permissions: user.permissions };
+});
+
+// ctx.user and ctx.permissions — fully typed downstream. Zero annotations.
+```
+
+Stack `.use()` calls for layered derivations: auth → permissions → tenant resolution → audit logging. Same `MiddlewareFn` signature works for both tools and prompts.
+
+### Fluent Router — Grouped Tooling
+
+```typescript
+const users = f.router('users')
+    .describe('User management')
+    .use(requireAuth)
+    .tags('core');
+
+export const listUsers = users.query('list').describe('List users').handle(/* ... */);
+export const banUser = users.mutation('ban').describe('Ban a user').handle(/* ... */);
+// Middleware, tags, prefix — all inherited automatically
+```
+
+Discriminator enum compilation. Per-field annotations tell the LLM which parameters belong to which action. Tool exposition: `flat` (independent MCP tools) or `grouped` (one tool with enum discriminator).
+
+### tRPC-Style Client — Compile-Time Route Validation
+
+```typescript
+import { createVurbClient } from 'Vurb.ts';
+import type { AppRouter } from './server.js';
+
+const client = createVurbClient<AppRouter>(transport);
+
+await client.execute('projects.create', { workspace_id: 'ws_1', name: 'V2' });
+// TS error on typos ('projetcs.create'), missing fields, type mismatches.
+// Zero runtime cost. Client middleware (auth, logging). Batch execution.
+```
+
+`createTypedRegistry()` is a curried double-generic — first call sets `TContext`, second infers all builder types. `InferRouter` is pure type-level.
+
+### Self-Healing Errors
+
+```typescript
+// Validation errors → directed correction prompts
+❌ Validation failed for 'users.create':
+  • email — Invalid email format. You sent: 'admin@local'.
+    Expected: a valid email address (e.g. user@example.com).
+  💡 Fix the fields above and call the action again.
+
+// Business-logic errors → structured recovery with fluent builder
+return f.error('NOT_FOUND', `Project '${input.id}' not found`)
+    .suggest('Call projects.list to find valid IDs')
+    .actions('projects.list')
+    .build();
+```
+
+### Capability Governance — Cryptographic Surface Integrity
+
+Nine modules for SOC2-auditable AI deployments:
+
+```bash
+npx Vurb.ts lock --server ./src/server.ts       # Generate vurb.lock
+npx Vurb.ts lock --check --server ./src/server.ts  # Gate CI builds
+```
+
+- **Capability Lockfile** — deterministic, git-diffable artifact capturing every tool's behavioral contract
+- **Surface Integrity** — SHA-256 behavioral fingerprinting
+- **Contract Diffing** — semantic delta engine with severity classification
+- **Zero-Trust Attestation** — HMAC-SHA256 signing and runtime verification
+- **Blast Radius Analysis** — entitlement scanning (filesystem, network, subprocess) with evasion detection
+- **Token Economics** — cognitive overload profiling
+- **Semantic Probing** — LLM-as-a-Judge for behavioral drift
+- **Self-Healing Context** — contract delta injection into validation errors
+
+PR diffs show exactly what changed in the AI-facing surface:
+
+```diff
+  "invoices": {
+-   "integrityDigest": "sha256:f6e5d4c3b2a1...",
++   "integrityDigest": "sha256:9a8b7c6d5e4f...",
+    "behavior": {
+-     "systemRulesFingerprint": "static:abc",
++     "systemRulesFingerprint": "dynamic",
+    }
+  }
+```
+
+---
+
+## Code Generators
+
+### OpenAPI → MCP in One Command
+
+Turn any **REST/OpenAPI 3.x or Swagger 2.0** spec into a working MCP server — code generation or runtime proxy:
+
+```bash
+npx openapi-gen generate -i ./petstore.yaml -o ./generated
+API_BASE_URL=https://api.example.com npx tsx ./generated/server.ts
+```
+
+Generates `models/` (Zod `.strict()` schemas), `views/` (Presenters), `agents/` (tool definitions with inferred annotations), `server.ts` (bootstrap). HTTP method → MCP annotation inference: `GET` → `readOnly`, `DELETE` → `destructive`, `PUT` → `idempotent`.
+
+Runtime proxy mode with `loadOpenAPI()` for instant prototyping — no code generation step.
+
+### Prisma → MCP with Field-Level Security
+
+A Prisma Generator that produces Vurb.ts tools and Presenters with field-level security, tenant isolation, and OOM protection:
+
+```prisma
+generator mcp {
+  provider = "Vurb.ts-prisma-gen"
+  output   = "../src/tools/database"
+}
+
+model User {
+  id           String @id @default(uuid())
+  email        String @unique
+  passwordHash String /// @vurb.hide        ← physically excluded from schema
+  stripeToken  String /// @vurb.hide        ← physically excluded from schema
+  creditScore  Int    /// @vurb.describe("Score 0-1000. Above 700 is PREMIUM.")
+  tenantId     String /// @vurb.tenantKey   ← injected into every WHERE clause
+}
+```
+
+`npx prisma generate` → typed CRUD tools with pagination capped at 50, tenant isolation at the generated code level. Cross-tenant access is structurally impossible.
+
+### n8n Workflows → MCP Tools
+
+Auto-discover n8n webhook workflows as MCP tools with tag filtering, live polling, and MVA interception:
+
+```typescript
+const n8n = await createN8nConnector({
+    url: process.env.N8N_URL!,
+    apiKey: process.env.N8N_API_KEY!,
+    includeTags: ['ai-enabled'],
+    pollInterval: 60_000,
+    onChange: () => server.notification({ method: 'notifications/tools/list_changed' }),
+});
+```
+
+n8n handles the Stripe/Salesforce/webhook logic. Vurb.ts provides typing, Presenters, middleware, and access control.
+
+---
 
 ## Inspector — Real-Time Dashboard
 
 ```bash
-npx fusion inspect        # Auto-discover and connect
-npx fusion inspect --demo  # Built-in simulator
+npx Vurb.ts inspect        # Auto-discover and connect
+npx Vurb.ts inspect --demo  # Built-in simulator
 ```
 
 ```
@@ -115,9 +562,67 @@ npx fusion inspect --demo  # Built-in simulator
 └──────────────────────────────────────────────────────────────┘
 ```
 
-Connects via **Shadow Socket** (Named Pipe / Unix Domain Socket) — no stdio interference, no port conflicts.
+Connects via **Shadow Socket** (Named Pipe / Unix Domain Socket) — no stdio interference, no port conflicts. Real-time tool list, request stream, Late Guillotine visualization.
 
-> **Docs**: [mcp-fusion.vinkius.com/inspector](https://mcp-fusion.vinkius.com/inspector)
+---
+
+## Testing — Full Pipeline in RAM
+
+`@vurb/testing` runs the actual execution pipeline — same code path as production — and returns `MvaTestResult` with each MVA layer decomposed:
+
+```typescript
+import { createVurbTester } from '@vurb/testing';
+
+const tester = createVurbTester(registry, {
+    contextFactory: () => ({ prisma: mockPrisma, tenantId: 't_42', role: 'ADMIN' }),
+});
+
+describe('SOC2 Data Governance', () => {
+    it('strips PII before it reaches the LLM', async () => {
+        const result = await tester.callAction('db_user', 'find_many', { take: 10 });
+        for (const user of result.data) {
+            expect(user).not.toHaveProperty('passwordHash');
+            expect(user).not.toHaveProperty('tenantId');
+        }
+    });
+
+    it('sends governance rules with data', async () => {
+        const result = await tester.callAction('db_user', 'find_many', { take: 5 });
+        expect(result.systemRules).toContain('Email addresses are PII.');
+    });
+
+    it('blocks guest access', async () => {
+        const result = await tester.callAction('db_user', 'find_many', { take: 5 }, { role: 'GUEST' });
+        expect(result.isError).toBe(true);
+    });
+});
+```
+
+Assert every MVA layer: `result.data` (egress firewall), `result.systemRules` (JIT rules), `result.uiBlocks` (server-rendered charts), `result.data.length` (cognitive guardrail), `rawResponse` (HATEOAS hints). Works with Vitest, Jest, Mocha, or `node:test`.
+
+---
+
+## Deploy Anywhere
+
+Every tool is transport-agnostic. Same code on Stdio, SSE, and serverless:
+
+### Vercel Functions
+
+```typescript
+import { vercelAdapter } from '@vurb/vercel';
+export const POST = vercelAdapter({ registry, contextFactory });
+export const runtime = 'edge'; // global edge distribution
+```
+
+### Cloudflare Workers
+
+```typescript
+import { cloudflareWorkersAdapter } from '@vurb/cloudflare';
+export default cloudflareWorkersAdapter({ registry, contextFactory });
+// D1 for edge-native SQL, KV for sub-ms reads, waitUntil for telemetry
+```
+
+---
 
 ## Ecosystem
 
@@ -125,37 +630,50 @@ Connects via **Shadow Socket** (Named Pipe / Unix Domain Socket) — no stdio in
 
 | Package | Target |
 |---|---|
-| [`mcp-fusion-vercel`](https://mcp-fusion.vinkius.com/vercel-adapter) | Vercel Functions (Edge / Node.js) |
-| [`mcp-fusion-cloudflare`](https://mcp-fusion.vinkius.com/cloudflare-adapter) | Cloudflare Workers — zero polyfills |
+| [`@vurb/vercel`](https://vurb.vinkius.com/vercel-adapter) | Vercel Functions (Edge / Node.js) |
+| [`@vurb/cloudflare`](https://vurb.vinkius.com/cloudflare-adapter) | Cloudflare Workers — zero polyfills |
 
 ### Generators & Connectors
 
-| Package | Source |
+| Package | Purpose |
 |---|---|
-| [`mcp-fusion-openapi-gen`](https://mcp-fusion.vinkius.com/openapi-gen) | Generate typed tools from OpenAPI 3.x specs |
-| [`mcp-fusion-prisma-gen`](https://mcp-fusion.vinkius.com/prisma-gen) | Generate CRUD tools from Prisma schemas |
-| [`mcp-fusion-n8n`](https://mcp-fusion.vinkius.com/n8n-connector) | Auto-discover n8n workflows as tools |
-| [`mcp-fusion-aws`](https://mcp-fusion.vinkius.com/aws-connector) | Auto-discover AWS Lambda & Step Functions |
-| [`mcp-fusion-oauth`](https://mcp-fusion.vinkius.com/oauth) | RFC 8628 Device Flow authentication |
-| [`mcp-fusion-jwt`](https://mcp-fusion.vinkius.com/jwt) | JWT verification — HS256/RS256/ES256 + JWKS |
-| [`mcp-fusion-api-key`](https://mcp-fusion.vinkius.com/api-key) | API key validation with timing-safe comparison |
-| [`mcp-fusion-testing`](https://mcp-fusion.vinkius.com/testing) | In-memory pipeline testing |
-| [`mcp-fusion-inspector`](https://mcp-fusion.vinkius.com/inspector) | Real-time terminal dashboard |
+| [`@vurb/openapi-gen`](https://vurb.vinkius.com/openapi-gen) | Generate typed tools from OpenAPI 3.x / Swagger 2.0 specs |
+| [`@vurb/prisma-gen`](https://vurb.vinkius.com/prisma-gen) | Generate CRUD tools with field-level security from Prisma |
+| [`@vurb/n8n`](https://vurb.vinkius.com/n8n-connector) | Auto-discover n8n workflows as MCP tools |
+| [`@vurb/aws`](https://vurb.vinkius.com/aws-connector) | Auto-discover AWS Lambda & Step Functions |
+| [`@vurb/skills`](https://vurb.vinkius.com/skills) | Progressive instruction distribution for agents |
+
+### Security & Auth
+
+| Package | Purpose |
+|---|---|
+| [`@vurb/oauth`](https://vurb.vinkius.com/oauth) | RFC 8628 Device Flow authentication |
+| [`@vurb/jwt`](https://vurb.vinkius.com/jwt) | JWT verification — HS256/RS256/ES256 + JWKS |
+| [`@vurb/api-key`](https://vurb.vinkius.com/api-key) | API key validation with timing-safe comparison |
+
+### Developer Experience
+
+| Package | Purpose |
+|---|---|
+| [`@vurb/testing`](https://vurb.vinkius.com/testing) | In-memory pipeline testing with MVA layer assertions |
+| [`@vurb/inspector`](https://vurb.vinkius.com/inspector) | Real-time terminal dashboard via Shadow Socket |
+
+---
 
 ## Documentation
 
 Full guides, API reference, and cookbook recipes:
 
-**[mcp-fusion.vinkius.com](https://mcp-fusion.vinkius.com/)**
+**[Vurb.ts.vinkius.com](https://vurb.vinkius.com/)**
 
 ## Contributing
 
-See [CONTRIBUTING.md](https://github.com/vinkius-labs/mcp-fusion/blob/main/CONTRIBUTING.md) for development setup and PR guidelines.
+See [CONTRIBUTING.md](https://github.com/vinkius-labs/vurb.ts/blob/main/CONTRIBUTING.md) for development setup and PR guidelines.
 
 ## Security
 
-See [SECURITY.md](https://github.com/vinkius-labs/mcp-fusion/blob/main/SECURITY.md) for reporting vulnerabilities.
+See [SECURITY.md](https://github.com/vinkius-labs/vurb.ts/blob/main/SECURITY.md) for reporting vulnerabilities.
 
 ## License
 
-[Apache 2.0](https://github.com/vinkius-labs/mcp-fusion/blob/main/LICENSE)
+[Apache 2.0](https://github.com/vinkius-labs/vurb.ts/blob/main/LICENSE)

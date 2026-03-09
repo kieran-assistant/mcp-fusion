@@ -6,7 +6,7 @@ description: "LLM-as-a-Judge evaluation framework for detecting semantic drift i
 # Semantic Probing
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Creating Probes](#probes)
@@ -30,7 +30,7 @@ The module never makes LLM calls directly. You provide a `SemanticProbeAdapter` 
 A `SemanticProbe` is a structured test case: "given this input, the expected output was X, but the actual output is Y — is this semantically equivalent?"
 
 ```typescript
-import { createProbe } from '@vinkius-core/mcp-fusion/introspection';
+import { createProbe } from 'Vurb.ts/introspection';
 
 const probe = createProbe(
   'invoices',           // toolName
@@ -61,7 +61,7 @@ The `contractContext` gives the judge enough information to assess whether behav
 The `SemanticProbeAdapter` interface requires a single method:
 
 ```typescript
-import type { SemanticProbeAdapter } from '@vinkius-core/mcp-fusion/introspection';
+import type { SemanticProbeAdapter } from 'Vurb.ts/introspection';
 
 const claudeAdapter: SemanticProbeAdapter = {
   name: 'claude-sonnet',
@@ -98,7 +98,7 @@ const mockAdapter: SemanticProbeAdapter = {
 Single probe:
 
 ```typescript
-import { evaluateProbe } from '@vinkius-core/mcp-fusion/introspection';
+import { evaluateProbe } from 'Vurb.ts/introspection';
 
 const result = await evaluateProbe(probe, {
   adapter: claudeAdapter,
@@ -114,7 +114,7 @@ console.log(result.reasoning);         // "Outputs are semantically equivalent..
 Batch evaluation with concurrency control:
 
 ```typescript
-import { evaluateProbes } from '@vinkius-core/mcp-fusion/introspection';
+import { evaluateProbes } from 'Vurb.ts/introspection';
 
 const report = await evaluateProbes(probes, {
   adapter: claudeAdapter,
@@ -166,7 +166,7 @@ The `stable` flag on `SemanticProbeReport` is `true` when `overallDrift` is `non
 `buildJudgePrompt()` constructs a structured evaluation prompt that includes the tool metadata, behavioral contract (system rules, schema fields), input arguments, and both expected and actual outputs serialized as JSON. The prompt requests a JSON response with `similarityScore`, `contractViolated`, `violations`, and `reasoning` fields.
 
 ```typescript
-import { buildJudgePrompt } from '@vinkius-core/mcp-fusion/introspection';
+import { buildJudgePrompt } from 'Vurb.ts/introspection';
 
 const prompt = buildJudgePrompt(probe);
 ```
@@ -179,7 +179,7 @@ If the LLM returns malformed JSON, the parser produces a conservative fallback �
 `aggregateResults()` produces a `SemanticProbeReport` from multiple individual results:
 
 ```typescript
-import { aggregateResults } from '@vinkius-core/mcp-fusion/introspection';
+import { aggregateResults } from 'Vurb.ts/introspection';
 
 const report = aggregateResults('invoices', results);
 
@@ -192,11 +192,11 @@ report.summary;         // human-readable summary string
 
 ## Testing Integration {#testing}
 
-Semantic probing integrates with `FusionTester.callAction()` for automated regression testing:
+Semantic probing integrates with `VurbTester.callAction()` for automated regression testing:
 
 ```typescript
-import { createTestClient } from '@vinkius-core/mcp-fusion/testing';
-import { createProbe, evaluateProbe } from '@vinkius-core/mcp-fusion/introspection';
+import { createTestClient } from 'Vurb.ts/testing';
+import { createProbe, evaluateProbe } from 'Vurb.ts/introspection';
 
 const tester = createTestClient(registry);
 

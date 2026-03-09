@@ -1,6 +1,6 @@
 ---
 title: OAuth — Device Authorization Grant
-description: Drop-in OAuth 2.0 Device Flow (RFC 8628) for MCP servers built with mcp-fusion.
+description: Drop-in OAuth 2.0 Device Flow (RFC 8628) for MCP servers built with Vurb.ts.
 ---
 
 # OAuth — Device Authorization Grant
@@ -8,16 +8,16 @@ description: Drop-in OAuth 2.0 Device Flow (RFC 8628) for MCP servers built with
 OAuth 2.0 Device Authorization Grant ([RFC 8628](https://datatracker.ietf.org/doc/html/rfc8628)) for MCP servers. The server requests a device code, the user authorizes in a browser, and the token is stored for future sessions. No redirect URIs, no embedded browsers.
 
 ```bash
-npm install @vinkius-core/mcp-fusion-oauth
+npm install @vurb/oauth
 ```
 
-Peer dependency: `@vinkius-core/mcp-fusion ^2.0.0`
+Peer dependency: `Vurb.ts ^2.0.0`
 
 ## Create the Auth Tool
 
 ```typescript
-import { createAuthTool } from '@vinkius-core/mcp-fusion-oauth';
-import { ToolRegistry } from '@vinkius-core/mcp-fusion';
+import { createAuthTool } from '@vurb/oauth';
+import { ToolRegistry } from 'Vurb.ts';
 
 const auth = createAuthTool<AppContext>({
     clientId: 'your-client-id',
@@ -53,8 +53,8 @@ The auth tool exposes 4 actions:
 ## Protect Tools with Middleware
 
 ```typescript
-import { requireAuth } from '@vinkius-core/mcp-fusion-oauth';
-import { createTool, success } from '@vinkius-core/mcp-fusion';
+import { requireAuth } from '@vurb/oauth';
+import { createTool, success } from 'Vurb.ts';
 
 const projects = createTool<AppContext>('projects')
     .use(requireAuth({
@@ -76,10 +76,10 @@ When no token is found, `requireAuth()` returns a structured `toolError('AUTH_RE
 
 ## Standalone Usage
 
-`DeviceAuthenticator` and `TokenManager` work independently of mcp-fusion:
+`DeviceAuthenticator` and `TokenManager` work independently of Vurb.ts:
 
 ```typescript
-import { DeviceAuthenticator, TokenManager } from '@vinkius-core/mcp-fusion-oauth';
+import { DeviceAuthenticator, TokenManager } from '@vurb/oauth';
 
 const authenticator = new DeviceAuthenticator({
     authorizationEndpoint: 'https://api.example.com/oauth/device/code',
@@ -169,7 +169,7 @@ Returns a `GroupedToolBuilder` with actions: `login`, `complete`, `status`, `log
 
 ### `requireAuth(options?)`
 
-Returns a mcp-fusion middleware function.
+Returns a Vurb.ts middleware function.
 
 **Options:**
 

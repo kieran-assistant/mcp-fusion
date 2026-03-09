@@ -1,9 +1,9 @@
 /**
- * Tests for initFusion() — Canonical Fluent API entry point
+ * Tests for initVurb() — Canonical Fluent API entry point
  */
 import { describe, it, expect } from 'vitest';
 import { z } from 'zod';
-import { initFusion } from '../../src/core/initFusion.js';
+import { initVurb } from '../../src/core/initVurb.js';
 import { success } from '../../src/core/response.js';
 import { ToolRegistry } from '../../src/core/registry/ToolRegistry.js';
 
@@ -12,9 +12,9 @@ interface TestContext {
     userId: string;
 }
 
-describe('initFusion', () => {
-    it('should create a FusionInstance with typed factory methods', () => {
-        const f = initFusion<TestContext>();
+describe('initVurb', () => {
+    it('should create a VurbInstance with typed factory methods', () => {
+        const f = initVurb<TestContext>();
 
         expect(f).toBeDefined();
         expect(typeof f.query).toBe('function');
@@ -28,7 +28,7 @@ describe('initFusion', () => {
     });
 
     it('f.query() should create a read-only tool via fluent API', () => {
-        const f = initFusion<TestContext>();
+        const f = initVurb<TestContext>();
 
         const tool = f.query('users.list')
             .handle(async (input, ctx) => success(ctx.db.users.findMany()));
@@ -41,7 +41,7 @@ describe('initFusion', () => {
     });
 
     it('f.mutation() should create a destructive tool', () => {
-        const f = initFusion<TestContext>();
+        const f = initVurb<TestContext>();
 
         const tool = f.mutation('billing.get_invoice')
             .handle(async () => success('ok'));
@@ -52,7 +52,7 @@ describe('initFusion', () => {
     });
 
     it('f.query() handler should receive (input, ctx)', async () => {
-        const f = initFusion<TestContext>();
+        const f = initVurb<TestContext>();
 
         let receivedCtx: TestContext | undefined;
         let receivedInput: unknown;
@@ -76,7 +76,7 @@ describe('initFusion', () => {
     });
 
     it('f.query() should auto-wrap non-ToolResponse results', async () => {
-        const f = initFusion<TestContext>();
+        const f = initVurb<TestContext>();
 
         const tool = f.query('test.simple')
             .handle(async () => success({ result: 'data' }));
@@ -92,7 +92,7 @@ describe('initFusion', () => {
     });
 
     it('f.presenter() should delegate to definePresenter', () => {
-        const f = initFusion<TestContext>();
+        const f = initVurb<TestContext>();
 
         const presenter = f.presenter({
             name: 'Invoice',
@@ -104,14 +104,14 @@ describe('initFusion', () => {
     });
 
     it('f.registry() should return a ToolRegistry', () => {
-        const f = initFusion<TestContext>();
+        const f = initVurb<TestContext>();
         const registry = f.registry();
 
         expect(registry).toBeInstanceOf(ToolRegistry);
     });
 
     it('f.defineTool() should delegate to standard defineTool', () => {
-        const f = initFusion<TestContext>();
+        const f = initVurb<TestContext>();
 
         const tool = f.defineTool('platform', {
             actions: {
@@ -127,7 +127,7 @@ describe('initFusion', () => {
     });
 
     it('f.query() with no dot in name should use "default" action', () => {
-        const f = initFusion<TestContext>();
+        const f = initVurb<TestContext>();
 
         const tool = f.query('echo')
             .handle(async () => success('echo'));
@@ -137,7 +137,7 @@ describe('initFusion', () => {
     });
 
     it('f.mutation() should forward tags', () => {
-        const f = initFusion<TestContext>();
+        const f = initVurb<TestContext>();
 
         const tool = f.mutation('admin.delete')
             .tags('admin', 'destructive')
@@ -148,7 +148,7 @@ describe('initFusion', () => {
     });
 
     it('f.middleware() should create a MiddlewareDefinition', () => {
-        const f = initFusion<TestContext>();
+        const f = initVurb<TestContext>();
 
         const mw = f.middleware(async (ctx) => ({
             enriched: true,

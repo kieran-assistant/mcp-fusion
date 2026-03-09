@@ -28,7 +28,7 @@
  *     contextFactory: createContext,
  *     introspection: {
  *         enabled: process.env.NODE_ENV !== 'production',
- *         uri: 'fusion://manifest.json',
+ *         uri: 'vurb://manifest.json',
  *         filter: (manifest, ctx) => {
  *             if (ctx.user.role !== 'admin') {
  *                 delete manifest.capabilities.tools['admin.delete_user'];
@@ -50,7 +50,7 @@ export interface IntrospectionConfig<TContext> {
 
     /**
      * Custom URI for the MCP Resource.
-     * @defaultValue `'fusion://manifest.json'`
+     * @defaultValue `'vurb://manifest.json'`
      */
     readonly uri?: string;
 
@@ -77,8 +77,8 @@ export interface IntrospectionConfig<TContext> {
 export interface ManifestPayload {
     /** Server name (from AttachOptions or registry metadata) */
     readonly server: string;
-    /** MCP Fusion framework version */
-    readonly mcp_fusion_version: string;
+    /** Vurb framework version */
+    readonly vurb_version: string;
     /** Architecture label */
     readonly architecture: 'MVA (Model-View-Agent)';
     /** Capabilities tree */

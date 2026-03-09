@@ -4,7 +4,7 @@ layout: home
 hero:
   name: "Stop Writing MCP Servers Like It's 2024."
   text: ""
-  tagline: "Most MCP servers today dump raw database JSON and pray the LLM figures it out. MCP Fusion introduces the MVA (Model-View-Agent) pattern — a definitive AI Software Architecture that gives your tools a deterministic View layer. Build a Structured Perception Layer on top of your data for autonomous agents behaving like trained engineers, not guessing machines."
+  tagline: "Most MCP servers today dump raw database JSON and pray the LLM figures it out. Vurb.ts introduces the MVA (Model-View-Agent) pattern — a definitive AI Software Architecture that gives your tools a deterministic View layer. Build a Structured Perception Layer on top of your data for autonomous agents behaving like trained engineers, not guessing machines."
   actions:
     - theme: brand
       text: The MVA Pattern →
@@ -41,13 +41,13 @@ hero:
 <div class="ms-compare-header">
 <div class="ms-label">WHAT CHANGES</div>
 <h2 class="ms-headline">Without MVA vs With MVA</h2>
-<p class="ms-sub">Every line is a capability that exists in <strong>MCP Fusion</strong> today. Not a roadmap. Not a promise.</p>
+<p class="ms-sub">Every line is a capability that exists in <strong>Vurb.ts</strong> today. Not a roadmap. Not a promise.</p>
 </div>
 <div class="ms-compare-table">
 <div class="ms-compare-row ms-compare-head">
 <div class="ms-compare-aspect"></div>
 <div class="ms-compare-before">Without MVA</div>
-<div class="ms-compare-after">With MVA (<strong>MCP Fusion</strong>)</div>
+<div class="ms-compare-after">With MVA (<strong>Vurb.ts</strong>)</div>
 </div>
 <div class="ms-compare-row">
 <div class="ms-compare-aspect">Tool count</div>
@@ -102,7 +102,7 @@ hero:
 <div class="ms-compare-row">
 <div class="ms-compare-aspect">Type safety</div>
 <div class="ms-compare-before">Manual casting, no client types.</div>
-<div class="ms-compare-after"><strong>tRPC-style client</strong> — createFusionClient() with full end-to-end inference.</div>
+<div class="ms-compare-after"><strong>tRPC-style client</strong> — createVurbClient() with full end-to-end inference.</div>
 </div>
 <div class="ms-compare-row">
 <div class="ms-compare-aspect">Reusability</div>
@@ -110,7 +110,7 @@ hero:
 <div class="ms-compare-after"><strong>Presenter</strong> — define once, reuse across all tools. Same rules, same UI.</div>
 </div>
 </div>
-<a href="/mcp-fusion/comparison" class="ms-compare-link">SEE THE FULL COMPARISON WITH CODE EXAMPLES →</a>
+<a href="/vurb/comparison" class="ms-compare-link">SEE THE FULL COMPARISON WITH CODE EXAMPLES →</a>
 </div>
 
 <!-- ═══ Section 2.7: Three Core Problems ═══ -->
@@ -127,7 +127,7 @@ hero:
 <div class="ms-problem-number">01</div>
 <h3 class="ms-problem-title">Egress Firewall & Anti-DDoS</h3>
 <p class="ms-problem-pain"><strong>The problem:</strong> Raw MCP Servers leak <code>password_hashes</code> directly to the LLM when developers do <code>SELECT *</code>. Furthermore, returning 100,000 records routinely triggers <strong>LLM OOM (Out of Memory)</strong> crashes or bankrupts companies with runaway Anthropic API bills.</p>
-<p class="ms-problem-solution"><strong>The mechanism:</strong> MCP Fusion introduces native <strong>Prompt Injection Defense for MCP</strong> and <strong>Context DDoS Prevention</strong>. The Zod <code>.schema()</code> on every Presenter physically strips sensitive undeclared fields at RAM level. Simultaneously, <code>.agentLimit()</code> truncates massive arrays, securing your Token Economics.</p>
+<p class="ms-problem-solution"><strong>The mechanism:</strong> Vurb.ts introduces native <strong>Prompt Injection Defense for MCP</strong> and <strong>Context DDoS Prevention</strong>. The Zod <code>.schema()</code> on every Presenter physically strips sensitive undeclared fields at RAM level. Simultaneously, <code>.agentLimit()</code> truncates massive arrays, securing your Token Economics.</p>
 
 ```typescript
 const UserPresenter = createPresenter('User')
@@ -140,7 +140,7 @@ const UserPresenter = createPresenter('User')
     }));
 ```
 
-<a href="/mcp-fusion/presenter" class="ms-card-link">SEE HOW IT WORKS →</a>
+<a href="/vurb/presenter" class="ms-card-link">SEE HOW IT WORKS →</a>
 </div>
 
 <div class="ms-problem-card">
@@ -166,7 +166,7 @@ const TaskPresenter = createPresenter('Task')
     .rules(['Use emojis: 🔄 In Progress, ✅ Done, ❌ Blocked']);
 ```
 
-<a href="/mcp-fusion/mva/context-tree-shaking" class="ms-card-link">SEE HOW IT WORKS →</a>
+<a href="/vurb/mva/context-tree-shaking" class="ms-card-link">SEE HOW IT WORKS →</a>
 </div>
 
 <div class="ms-problem-card">
@@ -190,7 +190,7 @@ const InvoicePresenter = createPresenter('Invoice')
 // The LLM passes the chart config through. It never generates it.
 ```
 
-<a href="/mcp-fusion/mva/perception-package" class="ms-card-link">SEE HOW IT WORKS →</a>
+<a href="/vurb/mva/perception-package" class="ms-card-link">SEE HOW IT WORKS →</a>
 </div>
 
 </div>
@@ -233,8 +233,8 @@ const InvoicePresenter = createPresenter('Invoice')
 </div>
 <div class="ms-card">
 <div class="ms-card-number">02 // DX</div>
-<h3 class="ms-card-title">Context Init (initFusion)</h3>
-<p class="ms-card-desc">tRPC-style f = initFusion&lt;AppContext&gt;(). Define your context type ONCE — every f.query(), f.presenter(), f.registry() inherits it. Zero generics.</p>
+<h3 class="ms-card-title">Context Init (initVurb)</h3>
+<p class="ms-card-desc">tRPC-style f = initVurb&lt;AppContext&gt;(). Define your context type ONCE — every f.query(), f.presenter(), f.registry() inherits it. Zero generics.</p>
 <a href="/dx-guide" class="ms-card-link">EXPLORE →</a>
 </div>
 <div class="ms-card">
@@ -282,8 +282,8 @@ const InvoicePresenter = createPresenter('Invoice')
 <div class="ms-card">
 <div class="ms-card-number">10 // CLIENT</div>
 <h3 class="ms-card-title">Type-Safe Client</h3>
-<p class="ms-card-desc">createFusionClient() provides end-to-end type safety from server to client. Wrong action name? TypeScript catches it at build time.</p>
-<a href="/fusion-client" class="ms-card-link">EXPLORE →</a>
+<p class="ms-card-desc">createVurbClient() provides end-to-end type safety from server to client. Wrong action name? TypeScript catches it at build time.</p>
+<a href="/vurb-client" class="ms-card-link">EXPLORE →</a>
 </div>
 </div>
 </div>

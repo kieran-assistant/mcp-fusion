@@ -1,13 +1,13 @@
 /**
  * JWT Auth Middleware — requireJwt()
  *
- * mcp-fusion middleware that ensures requests carry a valid JWT.
+ * vurb middleware that ensures requests carry a valid JWT.
  * Extracts the token, verifies it via JwtVerifier, and rejects
  * invalid/expired/missing tokens with self-healing error responses.
  *
  * @example
  * ```ts
- * import { requireJwt } from '@vinkius-core/mcp-fusion-jwt';
+ * import { requireJwt } from '@vurb/jwt';
  *
  * const projects = createTool('projects')
  *     .use(requireJwt({ secret: process.env.JWT_SECRET! }))
@@ -15,8 +15,8 @@
  * ```
  */
 
-import { toolError } from '@vinkius-core/mcp-fusion';
-import type { ToolResponse } from '@vinkius-core/mcp-fusion';
+import { toolError } from 'vurb';
+import type { ToolResponse } from 'vurb';
 import { JwtVerifier } from './JwtVerifier.js';
 import type { JwtVerifierConfig, JwtPayload } from './JwtVerifier.js';
 
@@ -62,7 +62,7 @@ export interface RequireJwtOptions extends JwtVerifierConfig {
 // ============================================================================
 
 /**
- * Creates a mcp-fusion middleware that verifies JWTs.
+ * Creates a vurb middleware that verifies JWTs.
  *
  * Returns `toolError('JWT_INVALID')` with self-healing hints
  * when no valid JWT is found.

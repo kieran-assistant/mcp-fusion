@@ -1,5 +1,5 @@
 {
-  "name": "mcp-fusion-dev",
+  "name": "vurb-dev",
   "private": true,
   "type": "module",
   "workspaces": [
@@ -35,6 +35,11 @@
     "vue": "^3.5.28",
     "zod": "^3.25.1"
   },
+  "author": "Renato Marinho",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vinkius-labs/vurb.ts.git"
+  },
   "license": "Apache-2.0",
-  "version": "3.1.31"
+  "version": "3.2.0"
 }

@@ -1,7 +1,7 @@
 # Streaming Progress
 
 ::: info Prerequisites
-Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -14,7 +14,7 @@ Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-
 
 Long-running operations — data exports, repository analysis, batch processing — need to report progress. Without feedback, the AI tells the user "Please wait..." for 30 seconds with no indication of what's happening.
 
-MCP Fusion supports **generator handlers** that `yield` progress updates. When attached to an MCP server, each `yield progress()` is automatically forwarded as a `notifications/progress` message to the client. Zero configuration.
+Vurb.ts supports **generator handlers** that `yield` progress updates. When attached to an MCP server, each `yield progress()` is automatically forwarded as a `notifications/progress` message to the client. Zero configuration.
 
 > [!IMPORTANT]
 > Streaming progress requires a persistent transport (Stdio or SSE). Stateless deployments on [Vercel](/vercel-adapter) and [Cloudflare Workers](/cloudflare-adapter) use JSON-RPC request/response — progress notifications are not supported. For edge runtimes, return final results directly without generator handlers.
@@ -24,9 +24,9 @@ MCP Fusion supports **generator handlers** that `yield` progress updates. When a
 Instead of `async (input, ctx) => { ... }`, use `async function*` to create a generator handler. Use `yield` to send progress updates during execution:
 
 ```typescript
-import { initFusion, progress, success } from '@vinkius-core/mcp-fusion';
+import { initVurb, progress, success } from 'Vurb.ts';
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 export const analyzeRepo = f.query('repo.analyze')
   .describe('Analyze a repository for patterns and code quality')

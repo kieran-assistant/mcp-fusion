@@ -1,7 +1,7 @@
 /**
- * Bug #79 — SSE template async unhandled rejection
+ * Bug #79 — HTTP template async unhandled rejection
  *
- * Verifies that the generated SSE server template wraps the
+ * Verifies that the generated Streamable HTTP server template wraps the
  * async HTTP handler body in try/catch to prevent
  * unhandled rejection crashes from Node's http.createServer.
  *
@@ -18,7 +18,7 @@ const sseConfig: ProjectConfig = {
     testing: false,
 };
 
-describe('Bug #79 — SSE template try/catch guard', () => {
+describe('Bug #79 — HTTP template try/catch guard', () => {
     const output = serverTs(sseConfig);
 
     it('should wrap the createServer async handler in try/catch', () => {
@@ -36,14 +36,20 @@ describe('Bug #79 — SSE template try/catch guard', () => {
         expect(output).toContain('console.error');
     });
 
-    it('should still include the normal SSE, POST, and 404 branches', () => {
-        expect(output).toContain("req.method === 'GET'");
+    it('should include POST, GET, DELETE, and 404 branches', () => {
         expect(output).toContain("req.method === 'POST'");
+        expect(output).toContain("req.method === 'GET'");
+        expect(output).toContain("req.method === 'DELETE'");
         expect(output).toContain("res.writeHead(404)");
         expect(output).toContain("res.writeHead(400)");
     });
 
-    it('should NOT have try/catch in stdio template (only SSE needs it)', () => {
+    it('should use StreamableHTTPServerTransport instead of SSEServerTransport', () => {
+        expect(output).toContain('StreamableHTTPServerTransport');
+        expect(output).not.toContain('SSEServerTransport');
+    });
+
+    it('should NOT have try/catch in stdio template (only HTTP needs it)', () => {
         const stdioConfig: ProjectConfig = {
             name: 'test-stdio',
             transport: 'stdio',

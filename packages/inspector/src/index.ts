@@ -1,7 +1,7 @@
 /**
- * @vinkius-core/mcp-fusion-inspector
+ * @vurb/inspector
  *
- * Optional TUI (Terminal User Interface) for real-time MCP Fusion
+ * Optional TUI (Terminal User Interface) for real-time Vurb
  * server observability. Connects via Shadow Socket IPC for zero
  * stdio interference.
  *
@@ -9,21 +9,21 @@
  *
  * ```bash
  * # Interactive TUI (auto-discover server)
- * fusion inspect
- * fusion insp
+ * vurb inspect
+ * vurb insp
  *
  * # Built-in simulator for demo/testing
- * fusion inspect --demo
+ * vurb inspect --demo
  *
  * # Headless stderr output (ECS/K8s/CI)
- * fusion inspect --out stderr
- * fusion inspect --out stderr --demo
+ * vurb inspect --out stderr
+ * vurb inspect --out stderr --demo
  * ```
  *
  * ## Programmatic API
  *
  * ```typescript
- * import { commandTop, startSimulator, streamToStderr } from '@vinkius-core/mcp-fusion-inspector';
+ * import { commandTop, startSimulator, streamToStderr } from '@vurb/inspector';
  *
  * // Launch TUI
  * await commandTop({ pid: 12345 });

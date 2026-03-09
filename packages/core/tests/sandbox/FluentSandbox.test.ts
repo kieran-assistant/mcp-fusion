@@ -7,10 +7,10 @@
  *   - .sandboxed() propagates config to GroupedToolBuilder
  *   - HATEOAS auto-prompting: description includes system instruction
  *   - Zero overhead when .sandboxed() is NOT used
- *   - initFusion().sandbox() creates a SandboxEngine
+ *   - initVurb().sandbox() creates a SandboxEngine
  */
 import { describe, it, expect } from 'vitest';
-import { initFusion, success, type ToolResponse } from '../../src/core/index.js';
+import { initVurb, success, type ToolResponse } from '../../src/core/index.js';
 import { SANDBOX_SYSTEM_INSTRUCTION } from '../../src/sandbox/index.js';
 
 // ============================================================================
@@ -19,7 +19,7 @@ import { SANDBOX_SYSTEM_INSTRUCTION } from '../../src/sandbox/index.js';
 
 describe('FluentToolBuilder: .sandboxed()', () => {
     it('should include HATEOAS system instruction in description', () => {
-        const f = initFusion();
+        const f = initVurb();
 
         const tool = f.query('data.compute')
             .describe('Analyze records')
@@ -34,7 +34,7 @@ describe('FluentToolBuilder: .sandboxed()', () => {
     });
 
     it('should propagate sandbox config to GroupedToolBuilder', () => {
-        const f = initFusion();
+        const f = initVurb();
 
         // handle() returns a GroupedToolBuilder
         const builder = f.query('data.compute')
@@ -50,7 +50,7 @@ describe('FluentToolBuilder: .sandboxed()', () => {
     });
 
     it('should NOT include system instruction when not sandboxed', () => {
-        const f = initFusion();
+        const f = initVurb();
 
         const tool = f.query('users.list')
             .describe('List all users')
@@ -62,7 +62,7 @@ describe('FluentToolBuilder: .sandboxed()', () => {
     });
 
     it('should use default config when called with no args', () => {
-        const f = initFusion();
+        const f = initVurb();
 
         // handle() returns a GroupedToolBuilder
         const builder = f.query('data.filter')
@@ -92,16 +92,16 @@ describe('SANDBOX_SYSTEM_INSTRUCTION', () => {
 });
 
 // ============================================================================
-// initFusion().sandbox() Factory
+// initVurb().sandbox() Factory
 // ============================================================================
 
-describe('initFusion: f.sandbox()', () => {
+describe('initVurb: f.sandbox()', () => {
     // Note: These tests check the factory capability.
     // SandboxEngine construction will throw if isolated-vm is not installed.
     // We test the interface presence without requiring the native module.
 
-    it('should expose sandbox() method on FusionInstance', () => {
-        const f = initFusion();
+    it('should expose sandbox() method on VurbInstance', () => {
+        const f = initVurb();
         expect(typeof f.sandbox).toBe('function');
     });
 });

@@ -6,7 +6,7 @@
  *
  * @example
  * ```typescript
- * import { ToolRegistry, createTool, success } from '@vinkius-core/mcp-fusion';
+ * import { ToolRegistry, createTool, success } from 'vurb';
  *
  * const registry = new ToolRegistry<AppContext>();
  *
@@ -33,7 +33,7 @@ import { type ToolResponse, toolError } from '../response.js';
 import { type ToolBuilder } from '../types.js';
 import { type DebugObserverFn } from '../../observability/DebugObserver.js';
 import { type TelemetrySink } from '../../observability/TelemetryEvent.js';
-import { type FusionTracer, SpanStatusCode } from '../../observability/Tracing.js';
+import { type VurbTracer, SpanStatusCode } from '../../observability/Tracing.js';
 import { filterTools, type ToolFilter } from './ToolFilterEngine.js';
 import {
     attachToServer as attachToServerStrategy,
@@ -77,7 +77,7 @@ export type { AttachOptions, DetachFn } from '../../server/ServerAttachment.js';
 export class ToolRegistry<TContext = void> {
     private readonly _builders = new Map<string, ToolBuilder<TContext>>();
     private _debug?: DebugObserverFn;
-    private _tracer?: FusionTracer;
+    private _tracer?: VurbTracer;
     private _telemetrySink?: TelemetrySink;
 
     /**
@@ -210,7 +210,7 @@ export class ToolRegistry<TContext = void> {
         if (!builder) {
             if (this._tracer) {
                 const span = this._tracer.startSpan(`mcp.tool.${name}`, {
-                    attributes: { 'mcp.system': 'fusion', 'mcp.tool': name, 'mcp.error_type': 'unknown_tool' },
+                    attributes: { 'mcp.system': 'vurb', 'mcp.tool': name, 'mcp.error_type': 'unknown_tool' },
                 });
                 span.setStatus({ code: SpanStatusCode.UNSET, message: `Unknown tool: "${name}"` });
                 span.end();
@@ -292,7 +292,7 @@ export class ToolRegistry<TContext = void> {
      */
     enableDebug(observer: DebugObserverFn): void {
         if (this._tracer) {
-            console.warn('[mcp-fusion] Both tracing and debug are enabled. Tracing takes precedence; debug events will not be emitted.');
+            console.warn('[vurb] Both tracing and debug are enabled. Tracing takes precedence; debug events will not be emitted.');
         }
         this._debug = observer;
         for (const builder of this._builders.values()) {
@@ -314,29 +314,29 @@ export class ToolRegistry<TContext = void> {
      * **Important**: When both `enableDebug()` and `enableTracing()` are active,
      * tracing takes precedence and debug events are NOT emitted from tool builders.
      *
-     * @param tracer - A {@link FusionTracer} (or OTel `Tracer`) instance
+     * @param tracer - A {@link VurbTracer} (or OTel `Tracer`) instance
      *
      * @example
      * ```typescript
      * import { trace } from '@opentelemetry/api';
      *
-     * const tracer = trace.getTracer('mcp-fusion');
+     * const tracer = trace.getTracer('vurb');
      * registry.enableTracing(tracer);
      * // Now ALL tools + registry routing emit OTel spans
      * ```
      *
-     * @see {@link FusionTracer} for the tracer interface contract
+     * @see {@link VurbTracer} for the tracer interface contract
      * @see {@link SpanStatusCode} for status code semantics
      */
-    enableTracing(tracer: FusionTracer): void {
+    enableTracing(tracer: VurbTracer): void {
         if (this._debug) {
-            console.warn('[mcp-fusion] Both tracing and debug are enabled. Tracing takes precedence; debug events will not be emitted.');
+            console.warn('[vurb] Both tracing and debug are enabled. Tracing takes precedence; debug events will not be emitted.');
         }
         this._tracer = tracer;
         for (const builder of this._builders.values()) {
             // Duck-type: call .tracing() if it exists on the builder
             if ('tracing' in builder && typeof (builder as { tracing: unknown }).tracing === 'function') {
-                (builder as { tracing: (t: FusionTracer) => void }).tracing(tracer);
+                (builder as { tracing: (t: VurbTracer) => void }).tracing(tracer);
             }
         }
     }
@@ -368,7 +368,7 @@ export class ToolRegistry<TContext = void> {
             (builder as { debug: (fn: DebugObserverFn) => void }).debug(this._debug);
         }
         if (this._tracer && 'tracing' in builder && typeof (builder as { tracing: unknown }).tracing === 'function') {
-            (builder as { tracing: (t: FusionTracer) => void }).tracing(this._tracer);
+            (builder as { tracing: (t: VurbTracer) => void }).tracing(this._tracer);
         }
         if (this._telemetrySink && 'telemetry' in builder && typeof (builder as { telemetry: unknown }).telemetry === 'function') {
             (builder as { telemetry: (s: TelemetrySink) => void }).telemetry(this._telemetrySink);

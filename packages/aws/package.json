@@ -1,7 +1,7 @@
 {
-  "name": "@vinkius-core/mcp-fusion-aws",
+  "name": "@vurb/aws",
   "version": "3.1.31",
-  "description": "AWS Lambda & Step Functions connector for MCP Fusion. Auto-discovers tagged resources and produces GroupedToolBuilders — so AI agents can invoke your cloud functions natively.",
+  "description": "AWS Lambda & Step Functions connector for Vurb. Auto-discovers tagged resources and produces GroupedToolBuilders — so AI agents can invoke your cloud functions natively.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,22 +21,22 @@
     "aws",
     "lambda",
     "step-functions",
-    "mcp-fusion",
+    "vurb",
     "serverless",
     "ai",
     "llm",
     "connector"
   ],
-  "author": "Vinkius Labs",
+  "author": "Renato Marinho",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vinkius-labs/mcp-fusion.git",
+    "url": "git+https://github.com/vinkius-labs/vurb.ts.git",
     "directory": "packages/aws"
   },
   "bugs": {
-    "url": "https://github.com/vinkius-labs/mcp-fusion/issues"
+    "url": "https://github.com/vinkius-labs/vurb.ts/issues"
   },
-  "homepage": "https://mcp-fusion.vinkius.com/",
+  "homepage": "https://vurb.vinkius.com/",
   "files": [
     "dist",
     "README.md"
@@ -50,7 +50,7 @@
   "peerDependencies": {
     "@aws-sdk/client-lambda": "^3.0.0",
     "@aws-sdk/client-sfn": "^3.0.0",
-    "@vinkius-core/mcp-fusion": "^2.0.0"
+    "vurb": "^3.0.0"
   },
   "peerDependenciesMeta": {
     "@aws-sdk/client-lambda": {
@@ -64,7 +64,7 @@
     "@aws-sdk/client-lambda": "^3.0.0",
     "@aws-sdk/client-sfn": "^3.0.0",
     "@types/node": "^25.3.0",
-    "@vinkius-core/mcp-fusion": ">=2.14.0"
+    "vurb": ">=3.0.0"
   },
   "license": "Apache-2.0"
 }

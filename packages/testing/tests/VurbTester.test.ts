@@ -1,5 +1,5 @@
 /**
- * FusionTester Integration Tests
+ * VurbTester Integration Tests
  *
  * Exercises the in-memory MVA lifecycle emulator against a real
  * ToolRegistry with tools, Presenters, middleware, and the Egress Firewall.
@@ -36,9 +36,9 @@ import {
     response,
     ui,
     MVA_META_SYMBOL,
-} from '@vinkius-core/mcp-fusion';
-import type { MiddlewareFn, ToolResponse } from '@vinkius-core/mcp-fusion';
-import { FusionTester, createFusionTester } from '../src/index.js';
+} from 'vurb';
+import type { MiddlewareFn, ToolResponse } from 'vurb';
+import { VurbTester, createVurbTester } from '../src/index.js';
 
 // ── Test Context ─────────────────────────────────────────
 
@@ -253,8 +253,8 @@ const createMockContext = (): TestContext => ({
 
 // ── Tests ────────────────────────────────────────────────
 
-describe('FusionTester', () => {
-    const tester = createFusionTester(registry, {
+describe('VurbTester', () => {
+    const tester = createVurbTester(registry, {
         contextFactory: createMockContext,
     });
 
@@ -262,13 +262,13 @@ describe('FusionTester', () => {
 
     describe('Construction', () => {
         it('should create via factory function', () => {
-            const t = createFusionTester(registry, { contextFactory: createMockContext });
-            expect(t).toBeInstanceOf(FusionTester);
+            const t = createVurbTester(registry, { contextFactory: createMockContext });
+            expect(t).toBeInstanceOf(VurbTester);
         });
 
         it('should create via class constructor', () => {
-            const t = new FusionTester(registry, { contextFactory: createMockContext });
-            expect(t).toBeInstanceOf(FusionTester);
+            const t = new VurbTester(registry, { contextFactory: createMockContext });
+            expect(t).toBeInstanceOf(VurbTester);
         });
     });
 
@@ -483,7 +483,7 @@ describe('FusionTester', () => {
 
         it('should not mutate the original context', async () => {
             const ctx1 = createMockContext();
-            const customTester = createFusionTester(registry, {
+            const customTester = createVurbTester(registry, {
                 contextFactory: () => ctx1,
             });
             await customTester.callAction(
@@ -551,7 +551,7 @@ describe('FusionTester', () => {
 
     describe('Async Context Factory', () => {
         it('should support async contextFactory', async () => {
-            const asyncTester = createFusionTester(registry, {
+            const asyncTester = createVurbTester(registry, {
                 contextFactory: async () => {
                     // Simulate async DB/auth lookup
                     await new Promise(resolve => setTimeout(resolve, 1));

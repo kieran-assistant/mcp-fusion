@@ -1,19 +1,19 @@
 <p align="center">
-  <h1 align="center">@vinkius-core/mcp-fusion-openapi-gen</h1>
+  <h1 align="center">@vurb/openapi-gen</h1>
   <p align="center">
-    <strong>OpenAPI 3.x / Swagger 2.0 → MCP Fusion Server Generator</strong> — Parse any spec, generate a complete MCP server
+    <strong>OpenAPI 3.x / Swagger 2.0 → Vurb.ts Server Generator</strong> — Parse any spec, generate a complete MCP server
   </p>
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@vinkius-core/mcp-fusion-openapi-gen"><img src="https://img.shields.io/npm/v/@vinkius-core/mcp-fusion-openapi-gen?color=blue" alt="npm" /></a>
-  <a href="https://github.com/vinkius-labs/mcp-fusion/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-green" alt="License" /></a>
+  <a href="https://www.npmjs.com/package/@vurb/openapi-gen"><img src="https://img.shields.io/npm/v/@vurb/openapi-gen?color=blue" alt="npm" /></a>
+  <a href="https://github.com/vinkius-labs/vurb.ts/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-green" alt="License" /></a>
   <img src="https://img.shields.io/badge/node-%3E%3D18-brightgreen" alt="Node" />
 </p>
 
 ---
 
-> Parse any **OpenAPI 3.x** or **Swagger 2.0** spec and generate a **complete, ready-to-run MCP Server** powered by MCP Fusion — with Presenters, Tools, ToolRegistry, and server bootstrap. All features configurable via YAML.
+> Parse any **OpenAPI 3.x** or **Swagger 2.0** spec and generate a **complete, ready-to-run MCP Server** powered by Vurb.ts — with Presenters, Tools, ToolRegistry, and server bootstrap. All features configurable via YAML.
 
 ## What It Generates
 
@@ -32,7 +32,7 @@ output/
 └── index.ts               # ToolRegistry + registerAll barrel
 ```
 
-Every file follows the **MVA Convention** — the standard directory structure for MCP Fusion projects.
+Every file follows the **MVA Convention** — the standard directory structure for Vurb.ts projects.
 
 ## Quick Start
 
@@ -85,7 +85,7 @@ server:
 ## Programmatic API
 
 ```typescript
-import { parseOpenAPI, mapEndpoints, emitFiles, mergeConfig } from '@vinkius-core/mcp-fusion-openapi-gen';
+import { parseOpenAPI, mapEndpoints, emitFiles, mergeConfig } from '@vurb/openapi-gen';
 
 const spec = parseOpenAPI(yamlString);
 const mapped = mapEndpoints(spec);
@@ -120,7 +120,7 @@ The converter handles:
 Runtime mode (`loadOpenAPI()`) also accepts Swagger 2.0:
 
 ```typescript
-import { loadOpenAPI } from '@vinkius-core/mcp-fusion-openapi-gen';
+import { loadOpenAPI } from '@vurb/openapi-gen';
 
 // Swagger 2.0 JSON — auto-converted internally
 const tools = loadOpenAPI(swagger2Json, { baseUrl: 'https://petstore.swagger.io/v2' });
@@ -156,21 +156,21 @@ OpenAPI 3.x / Swagger 2.0 Spec (YAML/JSON)
 ## Installation
 
 ```bash
-npm install @vinkius-core/mcp-fusion-openapi-gen
+npm install @vurb/openapi-gen
 ```
 
 ### Peer Dependencies
 
 | Package | Version |
 |---------|---------|
-| `@vinkius-core/mcp-fusion` | `^2.0.0` |
+| `Vurb.ts` | `^2.0.0` |
 | `zod` | `^3.25.1 \|\| ^4.0.0` |
 
 ## Requirements
 
 - **Node.js** ≥ 18.0.0
-- **MCP Fusion** ≥ 2.0.0 (peer dependency)
+- **Vurb.ts** ≥ 2.0.0 (peer dependency)
 
 ## License
 
-[Apache-2.0](https://github.com/vinkius-labs/mcp-fusion/blob/main/LICENSE)
+[Apache-2.0](https://github.com/vinkius-labs/vurb.ts/blob/main/LICENSE)

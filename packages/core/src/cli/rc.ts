@@ -1,5 +1,5 @@
 /**
- * .fusionrc management — local cloud config, .env loading.
+ * .vurbrc management — local cloud config, .env loading.
  * @module
  */
 import { resolve } from 'node:path';
@@ -9,7 +9,7 @@ import { ansi } from './constants.js';
 
 // ─── Constants ───────────────────────────────────────────────────
 
-export const FUSIONRC = '.fusionrc';
+export const VURBRC = '.vurbrc';
 
 // ─── Environment ─────────────────────────────────────────────────
 
@@ -39,26 +39,26 @@ export function loadEnv(cwd: string): void {
 
 // ─── .gitignore ──────────────────────────────────────────────────
 
-/** Ensure .fusionrc is listed in .gitignore. */
+/** Ensure .vurbrc is listed in .gitignore. */
 export function ensureGitignore(cwd: string): void {
     const gitignorePath = resolve(cwd, '.gitignore');
     try {
         const content = existsSync(gitignorePath)
             ? readFileSync(gitignorePath, 'utf-8')
             : '';
-        if (!content.split('\n').some(l => l.trim() === FUSIONRC)) {
+        if (!content.split('\n').some(l => l.trim() === VURBRC)) {
             const nl = content.length > 0 && !content.endsWith('\n') ? '\n' : '';
-            writeFileSync(gitignorePath, `${content}${nl}${FUSIONRC}\n`);
-            process.stderr.write(`  ${ansi.yellow('⚠')} Added ${FUSIONRC} to .gitignore\n`);
+            writeFileSync(gitignorePath, `${content}${nl}${VURBRC}\n`);
+            process.stderr.write(`  ${ansi.yellow('⚠')} Added ${VURBRC} to .gitignore\n`);
         }
     } catch { /* No git project — skip silently */ }
 }
 
 // ─── Read / Write ────────────────────────────────────────────────
 
-/** Read .fusionrc from project root. */
-export function readFusionRc(cwd: string): Partial<RemoteConfig> {
-    const rcPath = resolve(cwd, FUSIONRC);
+/** Read .vurbrc from project root. */
+export function readVurbRc(cwd: string): Partial<RemoteConfig> {
+    const rcPath = resolve(cwd, VURBRC);
     if (!existsSync(rcPath)) return {};
     try {
         return JSON.parse(readFileSync(rcPath, 'utf-8'));
@@ -67,10 +67,10 @@ export function readFusionRc(cwd: string): Partial<RemoteConfig> {
     }
 }
 
-/** Write .fusionrc and ensure .gitignore coverage. */
-export function writeFusionRc(cwd: string, config: Partial<RemoteConfig>): void {
-    const existing = readFusionRc(cwd);
+/** Write .vurbrc and ensure .gitignore coverage. */
+export function writeVurbRc(cwd: string, config: Partial<RemoteConfig>): void {
+    const existing = readVurbRc(cwd);
     const merged = { ...existing, ...config };
-    writeFileSync(resolve(cwd, FUSIONRC), JSON.stringify(merged, null, 2) + '\n');
+    writeFileSync(resolve(cwd, VURBRC), JSON.stringify(merged, null, 2) + '\n');
     ensureGitignore(cwd);
 }

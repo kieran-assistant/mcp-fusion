@@ -1,7 +1,7 @@
 # Authentication Middleware
 
 ::: info Prerequisites
-Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -13,26 +13,26 @@ Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-
 
 ## Introduction {#introduction}
 
-Every production MCP server needs authentication. Without it, anyone with transport access can invoke destructive tools, read sensitive data, or impersonate other tenants. MCP Fusion's middleware system lets you protect tools with a single `.use()` call — no copy-pasting auth checks into every handler.
+Every production MCP server needs authentication. Without it, anyone with transport access can invoke destructive tools, read sensitive data, or impersonate other tenants. Vurb.ts's middleware system lets you protect tools with a single `.use()` call — no copy-pasting auth checks into every handler.
 
-Middleware in MCP Fusion follows the **onion model**: each layer wraps the next, and the returned object gets merged into `ctx` for downstream layers and handlers. Define it once, apply it everywhere.
+Middleware in Vurb.ts follows the **onion model**: each layer wraps the next, and the returned object gets merged into `ctx` for downstream layers and handlers. Define it once, apply it everywhere.
 
 > [!TIP]
-> Need OAuth Device Flow (RFC 8628) instead of raw JWT? Use [@vinkius-core/mcp-fusion-oauth](/oauth) — it provides `createAuthTool()` and `requireAuth()` out of the box. Scaffold with `npx fusion create my-api --vector oauth`.
+> Need OAuth Device Flow (RFC 8628) instead of raw JWT? Use [@vurb/oauth](/oauth) — it provides `createAuthTool()` and `requireAuth()` out of the box. Scaffold with `npx Vurb.ts create my-api --vector oauth`.
 
 ## Defining Middleware {#defining}
 
 Use `f.middleware()` to create a reusable middleware function. It receives the current `ctx` and returns an object to merge into context:
 
 ```typescript
-import { initFusion } from '@vinkius-core/mcp-fusion';
+import { initVurb } from 'Vurb.ts';
 
 interface AppContext {
   token: string;
   db: DatabaseClient;
 }
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 const withAuth = f.middleware(async (ctx) => {
   const user = await verifyJwtToken(ctx.token);
@@ -154,7 +154,7 @@ On serverless, `contextFactory` receives the HTTP request instead:
 ### Vercel — Extract Token from Headers
 
 ```typescript
-import { vercelAdapter } from '@vinkius-core/mcp-fusion-vercel';
+import { vercelAdapter } from '@vurb/vercel';
 
 export const POST = vercelAdapter({
   registry,
@@ -168,7 +168,7 @@ export const POST = vercelAdapter({
 ### Cloudflare Workers — Token + D1 from Env Bindings
 
 ```typescript
-import { cloudflareWorkersAdapter } from '@vinkius-core/mcp-fusion-cloudflare';
+import { cloudflareWorkersAdapter } from '@vurb/cloudflare';
 
 export default cloudflareWorkersAdapter({
   registry,

@@ -1,7 +1,7 @@
 # Runtime Guards
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -15,16 +15,16 @@ Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-f
 
 AI agents can fire tens of tool calls in rapid succession — burst invocations during chain-of-thought reasoning, oversized responses from unbounded queries, duplicate destructive calls when self-correcting. Without protection, a single LLM session can exhaust your database pool, crash Node.js with a 50MB response, or double-delete a user.
 
-MCP Fusion provides three built-in runtime guards. Each has zero overhead when not configured — no conditionals in the hot path.
+Vurb.ts provides three built-in runtime guards. Each has zero overhead when not configured — no conditionals in the hot path.
 
 ## Concurrency Guard {#concurrency}
 
 Limits simultaneous executions per tool with a semaphore, backpressure queue, and load shedding:
 
 ```typescript
-import { initFusion } from '@vinkius-core/mcp-fusion';
+import { initVurb } from 'Vurb.ts';
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 const heavyReport = f.query('analytics.heavy_report')
   .describe('Generate a comprehensive analytics report')
@@ -73,7 +73,7 @@ You MUST use pagination (limit/offset) or filters to retrieve smaller result set
 Both truncate at different layers. Use both for defense in depth:
 
 ```typescript
-import { createPresenter, t } from '@vinkius-core/mcp-fusion';
+import { createPresenter, t } from 'Vurb.ts';
 
 // Domain guard — intelligent truncation with custom message
 const UserPresenter = createPresenter('User')
@@ -135,9 +135,9 @@ const analyticsQuery = f.query('analytics.query')
 
 ```typescript
 import { describe, it, expect } from 'vitest';
-import { initFusion, success } from '@vinkius-core/mcp-fusion';
+import { initVurb, success } from 'Vurb.ts';
 
-const f = initFusion<void>();
+const f = initVurb<void>();
 
 describe('Runtime Guards', () => {
   it('load-sheds when at capacity', async () => {

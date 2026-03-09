@@ -1,13 +1,13 @@
 ---
 title: Inspector — Real-Time Dashboard
-description: Zero-overhead real-time terminal dashboard for MCP Fusion servers. Connects via Shadow Socket (IPC) — no stdio interference, no port conflicts, no agent disruption.
+description: Zero-overhead real-time terminal dashboard for Vurb.ts servers. Connects via Shadow Socket (IPC) — no stdio interference, no port conflicts, no agent disruption.
 ---
 
 # Inspector — Real-Time Dashboard
 
-[![npm](https://img.shields.io/npm/v/@vinkius-core/mcp-fusion-inspector?color=blue)](https://www.npmjs.com/package/@vinkius-core/mcp-fusion-inspector) ![node](https://img.shields.io/badge/node-%3E%3D18-brightgreen) ![platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue)
+[![npm](https://img.shields.io/npm/v/@vurb/inspector?color=blue)](https://www.npmjs.com/package/@vurb/inspector) ![node](https://img.shields.io/badge/node-%3E%3D18-brightgreen) ![platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue)
 
-> Zero-overhead observability for MCP Fusion servers. Connects via **Shadow Socket** (IPC) — no stdio interference, no port conflicts, no agent disruption.
+> Zero-overhead observability for Vurb.ts servers. Connects via **Shadow Socket** (IPC) — no stdio interference, no port conflicts, no agent disruption.
 
 ## Why Inspector?
 
@@ -17,31 +17,31 @@ MCP servers communicate over **stdio**, which means traditional debugging tools 
 ┌─────────────────────────────────────────────┐
 │  MCP Client (Claude, Cursor, VS Code, etc.) │
 │         ↕ stdio (MCP protocol)              │
-│  MCP Fusion Server                          │
+│  Vurb.ts Server                          │
 │         ↕ Shadow Socket (IPC)               │
 │  Inspector TUI / stderr logger              │
 └─────────────────────────────────────────────┘
 ```
 
-**Shadow Socket** uses Named Pipes on Windows (`\\.\pipe\mcp-fusion-{hash}`) and Unix Domain Sockets on macOS/Linux (`/tmp/mcp-fusion-{hash}.sock`). The socket path is **deterministic** — derived from a SHA-256 hash of the server's working directory — so the same project always gets the same pipe, even across restarts.
+**Shadow Socket** uses Named Pipes on Windows (`\\.\pipe\vurb-{hash}`) and Unix Domain Sockets on macOS/Linux (`/tmp/vurb-{hash}.sock`). The socket path is **deterministic** — derived from a SHA-256 hash of the server's working directory — so the same project always gets the same pipe, even across restarts.
 
 ## Quick Start
 
 ```bash
 # Launch interactive TUI (auto-discovers running server)
-npx fusion inspect
+npx Vurb.ts inspect
 
 # Short alias
-npx fusion insp
+npx Vurb.ts insp
 
 # Built-in simulator (no server needed — great for demos)
-npx fusion insp --demo
+npx Vurb.ts insp --demo
 
 # Headless stderr output (ECS / K8s / CI)
-npx fusion insp --out stderr
+npx Vurb.ts insp --out stderr
 
 # Connect to a specific server PID
-npx fusion insp --pid 12345
+npx Vurb.ts insp --pid 12345
 ```
 
 ::: tip Zero Configuration
@@ -52,17 +52,17 @@ When launched without flags, the Inspector **auto-discovers** running servers. I
 
 | Mode | Command | Use Case |
 |------|---------|----------|
-| **Auto-discover** | `fusion inspect` | Default — finds the server automatically |
-| **By PID** | `fusion insp --pid 12345` | Connect to a specific server process |
-| **By path** | `fusion insp --path /tmp/my.sock` | Custom IPC socket/pipe path |
-| **Demo** | `fusion insp --demo` | Built-in simulator, no server needed |
+| **Auto-discover** | `Vurb.ts inspect` | Default — finds the server automatically |
+| **By PID** | `Vurb.ts insp --pid 12345` | Connect to a specific server process |
+| **By path** | `Vurb.ts insp --path /tmp/my.sock` | Custom IPC socket/pipe path |
+| **Demo** | `Vurb.ts insp --demo` | Built-in simulator, no server needed |
 
 ### Auto-Discovery Strategy
 
 The Inspector uses a **hybrid discovery** approach:
 
 1. **Local match** — Computes the deterministic socket path from the current working directory and checks if a server is listening there.
-2. **Registry scan** — If no local match, scans the registry (`$TMPDIR/mcp-fusion-registry/`) for any available server and connects to the first one found.
+2. **Registry scan** — If no local match, scans the registry (`$TMPDIR/vurb-registry/`) for any available server and connects to the first one found.
 3. **Polling** — If no server exists, polls every 2 seconds. When the connection drops, it auto-reconnects transparently.
 
 This design ensures the Inspector works even when your terminal's working directory differs from the server's working directory (e.g., when the IDE launches the server from a different path).
@@ -204,13 +204,13 @@ For non-TTY environments like containers, CI/CD pipelines, and log aggregation s
 
 ```bash
 # Color-coded stderr stream
-fusion insp --out stderr
+Vurb.ts insp --out stderr
 
 # Pipe to file
-fusion insp --out stderr 2> telemetry.log
+Vurb.ts insp --out stderr 2> telemetry.log
 
 # Demo mode with stderr output
-fusion insp --out stderr --demo
+Vurb.ts insp --out stderr --demo
 ```
 
 Headless mode outputs structured event logs to stderr with color-coded prefixes. Respects the `NO_COLOR` environment variable.
@@ -225,7 +225,7 @@ Headless mode outputs structured event logs to stderr with color-coded prefixes.
 
 ## Telemetry Events
 
-The Inspector processes all events emitted by the MCP Fusion pipeline:
+The Inspector processes all events emitted by the Vurb.ts pipeline:
 
 | Event | Source | Description |
 |-------|--------|-------------|
@@ -250,7 +250,7 @@ import {
     commandTop,
     streamToStderr,
     startSimulator,
-} from '@vinkius-core/mcp-fusion-inspector';
+} from '@vurb/inspector';
 
 // Launch the interactive TUI
 await commandTop({ pid: 12345 });
@@ -266,12 +266,12 @@ await bus.close();
 
 ## Enabling Telemetry on Your Server
 
-The Inspector requires telemetry to be enabled on your MCP Fusion server. There are two ways:
+The Inspector requires telemetry to be enabled on your Vurb.ts server. There are two ways:
 
 ### Via `startServer`
 
 ```typescript
-import { startServer, createToolRegistry } from '@vinkius-core/mcp-fusion';
+import { startServer, createToolRegistry } from 'Vurb.ts';
 
 const registry = createToolRegistry();
 // ... register tools ...
@@ -286,7 +286,7 @@ const server = await startServer(registry, {
 For custom setups, create the telemetry bus manually:
 
 ```typescript
-import { createTelemetryBus } from '@vinkius-core/mcp-fusion/observability';
+import { createTelemetryBus } from 'Vurb.ts/observability';
 
 const bus = await createTelemetryBus();
 
@@ -305,12 +305,12 @@ await bus.close();
 ### Inspector doesn't connect
 
 1. **Check if the server is running** with telemetry enabled (`telemetry: true`).
-2. **Try specifying the PID** directly: `fusion insp --pid <server-pid>`.
+2. **Try specifying the PID** directly: `Vurb.ts insp --pid <server-pid>`.
 3. **Check for orphan processes** — old server instances may hold stale pipes:
    ```bash
    # List registry entries
-   ls $TMPDIR/mcp-fusion-registry/   # macOS/Linux
-   dir $env:TEMP\mcp-fusion-registry  # Windows PowerShell
+   ls $TMPDIR/vurb-registry/   # macOS/Linux
+   dir $env:TEMP\vurb-registry  # Windows PowerShell
    ```
 
 ### Orphan processes
@@ -320,7 +320,7 @@ If the IDE closes without killing the server process, orphan servers may remain.
 ```bash
 # Find orphan node processes (look for your server script)
 # macOS/Linux
-ps aux | grep mcp-fusion
+ps aux | grep Vurb.ts
 
 # Windows PowerShell
 Get-Process node | Where-Object { $_.MainWindowTitle -eq '' }
@@ -330,24 +330,24 @@ Get-Process node | Where-Object { $_.MainWindowTitle -eq '' }
 
 | Platform | Socket Type | Path Pattern |
 |----------|-------------|-------------|
-| **Windows** | Named Pipe | `\\.\pipe\mcp-fusion-{hash}` |
-| **macOS** | Unix Domain Socket | `/tmp/mcp-fusion-{hash}.sock` |
-| **Linux** | Unix Domain Socket | `/tmp/mcp-fusion-{hash}.sock` |
+| **Windows** | Named Pipe | `\\.\pipe\vurb-{hash}` |
+| **macOS** | Unix Domain Socket | `/tmp/vurb-{hash}.sock` |
+| **Linux** | Unix Domain Socket | `/tmp/vurb-{hash}.sock` |
 
 The `{hash}` is a deterministic SHA-256 fingerprint of the server's working directory, ensuring each project gets a unique, stable pipe name.
 
 ## Installation
 
 ```bash
-npm install @vinkius-core/mcp-fusion-inspector
+npm install @vurb/inspector
 ```
 
 ### Peer Dependency
 
-Requires `@vinkius-core/mcp-fusion` ≥ 3.0.0 (provides `TelemetryEvent` types and `TelemetryBus`).
+Requires `Vurb.ts` ≥ 3.0.0 (provides `TelemetryEvent` types and `TelemetryBus`).
 
 ## Requirements
 
 - **Node.js** ≥ 18.0.0
 - **Interactive terminal** (for TUI mode) — use `--out stderr` for non-TTY environments
-- **MCP Fusion** ≥ 3.0.0 (peer dependency)
+- **Vurb.ts** ≥ 3.0.0 (peer dependency)

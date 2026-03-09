@@ -22,7 +22,7 @@ export const ansi = {
 
 /** @internal exported for testing */
 const _require = createRequire(import.meta.url);
-export const MCP_FUSION_VERSION: string = (() => {
+export const VURB_VERSION: string = (() => {
     try { return (_require('../../package.json') as { version: string }).version; }
     catch { return '0.0.0'; }
 })();
@@ -39,17 +39,17 @@ export const VALID_VECTORS = ['vanilla', 'prisma', 'n8n', 'openapi', 'oauth'] as
 
 /** @internal exported for testing */
 export const HELP = `
-fusion — MCP Fusion CLI
+vurb — Vurb CLI
 
 USAGE
-  fusion create <name>                Scaffold a new MCP Fusion server
-  fusion dev --server <entry>         Start HMR dev server with auto-reload
-  fusion lock                         Generate or update ${LOCKFILE_NAME}
-  fusion lock --check                 Verify lockfile is up to date (CI gate)
-  fusion deploy                       Bundle, compress & deploy to Edge
-  fusion remote                       Show current remote configuration
-  fusion inspect                      Launch the real-time TUI dashboard
-  fusion insp --demo                  Launch TUI with built-in simulator
+  vurb create <name>                Scaffold a new Vurb server
+  vurb dev --server <entry>         Start HMR dev server with auto-reload
+  vurb lock                         Generate or update ${LOCKFILE_NAME}
+  vurb lock --check                 Verify lockfile is up to date (CI gate)
+  vurb deploy                       Bundle, compress & deploy to Edge
+  vurb remote                       Show current remote configuration
+  vurb inspect                      Launch the real-time TUI dashboard
+  vurb insp --demo                  Launch TUI with built-in simulator
 
 CREATE OPTIONS
   --transport <stdio|sse>  Transport layer (default: stdio)
@@ -64,11 +64,11 @@ DEV OPTIONS
 
 DEPLOY OPTIONS
   --server, -s <path>      Path to server entrypoint (default: auto-detect)
-  --token <token>          Override FUSION_DEPLOY_TOKEN (connection token)
+  --token <token>          Override VURB_DEPLOY_TOKEN (connection token)
 
 REMOTE OPTIONS
-  fusion remote <url>          Override API endpoint (default: Vinkius Cloud)
-  fusion remote --server-id <id>  Set target server UUID
+  vurb remote <url>          Override API endpoint (default: Vinkius Cloud)
+  vurb remote --server-id <id>  Set target server UUID
 
 INSPECTOR OPTIONS
   --demo, -d               Launch with built-in simulator (no server needed)
@@ -85,15 +85,15 @@ GLOBAL
   --help, -h               Show this help message
 
 EXAMPLES
-  fusion create my-server
-  fusion create my-server -y
-  fusion create my-server --vector prisma --transport sse
-  fusion dev --server ./src/server.ts
-  fusion dev --server ./src/server.ts --dir ./src/tools
-  fusion lock --server ./src/server.ts
-  fusion deploy
-  fusion remote --server-id abc-123-def
-  fusion remote http://localhost:8080 --server-id abc-123-def
-  fusion inspect --demo
-  fusion insp --pid 12345
+  vurb create my-server
+  vurb create my-server -y
+  vurb create my-server --vector prisma --transport sse
+  vurb dev --server ./src/server.ts
+  vurb dev --server ./src/server.ts --dir ./src/tools
+  vurb lock --server ./src/server.ts
+  vurb deploy
+  vurb remote --server-id abc-123-def
+  vurb remote http://localhost:8080 --server-id abc-123-def
+  vurb inspect --demo
+  vurb insp --pid 12345
 `.trim();

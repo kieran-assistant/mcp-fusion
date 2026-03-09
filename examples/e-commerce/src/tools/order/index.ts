@@ -4,7 +4,7 @@
  * Demonstrates cross-domain validation, workflow transitions,
  * stock management, and HATEOAS-driven actions.
  */
-import { f } from '../../fusion.js';
+import { f } from '../../vurb.js';
 import { withAuth } from '../../middleware/auth.js';
 import { OrderPresenter } from '../../presenters/OrderPresenter.js';
 import { orderRepo, productRepo, userRepo } from '../../db.js';

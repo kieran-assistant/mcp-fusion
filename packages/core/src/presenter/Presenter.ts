@@ -18,7 +18,7 @@
  *
  * @example
  * ```typescript
- * import { createPresenter, ui } from '@vinkius-core/mcp-fusion';
+ * import { createPresenter, ui } from 'vurb';
  * import { z } from 'zod';
  *
  * export const InvoicePresenter = createPresenter('Invoice')
@@ -62,7 +62,7 @@ import { compileRedactor, type RedactConfig, type RedactFn } from './RedactEngin
 
 // ── Brand ────────────────────────────────────────────────
 
-const PRESENTER_BRAND = 'FusionPresenter' as const;
+const PRESENTER_BRAND = 'VurbPresenter' as const;
 
 /**
  * Check if a value is a {@link Presenter} instance.
@@ -212,7 +212,7 @@ export class Presenter<T> {
      *
      * @example
      * ```typescript
-     * import { createPresenter, t } from '@vinkius-core/mcp-fusion';
+     * import { createPresenter, t } from 'vurb';
      *
      * createPresenter('Invoice')
      *     .schema({
@@ -393,7 +393,7 @@ export class Presenter<T> {
      *
      * @example
      * ```typescript
-     * import { suggest } from '@vinkius-core/mcp-fusion';
+     * import { suggest } from 'vurb';
      *
      * .suggest((inv) => [
      *     suggest('invoices.get', 'View details'),
@@ -766,13 +766,13 @@ export class Presenter<T> {
      */
     private _applyRedaction(data: T | T[], isArray: boolean): T | T[] {
         // Lazy recompilation: if redactPII was called before fast-redact loaded
-        // (e.g., top-level Presenter declared before initFusion()), retry now.
+        // (e.g., top-level Presenter declared before initVurb()), retry now.
         if (!this._compiledRedactor && this._redactConfig) {
             this._compiledRedactor = compileRedactor(this._redactConfig);
             if (!this._compiledRedactor) {
                 console.warn(
-                    `[mcp-fusion] Presenter "${this.name}": PII redaction configured but fast-redact is not available. ` +
-                    `Data will pass through WITHOUT redaction. Ensure initFusion() completes before .make() is called, ` +
+                    `[vurb] Presenter "${this.name}": PII redaction configured but fast-redact is not available. ` +
+                    `Data will pass through WITHOUT redaction. Ensure initVurb() completes before .make() is called, ` +
                     `or install fast-redact as a dependency.`,
                 );
             }
@@ -905,7 +905,7 @@ export class Presenter<T> {
  *
  * @example
  * ```typescript
- * import { createPresenter, ui } from '@vinkius-core/mcp-fusion';
+ * import { createPresenter, ui } from 'vurb';
  *
  * export const TaskPresenter = createPresenter('Task')
  *     .schema(taskSchema)

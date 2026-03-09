@@ -6,7 +6,7 @@
  *
  * @example
  * ```typescript
- * import { createToolAnnotations } from '@vinkius-core/mcp-fusion';
+ * import { createToolAnnotations } from 'vurb';
  *
  * const annotations = createToolAnnotations({
  *     title: 'File Reader',

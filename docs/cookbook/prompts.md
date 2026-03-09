@@ -1,7 +1,7 @@
 # Prompts
 
 ::: info Prerequisites
-Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -22,9 +22,9 @@ Think of prompts as slash commands: `/code-review --language=typescript --focus=
 Use `f.prompt(name)` to start a chainable builder. Arguments use the same declarative syntax as tool parameters — no Zod needed for simple cases:
 
 ```typescript
-import { initFusion, PromptMessage } from '@vinkius-core/mcp-fusion';
+import { initVurb, PromptMessage } from 'Vurb.ts';
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 const codeReview = f.prompt('code-review')
   .title('Code Review')
@@ -95,7 +95,7 @@ const debugUI = f.prompt('debug-ui')
 The real power of prompts comes when you connect them to your MVA Presenters. `PromptMessage.fromView()` decomposes a Presenter's output into prompt messages — the same schema, rules, and affordances that your tools use:
 
 ```typescript
-import { createPresenter, PromptMessage, t } from '@vinkius-core/mcp-fusion';
+import { createPresenter, PromptMessage, t } from 'Vurb.ts';
 
 const ProjectPresenter = createPresenter('Project')
   .schema({

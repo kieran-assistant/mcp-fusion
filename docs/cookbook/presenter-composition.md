@@ -1,7 +1,7 @@
 # Presenter Composition
 
 ::: info Prerequisites
-Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -12,7 +12,7 @@ Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-
 
 ## Introduction {#introduction}
 
-Real-world data has relationships. An invoice has a client. A project has tasks. An order has line items and a shipping address. Instead of flattening everything into one giant schema, MCP Fusion lets you **compose Presenters** — each entity gets its own schema, rules, and affordances, and they merge automatically when embedded.
+Real-world data has relationships. An invoice has a client. A project has tasks. An order has line items and a shipping address. Instead of flattening everything into one giant schema, Vurb.ts lets you **compose Presenters** — each entity gets its own schema, rules, and affordances, and they merge automatically when embedded.
 
 Define `ClientPresenter` once. Embed it in `InvoicePresenter`, `OrderPresenter`, and `ProjectPresenter`. Change a rule on the client — it updates everywhere.
 
@@ -21,7 +21,7 @@ Define `ClientPresenter` once. Embed it in `InvoicePresenter`, `OrderPresenter`,
 Use `.embed(key, ChildPresenter)` to declare that a field in the handler's output should be processed by a child Presenter:
 
 ```typescript
-import { createPresenter, t } from '@vinkius-core/mcp-fusion';
+import { createPresenter, t } from 'Vurb.ts';
 
 // ── Client Presenter (reusable) ────────────────────────────
 const ClientPresenter = createPresenter('Client')

@@ -27,7 +27,7 @@ import { connect, type Socket } from 'node:net';
 import { Writable } from 'node:stream';
 import { startSimulator } from '../src/Simulator.js';
 import { parseInspectorArgs } from '../src/cli/inspector.js';
-import type { TelemetryEvent, TelemetryBusInstance } from '@vinkius-core/mcp-fusion';
+import type { TelemetryEvent, TelemetryBusInstance } from 'vurb';
 import { platform } from 'node:os';
 
 // ─── Helpers ────────────────────────────────────────────────────────
@@ -75,8 +75,8 @@ let _testPathCounter = 0;
 function uniqueTestPath(): string {
     const id = `${process.pid}-${Date.now()}-${_testPathCounter++}`;
     return platform() === 'win32'
-        ? `\\\\.\\pipe\\mcp-fusion-e2etest-${id}`
-        : `/tmp/mcp-fusion-e2etest-${id}.sock`;
+        ? `\\\\.\\pipe\\vurb-e2etest-${id}`
+        : `/tmp/vurb-e2etest-${id}.sock`;
 }
 
 // ============================================================================
@@ -157,7 +157,7 @@ describe('E2E — Topology Handshake', () => {
         const events = await collectEventsFromIPC(sim.path, 500);
 
         const topo = events[0] as any;
-        expect(topo.serverName).toBe('Fusion Simulator');
+        expect(topo.serverName).toBe('vurb Simulator');
         expect(topo.pid).toBe(process.pid);
         expect(Array.isArray(topo.tools)).toBe(true);
         expect(topo.tools.length).toBe(6);

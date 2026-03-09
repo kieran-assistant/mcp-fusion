@@ -1,7 +1,7 @@
 # Tracing & Observability
 
 ::: info Prerequisites
-Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -12,7 +12,7 @@ Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-
 
 ## Introduction {#introduction}
 
-When an agent chains five tool calls across three middleware layers, debugging failures requires knowing *where* time was spent and *where* errors occurred. MCP Fusion supports two observability modes: **OpenTelemetry tracing** and a lightweight **debug observer** — both configured via `attachToServer()`.
+When an agent chains five tool calls across three middleware layers, debugging failures requires knowing *where* time was spent and *where* errors occurred. Vurb.ts supports two observability modes: **OpenTelemetry tracing** and a lightweight **debug observer** — both configured via `attachToServer()`.
 
 ## Enabling Tracing {#enabling}
 
@@ -21,7 +21,7 @@ Pass an OpenTelemetry `Tracer` instance to `attachToServer()`. The framework aut
 ```typescript
 import { trace } from '@opentelemetry/api';
 
-const tracer = trace.getTracer('mcp-fusion');
+const tracer = trace.getTracer('Vurb.ts');
 
 registry.attachToServer(server, {
   contextFactory: createContext,
@@ -29,7 +29,7 @@ registry.attachToServer(server, {
 });
 ```
 
-Every tool call now emits an OTel span with `mcp.system: fusion` and `mcp.tool: <name>` attributes. Unknown tool routing errors get their own spans too.
+Every tool call now emits an OTel span with `mcp.system: Vurb.ts` and `mcp.tool: <name>` attributes. Unknown tool routing errors get their own spans too.
 
 You can also enable tracing directly on the registry:
 
@@ -40,14 +40,14 @@ registry.enableTracing(tracer);
 This propagates the tracer to every registered builder via duck-typed `.tracing()` method.
 
 > [!NOTE]
-> MCP Fusion intentionally has zero dependency on `@opentelemetry/api`. The `tracing` option accepts any object that implements the `FusionTracer` interface (same shape as OTel's `Tracer`). Auto-instrumented downstream calls (Prisma, HTTP, Redis) will appear as **siblings**, not children, of the MCP span.
+> Vurb.ts intentionally has zero dependency on `@opentelemetry/api`. The `tracing` option accepts any object that implements the `VurbTracer` interface (same shape as OTel's `Tracer`). Auto-instrumented downstream calls (Prisma, HTTP, Redis) will appear as **siblings**, not children, of the MCP span.
 
 ## Debug Observer {#debug}
 
 For development, use the lightweight debug observer instead of full OTel:
 
 ```typescript
-import { createDebugObserver } from '@vinkius-core/mcp-fusion';
+import { createDebugObserver } from 'Vurb.ts';
 
 const debug = createDebugObserver();
 

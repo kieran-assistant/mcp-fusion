@@ -1,7 +1,7 @@
 /**
  * DevServer — HMR-enabled MCP Development Server
  *
- * The "killer feature" for MCP DX: `fusion dev` starts a
+ * The "killer feature" for MCP DX: `vurb dev` starts a
  * development server that watches for file changes and performs
  * automatic Hot Module Replacement without requiring the LLM client
  * (Claude Desktop, Cursor, etc.) to be restarted.
@@ -18,16 +18,16 @@
  *
  * ```bash
  * # Auto-detects src/server.ts
- * fusion dev
+ * vurb dev
  *
  * # Explicit entrypoint + custom watch dir
- * fusion dev --server ./src/server.ts --dir ./src/tools
+ * vurb dev --server ./src/server.ts --dir ./src/tools
  * ```
  *
  * @example
  * ```typescript
  * // Using the programmatic API
- * import { createDevServer } from '@vinkius-core/mcp-fusion/dev';
+ * import { createDevServer } from 'vurb/dev';
  *
  * const devServer = createDevServer({
  *   dir: './src/tools',
@@ -227,7 +227,7 @@ export function cacheBustUrl(filePath: string): string {
  *
  * @example
  * ```typescript
- * import { createDevServer, autoDiscover, ToolRegistry } from '@vinkius-core/mcp-fusion';
+ * import { createDevServer, autoDiscover, ToolRegistry } from 'vurb';
  *
  * const devServer = createDevServer({
  *   dir: './src/tools',
@@ -278,7 +278,7 @@ export function createDevServer(config: DevServerConfig): DevServer {
         } catch (err) {
             const message = err instanceof Error ? err.message : String(err);
             // eslint-disable-next-line no-console
-            console.error(`[fusion dev] Reload failed: ${message}`);
+            console.error(`[vurb dev] Reload failed: ${message}`);
             return;
         }
 
@@ -322,7 +322,7 @@ export function createDevServer(config: DevServerConfig): DevServer {
             if (process.platform === 'linux' && parseInt(process.versions.node, 10) < 20) {
                 // eslint-disable-next-line no-console
                 console.warn(
-                    '[fusion dev] Warning: recursive fs.watch() is not fully supported on Linux with Node.js < 20. ' +
+                    '[vurb dev] Warning: recursive fs.watch() is not fully supported on Linux with Node.js < 20. ' +
                     'File changes in subdirectories may not be detected. Consider upgrading to Node.js 20+.',
                 );
             }
@@ -347,11 +347,11 @@ export function createDevServer(config: DevServerConfig): DevServer {
 
             watcher.on('error', (err) => {
                 // eslint-disable-next-line no-console
-                console.error(`[fusion dev] Watcher error: ${err instanceof Error ? err.message : String(err)}`);
+                console.error(`[vurb dev] Watcher error: ${err instanceof Error ? err.message : String(err)}`);
             });
 
             // eslint-disable-next-line no-console
-            console.log(`[fusion dev] Watching ${relative(process.cwd(), absoluteDir)} for changes...`);
+            console.log(`[vurb dev] Watching ${relative(process.cwd(), absoluteDir)} for changes...`);
         },
 
         stop(): void {
@@ -359,7 +359,7 @@ export function createDevServer(config: DevServerConfig): DevServer {
             watcher?.close();
             watcher = undefined;
             // eslint-disable-next-line no-console
-            console.log(`[fusion dev] Stopped. ${reloadCount} reload(s) performed.`);
+            console.log(`[vurb dev] Stopped. ${reloadCount} reload(s) performed.`);
         },
 
         async reload(reason?: string): Promise<void> {

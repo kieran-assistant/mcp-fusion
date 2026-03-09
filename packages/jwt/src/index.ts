@@ -1,12 +1,12 @@
 /**
- * @vinkius-core/mcp-fusion-jwt — JWT Verification for MCP Servers
+ * @vurb/jwt — JWT Verification for MCP Servers
  *
  * Standards-compliant JWT verification with jose integration,
- * native HS256 fallback, and mcp-fusion middleware.
+ * native HS256 fallback, and vurb middleware.
  *
  * @example
  * ```ts
- * import { JwtVerifier, requireJwt, createJwtAuthTool } from '@vinkius-core/mcp-fusion-jwt';
+ * import { JwtVerifier, requireJwt, createJwtAuthTool } from '@vurb/jwt';
  *
  * // Middleware
  * const projects = createTool('projects')
@@ -18,7 +18,7 @@
  * const payload = await verifier.verify(token);
  * ```
  *
- * @module @vinkius-core/mcp-fusion-jwt
+ * @module @vurb/jwt
  * @author Vinkius Labs
  * @license Apache-2.0
  */

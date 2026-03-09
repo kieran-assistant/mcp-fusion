@@ -69,7 +69,7 @@ function buildFileList(config: ProjectConfig): ScaffoldFile[] {
     }
 
     // ── Core source ──────────────────────────────────────
-    files.push({ path: 'src/fusion.ts', content: tpl.fusionTs() });
+    files.push({ path: 'src/vurb.ts', content: tpl.vurbTs() });
     files.push({ path: 'src/context.ts', content: tpl.contextTs() });
     files.push({ path: 'src/server.ts', content: tpl.serverTs(config) });
 

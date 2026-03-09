@@ -1,5 +1,5 @@
 /**
- * CLI `fusion create` — Integration Tests
+ * CLI `vurb create` — Integration Tests
  *
  * Tests the create command pipeline end-to-end:
  *   - `parseArgs` — create command argument parsing
@@ -26,9 +26,9 @@ import {
     ProgressTracker,
     createDefaultReporter,
     commandCreate,
-    MCP_FUSION_VERSION,
-} from '../../src/cli/fusion.js';
-import type { CliArgs } from '../../src/cli/fusion.js';
+    VURB_VERSION,
+} from '../../src/cli/vurb.js';
+import type { CliArgs } from '../../src/cli/vurb.js';
 import { scaffold } from '../../src/cli/scaffold.js';
 import type { ProjectConfig, IngestionVector, TransportLayer } from '../../src/cli/types.js';
 import * as tpl from '../../src/cli/templates/index.js';
@@ -38,7 +38,7 @@ import * as tpl from '../../src/cli/templates/index.js';
 // ============================================================================
 
 function tempDir(): string {
-    const dir = join(tmpdir(), `fusion-create-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+    const dir = join(tmpdir(), `vurb-create-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
     mkdirSync(dir, { recursive: true });
     return dir;
 }
@@ -80,48 +80,48 @@ function baseCliArgs(): CliArgs {
 
 describe('parseArgs — create command', () => {
     it('parses basic create command with project name', () => {
-        const args = parseArgs(['node', 'fusion', 'create', 'my-server']);
+        const args = parseArgs(['node', 'vurb', 'create', 'my-server']);
         expect(args.command).toBe('create');
         expect(args.projectName).toBe('my-server');
     });
 
     it('parses create without project name', () => {
-        const args = parseArgs(['node', 'fusion', 'create']);
+        const args = parseArgs(['node', 'vurb', 'create']);
         expect(args.command).toBe('create');
         expect(args.projectName).toBeUndefined();
     });
 
     it('parses --yes / -y flag', () => {
-        const args1 = parseArgs(['node', 'fusion', 'create', 'demo', '-y']);
+        const args1 = parseArgs(['node', 'vurb', 'create', 'demo', '-y']);
         expect(args1.yes).toBe(true);
 
-        const args2 = parseArgs(['node', 'fusion', 'create', 'demo', '--yes']);
+        const args2 = parseArgs(['node', 'vurb', 'create', 'demo', '--yes']);
         expect(args2.yes).toBe(true);
     });
 
     it('parses --transport flag', () => {
-        const args = parseArgs(['node', 'fusion', 'create', 'srv', '--transport', 'sse']);
+        const args = parseArgs(['node', 'vurb', 'create', 'srv', '--transport', 'sse']);
         expect(args.transport).toBe('sse');
     });
 
     it('parses --vector flag for each valid value', () => {
         for (const v of ['vanilla', 'prisma', 'n8n', 'openapi', 'oauth']) {
-            const args = parseArgs(['node', 'fusion', 'create', 'srv', '--vector', v]);
+            const args = parseArgs(['node', 'vurb', 'create', 'srv', '--vector', v]);
             expect(args.vector).toBe(v);
         }
     });
 
     it('parses --testing and --no-testing flags', () => {
-        const a1 = parseArgs(['node', 'fusion', 'create', 'srv', '--testing']);
+        const a1 = parseArgs(['node', 'vurb', 'create', 'srv', '--testing']);
         expect(a1.testing).toBe(true);
 
-        const a2 = parseArgs(['node', 'fusion', 'create', 'srv', '--no-testing']);
+        const a2 = parseArgs(['node', 'vurb', 'create', 'srv', '--no-testing']);
         expect(a2.testing).toBe(false);
     });
 
     it('parses all create flags combined', () => {
         const args = parseArgs([
-            'node', 'fusion', 'create', 'my-tool',
+            'node', 'vurb', 'create', 'my-tool',
             '--transport', 'sse',
             '--vector', 'n8n',
             '--no-testing',
@@ -136,7 +136,7 @@ describe('parseArgs — create command', () => {
     });
 
     it('defaults create-specific fields to undefined/false when absent', () => {
-        const args = parseArgs(['node', 'fusion', 'create']);
+        const args = parseArgs(['node', 'vurb', 'create']);
         expect(args.projectName).toBeUndefined();
         expect(args.transport).toBeUndefined();
         expect(args.vector).toBeUndefined();
@@ -145,20 +145,20 @@ describe('parseArgs — create command', () => {
     });
 
     it('does not confuse lock flags with create flags', () => {
-        const args = parseArgs(['node', 'fusion', 'lock', '--check']);
+        const args = parseArgs(['node', 'vurb', 'lock', '--check']);
         expect(args.command).toBe('lock');
         expect(args.check).toBe(true);
         expect(args.yes).toBe(false);
     });
 
     it('does not treat flags as project name', () => {
-        const args = parseArgs(['node', 'fusion', 'create', '--transport', 'stdio']);
+        const args = parseArgs(['node', 'vurb', 'create', '--transport', 'stdio']);
         expect(args.projectName).toBeUndefined();
         expect(args.transport).toBe('stdio');
     });
 
     it('ignores extra positional args after project name', () => {
-        const args = parseArgs(['node', 'fusion', 'create', 'my-server', 'extra-arg']);
+        const args = parseArgs(['node', 'vurb', 'create', 'my-server', 'extra-arg']);
         expect(args.projectName).toBe('my-server');
     });
 });
@@ -287,7 +287,7 @@ describe('collectConfig — fast-path (--yes)', () => {
 
 describe('HELP string', () => {
     it('includes create command', () => {
-        expect(HELP).toContain('fusion create');
+        expect(HELP).toContain('vurb create');
     });
 
     it('includes all create options', () => {
@@ -300,13 +300,13 @@ describe('HELP string', () => {
     });
 
     it('includes create examples', () => {
-        expect(HELP).toContain('fusion create my-server');
-        expect(HELP).toContain('fusion create my-server -y');
+        expect(HELP).toContain('vurb create my-server');
+        expect(HELP).toContain('vurb create my-server -y');
         expect(HELP).toContain('--vector prisma');
     });
 
     it('still includes lock command', () => {
-        expect(HELP).toContain('fusion lock');
+        expect(HELP).toContain('vurb lock');
         expect(HELP).toContain('--server');
         expect(HELP).toContain('--check');
     });
@@ -339,7 +339,7 @@ describe('Template output — core files', () => {
 
         it('includes core dependencies', () => {
             const pkg = JSON.parse(tpl.packageJson(baseConfig));
-            expect(pkg.dependencies['@vinkius-core/mcp-fusion']).toBeDefined();
+            expect(pkg.dependencies['vurb']).toBeDefined();
             expect(pkg.dependencies['@modelcontextprotocol/sdk']).toBeDefined();
             expect(pkg.dependencies['zod']).toBeDefined();
         });
@@ -353,15 +353,15 @@ describe('Template output — core files', () => {
 
         it('includes scripts', () => {
             const pkg = JSON.parse(tpl.packageJson(baseConfig));
-            expect(pkg.scripts.dev).toBe('fusion dev');
-            expect(pkg.scripts.start).toBe('fusion dev');
+            expect(pkg.scripts.dev).toBe('vurb dev');
+            expect(pkg.scripts.start).toBe('vurb dev');
             expect(pkg.scripts.build).toBe('tsc');
         });
 
         it('includes test deps when testing=true', () => {
             const pkg = JSON.parse(tpl.packageJson({ ...baseConfig, testing: true }));
             expect(pkg.devDependencies['vitest']).toBeDefined();
-            expect(pkg.devDependencies['@vinkius-core/mcp-fusion-testing']).toBeDefined();
+            expect(pkg.devDependencies['@vurb/testing']).toBeDefined();
             expect(pkg.scripts.test).toBe('vitest run');
             expect(pkg.scripts['test:watch']).toBe('vitest');
         });
@@ -369,14 +369,14 @@ describe('Template output — core files', () => {
         it('omits test deps when testing=false', () => {
             const pkg = JSON.parse(tpl.packageJson({ ...baseConfig, testing: false }));
             expect(pkg.devDependencies['vitest']).toBeUndefined();
-            expect(pkg.devDependencies['@vinkius-core/mcp-fusion-testing']).toBeUndefined();
+            expect(pkg.devDependencies['@vurb/testing']).toBeUndefined();
             expect(pkg.scripts.test).toBeUndefined();
         });
 
         it('includes database deps for database vector', () => {
             const pkg = JSON.parse(tpl.packageJson({ ...baseConfig, vector: 'prisma' }));
             expect(pkg.dependencies['@prisma/client']).toBeDefined();
-            expect(pkg.dependencies['@vinkius-core/mcp-fusion-prisma-gen']).toBeDefined();
+            expect(pkg.dependencies['@vurb/prisma-gen']).toBeDefined();
             expect(pkg.devDependencies['prisma']).toBeDefined();
             expect(pkg.scripts['db:generate']).toBeDefined();
             expect(pkg.scripts['db:push']).toBeDefined();
@@ -384,25 +384,25 @@ describe('Template output — core files', () => {
 
         it('includes workflow deps for workflow vector', () => {
             const pkg = JSON.parse(tpl.packageJson({ ...baseConfig, vector: 'n8n' }));
-            expect(pkg.dependencies['@vinkius-core/mcp-fusion-n8n']).toBeDefined();
+            expect(pkg.dependencies['@vurb/n8n']).toBeDefined();
         });
 
         it('includes openapi deps for openapi vector', () => {
             const pkg = JSON.parse(tpl.packageJson({ ...baseConfig, vector: 'openapi' }));
-            expect(pkg.dependencies['@vinkius-core/mcp-fusion-openapi-gen']).toBeDefined();
+            expect(pkg.dependencies['@vurb/openapi-gen']).toBeDefined();
         });
 
         it('includes oauth deps for oauth vector', () => {
             const pkg = JSON.parse(tpl.packageJson({ ...baseConfig, vector: 'oauth' }));
-            expect(pkg.dependencies['@vinkius-core/mcp-fusion-oauth']).toBeDefined();
+            expect(pkg.dependencies['@vurb/oauth']).toBeDefined();
         });
 
         it('does not include vector deps for blank', () => {
             const pkg = JSON.parse(tpl.packageJson(baseConfig));
             expect(pkg.dependencies['@prisma/client']).toBeUndefined();
-            expect(pkg.dependencies['mcp-fusion-n8n']).toBeUndefined();
-            expect(pkg.dependencies['mcp-fusion-openapi-gen']).toBeUndefined();
-            expect(pkg.dependencies['@vinkius-core/mcp-fusion-oauth']).toBeUndefined();
+            expect(pkg.dependencies['vurb-n8n']).toBeUndefined();
+            expect(pkg.dependencies['@vurb/openapi-gen']).toBeUndefined();
+            expect(pkg.dependencies['@vurb/oauth']).toBeUndefined();
         });
 
         it('ends with newline', () => {
@@ -479,14 +479,14 @@ describe('Template output — core files', () => {
 });
 
 describe('Template output — source files', () => {
-    // ── fusionTs ─────────────────────────────────────────────
+    // ── vurbTs ─────────────────────────────────────────────
 
-    describe('fusionTs', () => {
-        it('imports initFusion and exports f', () => {
-            const content = tpl.fusionTs();
-            expect(content).toContain("import { initFusion } from '@vinkius-core/mcp-fusion'");
+    describe('vurbTs', () => {
+        it('imports initVurb and exports f', () => {
+            const content = tpl.vurbTs();
+            expect(content).toContain("import { initVurb } from 'vurb'");
             expect(content).toContain("import type { AppContext } from './context.js'");
-            expect(content).toContain('export const f = initFusion<AppContext>()');
+            expect(content).toContain('export const f = initVurb<AppContext>()');
         });
     });
 
@@ -515,12 +515,12 @@ describe('Template output — source files', () => {
         it('uses startServer for stdio', () => {
             const content = tpl.serverTs(stdioConfig);
             expect(content).toContain('startServer');
-            expect(content).not.toContain('SSEServerTransport');
+            expect(content).not.toContain('StreamableHTTPServerTransport');
         });
 
-        it('uses SSEServerTransport for sse', () => {
+        it('uses StreamableHTTPServerTransport for sse', () => {
             const content = tpl.serverTs(sseConfig);
-            expect(content).toContain('SSEServerTransport');
+            expect(content).toContain('StreamableHTTPServerTransport');
             expect(content).not.toContain('startServer');
         });
 
@@ -530,9 +530,9 @@ describe('Template output — source files', () => {
             expect(content).toContain('./tools');
         });
 
-        it('uses f.registry() from fusion.ts', () => {
+        it('uses f.registry() from vurb.ts', () => {
             const content = tpl.serverTs(stdioConfig);
-            expect(content).toContain("import { f } from './fusion.js'");
+            expect(content).toContain("import { f } from './vurb.js'");
             expect(content).toContain('f.registry()');
         });
 
@@ -555,9 +555,9 @@ describe('Template output — source files', () => {
             expect(content).toContain("f.query('system.health')");
         });
 
-        it('imports from fusion.js and Presenter', () => {
+        it('imports from vurb.js and Presenter', () => {
             const content = tpl.healthToolTs();
-            expect(content).toContain("import { f } from '../../fusion.js'");
+            expect(content).toContain("import { f } from '../../vurb.js'");
             expect(content).toContain("import { SystemPresenter } from '../../presenters/SystemPresenter.js'");
         });
 
@@ -690,7 +690,7 @@ describe('Template output — source files', () => {
         it('includes Quick Start and testing section', () => {
             const content = tpl.readme(config);
             expect(content).toContain('npm install');
-            expect(content).toContain('fusion dev');
+            expect(content).toContain('vurb dev');
             expect(content).toContain('npm test');
         });
 
@@ -701,7 +701,7 @@ describe('Template output — source files', () => {
 
         it('includes database section for database vector', () => {
             expect(tpl.readme({ ...config, vector: 'prisma' })).toContain('DATABASE_URL');
-            expect(tpl.readme({ ...config, vector: 'prisma' })).toContain('@fusion.hide');
+            expect(tpl.readme({ ...config, vector: 'prisma' })).toContain('@vurb.hide');
         });
 
         it('includes workflow section for workflow vector', () => {
@@ -711,7 +711,7 @@ describe('Template output — source files', () => {
 
         it('includes openapi section for openapi vector', () => {
             expect(tpl.readme({ ...config, vector: 'openapi' })).toContain('openapi.yaml');
-            expect(tpl.readme({ ...config, vector: 'openapi' })).toContain('mcp-fusion-openapi-gen');
+            expect(tpl.readme({ ...config, vector: 'openapi' })).toContain('@vurb/openapi-gen');
         });
 
         it('includes oauth section for oauth vector', () => {
@@ -723,16 +723,16 @@ describe('Template output — source files', () => {
 
         it('shows autoDiscover example for adding tools', () => {
             expect(tpl.readme(config)).toContain('autoDiscover');
-            expect(tpl.readme(config)).toContain("import { f } from '../../fusion.js'");
+            expect(tpl.readme(config)).toContain("import { f } from '../../vurb.js'");
         });
     });
 
     // ── testSetupTs ──────────────────────────────────────────
 
     describe('testSetupTs', () => {
-        it('imports createFusionTester and autoDiscover', () => {
+        it('imports createVurbTester and autoDiscover', () => {
             const content = tpl.testSetupTs();
-            expect(content).toContain("import { createFusionTester } from '@vinkius-core/mcp-fusion-testing'");
+            expect(content).toContain("import { createVurbTester } from '@vurb/testing'");
             expect(content).toContain('autoDiscover');
         });
 
@@ -761,7 +761,7 @@ describe('Template output — source files', () => {
 
         it('tests echo tool', () => {
             const content = tpl.systemTestTs();
-            expect(content).toContain("'hello fusion'");
+            expect(content).toContain("'hello vurb'");
             expect(content).toContain("'echo'");
         });
     });
@@ -772,16 +772,16 @@ describe('Template output — source files', () => {
 // ============================================================================
 
 describe('Vector-specific templates', () => {
-    it('prismaSchema contains @fusion.hide on password', () => {
+    it('prismaSchema contains @vurb.hide on password', () => {
         const content = tpl.prismaSchema();
-        expect(content).toContain('@fusion.hide');
+        expect(content).toContain('@vurb.hide');
         expect(content).toContain('password');
     });
 
-    it('prismaSchema has both generators (client + fusion)', () => {
+    it('prismaSchema has both generators (client + vurb)', () => {
         const content = tpl.prismaSchema();
         expect(content).toContain('provider = "prisma-client-js"');
-        expect(content).toContain('provider = "@vinkius-core/mcp-fusion-prisma-gen"');
+        expect(content).toContain('provider = "@vurb/prisma-gen"');
     });
 
     it('prismaSchema has User and Post models', () => {
@@ -818,7 +818,7 @@ describe('Vector-specific templates', () => {
 
     it('openapiSetupMd contains step-by-step instructions', () => {
         const content = tpl.openapiSetupMd();
-        expect(content).toContain('mcp-fusion-openapi-gen');
+        expect(content).toContain('@vurb/openapi-gen');
         expect(content).toContain('openapi.yaml');
         expect(content).toContain('--outDir');
     });
@@ -845,7 +845,7 @@ describe('scaffold — file tree generation', () => {
         const expectedFiles = [
             'package.json', 'tsconfig.json', '.gitignore', '.env.example', 'README.md',
             '.cursor/mcp.json', 'vitest.config.ts',
-            'src/fusion.ts', 'src/context.ts', 'src/server.ts',
+            'src/vurb.ts', 'src/context.ts', 'src/server.ts',
             'src/tools/system/health.ts', 'src/tools/system/echo.ts',
             'src/presenters/SystemPresenter.ts',
             'src/prompts/greet.ts',
@@ -915,8 +915,8 @@ describe('scaffold — file tree generation', () => {
         expect(files).toContain('src/tools/db/users.ts');
 
         const schema = readFileSync(join(projectDir, 'prisma', 'schema.prisma'), 'utf-8');
-        expect(schema).toContain('@fusion.hide');
-        expect(schema).toContain('mcp-fusion-prisma-gen');
+        expect(schema).toContain('@vurb.hide');
+        expect(schema).toContain('@vurb/prisma-gen');
 
         const dbTool = readFileSync(join(projectDir, 'src', 'tools', 'db', 'users.ts'), 'utf-8');
         expect(dbTool).toContain("'db.list_users'");
@@ -948,7 +948,7 @@ describe('scaffold — file tree generation', () => {
         expect(yaml).toContain('api-test');
 
         const setup = readFileSync(join(projectDir, 'SETUP.md'), 'utf-8');
-        expect(setup).toContain('mcp-fusion-openapi-gen');
+        expect(setup).toContain('@vurb/openapi-gen');
     });
 
     // ── Vector: oauth ───────────────────────────────────────
@@ -978,14 +978,14 @@ describe('scaffold — file tree generation', () => {
         scaffold(projectDir, { name: 'stdio-srv', transport: 'stdio', vector: 'vanilla', testing: false });
         const server = readFileSync(join(projectDir, 'src', 'server.ts'), 'utf-8');
         expect(server).toContain('startServer');
-        expect(server).not.toContain('SSEServerTransport');
+        expect(server).not.toContain('StreamableHTTPServerTransport');
     });
 
-    it('server.ts uses SSEServerTransport for sse', () => {
+    it('server.ts uses StreamableHTTPServerTransport for sse', () => {
         const projectDir = join(tmpDir, 'sse-srv');
         scaffold(projectDir, { name: 'sse-srv', transport: 'sse', vector: 'vanilla', testing: false });
         const server = readFileSync(join(projectDir, 'src', 'server.ts'), 'utf-8');
-        expect(server).toContain('SSEServerTransport');
+        expect(server).toContain('StreamableHTTPServerTransport');
         expect(server).not.toContain('startServer');
     });
 
@@ -1030,7 +1030,7 @@ describe('scaffold — config matrix (transport × vector × testing)', () => {
                     // Core files always present
                     expect(files).toContain('package.json');
                     expect(files).toContain('.cursor/mcp.json');
-                    expect(files).toContain('src/fusion.ts');
+                    expect(files).toContain('src/vurb.ts');
                     expect(files).toContain('src/server.ts');
 
                     // package.json is valid JSON
@@ -1053,73 +1053,73 @@ describe('parseArgs — edge cases & error paths', () => {
     });
 
     it('handles argv with only node and script', () => {
-        const args = parseArgs(['node', 'fusion']);
+        const args = parseArgs(['node', 'vurb']);
         expect(args.command).toBe('');
     });
 
     it('treats unknown command as first positional', () => {
-        const args = parseArgs(['node', 'fusion', 'unknown-cmd']);
+        const args = parseArgs(['node', 'vurb', 'unknown-cmd']);
         expect(args.command).toBe('unknown-cmd');
     });
 
     it('handles --transport without value (throws)', () => {
-        expect(() => parseArgs(['node', 'fusion', 'create', 'srv', '--transport'])).toThrow(/missing value/i);
+        expect(() => parseArgs(['node', 'vurb', 'create', 'srv', '--transport'])).toThrow(/missing value/i);
     });
 
     it('handles --vector without value (throws)', () => {
-        expect(() => parseArgs(['node', 'fusion', 'create', 'srv', '--vector'])).toThrow(/missing value/i);
+        expect(() => parseArgs(['node', 'vurb', 'create', 'srv', '--vector'])).toThrow(/missing value/i);
     });
 
     it('accepts invalid transport string at parse level (validation is in collectConfig)', () => {
-        const args = parseArgs(['node', 'fusion', 'create', 'srv', '--transport', 'websocket']);
+        const args = parseArgs(['node', 'vurb', 'create', 'srv', '--transport', 'websocket']);
         expect(args.transport).toBe('websocket');
     });
 
     it('accepts invalid vector string at parse level (validation is in collectConfig)', () => {
-        const args = parseArgs(['node', 'fusion', 'create', 'srv', '--vector', 'graphql']);
+        const args = parseArgs(['node', 'vurb', 'create', 'srv', '--vector', 'graphql']);
         expect(args.vector).toBe('graphql');
     });
 
     it('--testing flag at the end is captured', () => {
-        const args = parseArgs(['node', 'fusion', 'create', 'srv', '--testing']);
+        const args = parseArgs(['node', 'vurb', 'create', 'srv', '--testing']);
         expect(args.testing).toBe(true);
     });
 
     it('--no-testing overrides earlier --testing (last wins)', () => {
-        const args = parseArgs(['node', 'fusion', 'create', 'srv', '--testing', '--no-testing']);
+        const args = parseArgs(['node', 'vurb', 'create', 'srv', '--testing', '--no-testing']);
         expect(args.testing).toBe(false);
     });
 
     it('--testing overrides earlier --no-testing (last wins)', () => {
-        const args = parseArgs(['node', 'fusion', 'create', 'srv', '--no-testing', '--testing']);
+        const args = parseArgs(['node', 'vurb', 'create', 'srv', '--no-testing', '--testing']);
         expect(args.testing).toBe(true);
     });
 
     it('handles project name with only hyphens', () => {
-        const args = parseArgs(['node', 'fusion', 'create', '---']);
+        const args = parseArgs(['node', 'vurb', 'create', '---']);
         expect(args.projectName).toBeUndefined(); // starts with --, treated as flag
     });
 
     it('handles duplicate --transport (last wins)', () => {
-        const args = parseArgs(['node', 'fusion', 'create', 'srv', '--transport', 'stdio', '--transport', 'sse']);
+        const args = parseArgs(['node', 'vurb', 'create', 'srv', '--transport', 'stdio', '--transport', 'sse']);
         expect(args.transport).toBe('sse');
     });
 
     it('handles help flag combined with create', () => {
-        const args = parseArgs(['node', 'fusion', 'create', '--help']);
+        const args = parseArgs(['node', 'vurb', 'create', '--help']);
         expect(args.command).toBe('create');
         expect(args.help).toBe(true);
     });
 
     it('does not capture lock --check flags in create context', () => {
-        const args = parseArgs(['node', 'fusion', 'create', 'srv', '--check']);
+        const args = parseArgs(['node', 'vurb', 'create', 'srv', '--check']);
         expect(args.command).toBe('create');
         expect(args.check).toBe(true);
         expect(args.projectName).toBe('srv');
     });
 
     it('handles single character project name', () => {
-        const args = parseArgs(['node', 'fusion', 'create', 'a']);
+        const args = parseArgs(['node', 'vurb', 'create', 'a']);
         expect(args.projectName).toBe('a');
     });
 });
@@ -1217,7 +1217,7 @@ describe('Template integrity — no broken output', () => {
 
         const results = [
             tpl.packageJson(config), tpl.tsconfig(), tpl.vitestConfig(),
-            tpl.gitignore(), tpl.envExample(config), tpl.fusionTs(),
+            tpl.gitignore(), tpl.envExample(config), tpl.vurbTs(),
             tpl.contextTs(), tpl.serverTs(config), tpl.healthToolTs(),
             tpl.echoToolTs(), tpl.systemPresenterTs(), tpl.greetPromptTs(),
             tpl.authMiddlewareTs(), tpl.cursorMcpJson(config), tpl.readme(config),
@@ -1241,7 +1241,7 @@ describe('Template integrity — no broken output', () => {
             tpl.packageJson(config), tpl.serverTs(config),
             tpl.cursorMcpJson(config), tpl.readme(config),
             tpl.healthToolTs(), tpl.echoToolTs(),
-            tpl.fusionTs(), tpl.contextTs(),
+            tpl.vurbTs(), tpl.contextTs(),
         ];
 
         for (const content of templates) {
@@ -1257,8 +1257,8 @@ describe('Template integrity — no broken output', () => {
 // ============================================================================
 
 describe('Template imports — ESM .js extensions', () => {
-    it('fusionTs uses .js extension for local imports', () => {
-        const content = tpl.fusionTs();
+    it('vurbTs uses .js extension for local imports', () => {
+        const content = tpl.vurbTs();
         const localImports = content.match(/from\s+'\.\/[^']+'/g) ?? [];
         for (const imp of localImports) {
             expect(imp).toMatch(/\.js'$/);
@@ -1310,7 +1310,7 @@ describe('Template imports — ESM .js extensions', () => {
 
     it('testSetupTs references correct import paths', () => {
         const content = tpl.testSetupTs();
-        expect(content).toContain("'@vinkius-core/mcp-fusion-testing'");
+        expect(content).toContain("'@vurb/testing'");
     });
 
     it('systemTestTs imports from setup with .js extension', () => {
@@ -1387,11 +1387,11 @@ describe('Scaffold — cross-contamination guards', () => {
         expect(files).not.toContain('SETUP.md');
     });
 
-    it('stdio server does NOT import SSEServerTransport in on-disk content', () => {
+    it('stdio server does NOT import StreamableHTTPServerTransport in on-disk content', () => {
         const projectDir = join(tmpDir, 'stdio-guard');
         scaffold(projectDir, { name: 'stdio-guard', transport: 'stdio', vector: 'vanilla', testing: false });
         const server = readFileSync(join(projectDir, 'src', 'server.ts'), 'utf-8');
-        expect(server).not.toContain('SSEServerTransport');
+        expect(server).not.toContain('StreamableHTTPServerTransport');
         expect(server).not.toContain('createServer');
     });
 
@@ -1410,24 +1410,24 @@ describe('Scaffold — cross-contamination guards', () => {
         const auth = JSON.parse(tpl.packageJson({ name: 'x', transport: 'stdio', vector: 'oauth', testing: false }));
 
         // database should NOT have n8n, openapi, or oauth deps
-        expect(db.dependencies['mcp-fusion-n8n']).toBeUndefined();
-        expect(db.dependencies['mcp-fusion-openapi-gen']).toBeUndefined();
-        expect(db.dependencies['@vinkius-core/mcp-fusion-oauth']).toBeUndefined();
+        expect(db.dependencies['vurb-n8n']).toBeUndefined();
+        expect(db.dependencies['@vurb/openapi-gen']).toBeUndefined();
+        expect(db.dependencies['@vurb/oauth']).toBeUndefined();
 
         // workflow should NOT have prisma, openapi, or oauth deps
         expect(wf.dependencies['@prisma/client']).toBeUndefined();
-        expect(wf.dependencies['mcp-fusion-openapi-gen']).toBeUndefined();
-        expect(wf.dependencies['@vinkius-core/mcp-fusion-oauth']).toBeUndefined();
+        expect(wf.dependencies['@vurb/openapi-gen']).toBeUndefined();
+        expect(wf.dependencies['@vurb/oauth']).toBeUndefined();
 
         // openapi should NOT have prisma, n8n, or oauth deps
         expect(api.dependencies['@prisma/client']).toBeUndefined();
-        expect(api.dependencies['mcp-fusion-n8n']).toBeUndefined();
-        expect(api.dependencies['@vinkius-core/mcp-fusion-oauth']).toBeUndefined();
+        expect(api.dependencies['vurb-n8n']).toBeUndefined();
+        expect(api.dependencies['@vurb/oauth']).toBeUndefined();
 
         // oauth should NOT have prisma, n8n, or openapi deps
         expect(auth.dependencies['@prisma/client']).toBeUndefined();
-        expect(auth.dependencies['mcp-fusion-n8n']).toBeUndefined();
-        expect(auth.dependencies['mcp-fusion-openapi-gen']).toBeUndefined();
+        expect(auth.dependencies['vurb-n8n']).toBeUndefined();
+        expect(auth.dependencies['@vurb/openapi-gen']).toBeUndefined();
     });
 });
 
@@ -1444,7 +1444,7 @@ describe('Scaffold — file count invariants', () => {
     // Base files always generated (no testing, vanilla vector):
     // package.json, tsconfig.json, .gitignore, .env.example, README.md,
     // .cursor/mcp.json, .vscode/mcp.json,
-    // src/fusion.ts, src/context.ts, src/server.ts,
+    // src/vurb.ts, src/context.ts, src/server.ts,
     // src/tools/system/health.ts, src/tools/system/echo.ts,
     // src/presenters/SystemPresenter.ts,
     // src/prompts/greet.ts,
@@ -1773,8 +1773,8 @@ describe('Template output — script & config consistency', () => {
         const pkg = JSON.parse(tpl.packageJson(config));
         const cursor = JSON.parse(tpl.cursorMcpJson(config));
 
-        // dev script uses `fusion dev`, cursor uses `tsx src/server.ts`
-        expect(pkg.scripts.dev).toBe('fusion dev');
+        // dev script uses `vurb dev`, cursor uses `tsx src/server.ts`
+        expect(pkg.scripts.dev).toBe('vurb dev');
         expect(cursor.mcpServers['consistent'].args).toContain('src/server.ts');
     });
 
@@ -1908,7 +1908,7 @@ describe('SSE transport-aware templates', () => {
         const config: ProjectConfig = { name: 'sse-proj', transport: 'sse', vector: 'vanilla', testing: false };
         const cursor = JSON.parse(tpl.cursorMcpJson(config));
 
-        expect(cursor.mcpServers['sse-proj'].url).toBe('http://localhost:3001/sse');
+        expect(cursor.mcpServers['sse-proj'].url).toBe('http://localhost:3001/mcp');
         expect(cursor.mcpServers['sse-proj'].command).toBeUndefined();
         expect(cursor.mcpServers['sse-proj'].args).toBeUndefined();
     });
@@ -1922,32 +1922,32 @@ describe('SSE transport-aware templates', () => {
         expect(cursor.mcpServers['stdio-proj'].url).toBeUndefined();
     });
 
-    it('README for SSE shows fusion dev', () => {
+    it('README for SSE shows vurb dev', () => {
         const config: ProjectConfig = { name: 'sse-readme', transport: 'sse', vector: 'vanilla', testing: false };
         const readmeContent = tpl.readme(config);
 
-        expect(readmeContent).toContain('fusion dev');
+        expect(readmeContent).toContain('vurb dev');
     });
 
-    it('README for stdio shows fusion dev', () => {
+    it('README for stdio shows vurb dev', () => {
         const config: ProjectConfig = { name: 'stdio-readme', transport: 'stdio', vector: 'vanilla', testing: false };
         const readmeContent = tpl.readme(config);
 
-        expect(readmeContent).toContain('fusion dev');
+        expect(readmeContent).toContain('vurb dev');
     });
 
-    it('README for SSE includes SSE note about starting server first', () => {
+    it('README for SSE includes Streamable HTTP note about starting server first', () => {
         const config: ProjectConfig = { name: 'sse-note', transport: 'sse', vector: 'vanilla', testing: false };
         const readmeContent = tpl.readme(config);
 
-        expect(readmeContent).toContain('SSE transport requires the server to be running first');
+        expect(readmeContent).toContain('Streamable HTTP transport requires the server to be running first');
     });
 
     it('README for SSE uses url-based client config', () => {
         const config: ProjectConfig = { name: 'sse-client', transport: 'sse', vector: 'vanilla', testing: false };
         const readmeContent = tpl.readme(config);
 
-        expect(readmeContent).toContain('http://localhost:3001/sse');
+        expect(readmeContent).toContain('http://localhost:3001/mcp');
         expect(readmeContent).not.toContain('"command": "npx"');
     });
 
@@ -1956,7 +1956,7 @@ describe('SSE transport-aware templates', () => {
         const readmeContent = tpl.readme(config);
 
         expect(readmeContent).toContain('"command": "npx"');
-        expect(readmeContent).not.toContain('http://localhost:3001/sse');
+        expect(readmeContent).not.toContain('http://localhost:3001/mcp');
     });
 });
 
@@ -2037,11 +2037,11 @@ describe('README — correct tool example syntax', () => {
         expect(readmeContent).toContain('return { result: input.query }');
     });
 
-    it('tool example imports f from fusion.js', () => {
+    it('tool example imports f from vurb.js', () => {
         const config: ProjectConfig = { name: 'readme-import', transport: 'stdio', vector: 'vanilla', testing: false };
         const readmeContent = tpl.readme(config);
 
-        expect(readmeContent).toContain("import { f } from '../../fusion.js'");
+        expect(readmeContent).toContain("import { f } from '../../vurb.js'");
     });
 });
 
@@ -2119,9 +2119,9 @@ describe('createDefaultReporter — coverage', () => {
     });
 });
 
-describe('MCP_FUSION_VERSION — coverage', () => {
+describe('VURB_VERSION — coverage', () => {
     it('is a valid semver string', () => {
-        expect(MCP_FUSION_VERSION).toMatch(/^\d+\.\d+\.\d+/);
+        expect(VURB_VERSION).toMatch(/^\d+\.\d+\.\d+/);
     });
 });
 
@@ -2156,7 +2156,7 @@ describe('collectConfig — interactive path with pre-filled args', () => {
 
         // Verify the wizard header was printed
         const output = stderrSpy.mock.calls.map(c => c[0] as string).join('');
-        expect(output).toContain('MCP Fusion');
+        expect(output).toContain('Vurb');
 
         stderrSpy.mockRestore();
     });
@@ -2196,8 +2196,8 @@ describe('commandCreate — SSE transport path', () => {
 
         // Check stderr output contains SSE-specific next steps
         const output = stderrSpy.mock.calls.map(c => c[0] as string).join('');
-        expect(output).toContain('fusion dev');
-        expect(output).toContain('http://localhost:3001/sse');
+        expect(output).toContain('vurb dev');
+        expect(output).toContain('http://localhost:3001/mcp');
 
         stderrSpy.mockRestore();
         exitSpy.mockRestore();

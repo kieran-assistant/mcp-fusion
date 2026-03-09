@@ -1,7 +1,7 @@
 # Functional Groups
 
 ::: info Prerequisites
-Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -18,9 +18,9 @@ When your domain has many entities that share the same middleware (auth, logging
 Use `f.group()` to create a functional group that applies shared configuration to all tools registered inside it:
 
 ```typescript
-import { initFusion } from '@vinkius-core/mcp-fusion';
+import { initVurb } from 'Vurb.ts';
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 // Auth middleware
 const withAuth = f.middleware(async (ctx) => {
@@ -66,7 +66,7 @@ Every tool created from `authenticated` automatically has `withAuth` middleware 
 `autoDiscover()` scans a directory for exported tool builders and registers them automatically:
 
 ```typescript
-import { autoDiscover, ToolRegistry } from '@vinkius-core/mcp-fusion';
+import { autoDiscover, ToolRegistry } from 'Vurb.ts';
 
 const registry = new ToolRegistry();
 const tools = await autoDiscover('./src/tools');
@@ -85,7 +85,7 @@ Recommended project structure with groups:
 
 ```text
 src/
-├── fusion.ts              ← shared f = initFusion<AppContext>()
+├── vurb.ts              ← shared f = initVurb<AppContext>()
 ├── middleware/
 │   ├── auth.ts            ← withAuth middleware
 │   └── tenant.ts          ← withTenant middleware

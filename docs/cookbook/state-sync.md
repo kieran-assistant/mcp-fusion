@@ -1,7 +1,7 @@
 # State Sync
 
 ::: info Prerequisites
-Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -16,7 +16,7 @@ Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-
 
 LLMs have no sense of time. After calling `sprints.list` and then `sprints.create`, the agent still believes the original list is unchanged — nothing told it the data is stale. It keeps working with outdated information, making decisions based on data that no longer exists.
 
-MCP Fusion's State Sync injects RFC 7234-inspired cache-control signals into MCP responses. After a successful mutation, the agent receives an invalidation signal telling it which data is now stale. Zero overhead when not configured.
+Vurb.ts's State Sync injects RFC 7234-inspired cache-control signals into MCP responses. After a successful mutation, the agent receives an invalidation signal telling it which data is now stale. Zero overhead when not configured.
 
 ## The Temporal Blindness Problem {#problem}
 
@@ -42,9 +42,9 @@ The agent knows the sprint list is stale and re-fetches before answering.
 The fastest approach — declare cache behavior directly on the tool builder:
 
 ```typescript
-import { initFusion } from '@vinkius-core/mcp-fusion';
+import { initVurb } from 'Vurb.ts';
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 // Reference data — safe to cache forever
 const listCountries = f.query('countries.list')
@@ -98,9 +98,9 @@ const sync = f.stateSync()
 Configure State Sync when attaching the registry to the server:
 
 ```typescript
-import { initFusion, ToolRegistry } from '@vinkius-core/mcp-fusion';
+import { initVurb, ToolRegistry } from 'Vurb.ts';
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 const registry = new ToolRegistry();
 
 // ... register your tools ...

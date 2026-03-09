@@ -25,7 +25,7 @@
  *
  * @example
  * ```typescript
- * import { autoDiscover, ToolRegistry } from '@vinkius-core/mcp-fusion';
+ * import { autoDiscover, ToolRegistry } from 'vurb';
  *
  * const registry = new ToolRegistry<AppContext>();
  *

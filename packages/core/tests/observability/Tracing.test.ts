@@ -1,7 +1,7 @@
 /**
  * Tracing.test.ts — Native OpenTelemetry-Compatible Tracing Tests
  *
- * Verifies the FusionTracer integration across the execution pipeline.
+ * Verifies the VurbTracer integration across the execution pipeline.
  *
  * Categories:
  * 1.  Span lifecycle — creation, end, attributes
@@ -23,7 +23,7 @@ import { createDebugObserver } from '../../src/observability/DebugObserver.js';
 import { SpanStatusCode } from '../../src/observability/Tracing.js';
 import { ToolRegistry } from '../../src/core/registry/ToolRegistry.js';
 import { success, error as errorResponse } from '../../src/core/response.js';
-import type { FusionTracer, FusionSpan, FusionAttributeValue } from '../../src/observability/Tracing.js';
+import type { VurbTracer, VurbSpan, VurbAttributeValue } from '../../src/observability/Tracing.js';
 import type { DebugEvent } from '../../src/observability/DebugObserver.js';
 
 // ============================================================================
@@ -32,17 +32,17 @@ import type { DebugEvent } from '../../src/observability/DebugObserver.js';
 
 interface MockSpanData {
     name: string;
-    attributes: Map<string, FusionAttributeValue>;
-    events: Array<{ name: string; attributes?: Record<string, FusionAttributeValue> }>;
+    attributes: Map<string, VurbAttributeValue>;
+    events: Array<{ name: string; attributes?: Record<string, VurbAttributeValue> }>;
     status: { code: number; message?: string } | null;
     exceptions: Array<Error | string>;
     ended: boolean;
 }
 
-function createMockTracer(): { tracer: FusionTracer; spans: MockSpanData[] } {
+function createMockTracer(): { tracer: VurbTracer; spans: MockSpanData[] } {
     const spans: MockSpanData[] = [];
 
-    const tracer: FusionTracer = {
+    const tracer: VurbTracer = {
         startSpan(name, options) {
             const data: MockSpanData = {
                 name,
@@ -53,7 +53,7 @@ function createMockTracer(): { tracer: FusionTracer; spans: MockSpanData[] } {
                 ended: false,
             };
 
-            const span: FusionSpan = {
+            const span: VurbSpan = {
                 setAttribute(key, value) { data.attributes.set(key, value); },
                 setStatus(status) { data.status = status; },
                 addEvent(eventName, attrs) { data.events.push({ name: eventName, attributes: attrs }); },
@@ -69,10 +69,10 @@ function createMockTracer(): { tracer: FusionTracer; spans: MockSpanData[] } {
 }
 
 /** Creates a tracer whose spans have NO addEvent method (optional per interface) */
-function createMinimalTracer(): { tracer: FusionTracer; spans: MockSpanData[] } {
+function createMinimalTracer(): { tracer: VurbTracer; spans: MockSpanData[] } {
     const spans: MockSpanData[] = [];
 
-    const tracer: FusionTracer = {
+    const tracer: VurbTracer = {
         startSpan(name, options) {
             const data: MockSpanData = {
                 name,
@@ -83,7 +83,7 @@ function createMinimalTracer(): { tracer: FusionTracer; spans: MockSpanData[] } 
                 ended: false,
             };
 
-            const span: FusionSpan = {
+            const span: VurbSpan = {
                 setAttribute(key, value) { data.attributes.set(key, value); },
                 setStatus(status) { data.status = status; },
                 // No addEvent!
@@ -123,7 +123,7 @@ describe('Span lifecycle', () => {
 
         await tool.execute(undefined, { action: 'list' });
 
-        expect(spans[0]!.attributes.get('mcp.system')).toBe('fusion');
+        expect(spans[0]!.attributes.get('mcp.system')).toBe('vurb');
         expect(spans[0]!.attributes.get('mcp.tool')).toBe('projects');
     });
 

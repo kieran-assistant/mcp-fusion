@@ -1,13 +1,13 @@
 <p align="center">
-  <h1 align="center">@vinkius-core/mcp-fusion-n8n</h1>
+  <h1 align="center">@vurb/n8n</h1>
   <p align="center">
     <strong>n8n Workflow Connector</strong> — Auto-discover n8n workflows as native MCP tools
   </p>
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@vinkius-core/mcp-fusion-n8n"><img src="https://img.shields.io/npm/v/@vinkius-core/mcp-fusion-n8n?color=blue" alt="npm" /></a>
-  <a href="https://github.com/vinkius-labs/mcp-fusion/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-green" alt="License" /></a>
+  <a href="https://www.npmjs.com/package/@vurb/n8n"><img src="https://img.shields.io/npm/v/@vurb/n8n?color=blue" alt="npm" /></a>
+  <a href="https://github.com/vinkius-labs/vurb.ts/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-green" alt="License" /></a>
   <img src="https://img.shields.io/badge/node-%3E%3D18-brightgreen" alt="Node" />
 </p>
 
@@ -50,22 +50,22 @@ The perfect balance between the agility of low-code integrations and hardcore so
 ## Installation
 
 ```bash
-npm install @vinkius-core/mcp-fusion-n8n @vinkius-core/mcp-fusion zod
+npm install @vurb/n8n Vurb.ts zod
 ```
 
 ### Peer Dependencies
 
 | Package | Version |
 |---------|---------|
-| `@vinkius-core/mcp-fusion` | `^2.0.0` |
+| `Vurb.ts` | `^2.0.0` |
 | `zod` | `^3.25.1 \|\| ^4.0.0` |
 
 ## Requirements
 
 - **Node.js** ≥ 18.0.0
-- **MCP Fusion** ≥ 2.0.0 (peer dependency)
+- **Vurb.ts** ≥ 2.0.0 (peer dependency)
 - n8n instance with API access enabled
 
 ## License
 
-[Apache-2.0](https://github.com/vinkius-labs/mcp-fusion/blob/main/LICENSE)
+[Apache-2.0](https://github.com/vinkius-labs/vurb.ts/blob/main/LICENSE)

@@ -6,9 +6,9 @@
  * without adapter or `@opentelemetry/*` dependency.
  *
  * Design decisions:
- * - **Structural subtyping**: `FusionTracer` is a subset of OTel's `Tracer`,
- *   so `trace.getTracer('mcp-fusion')` can be passed directly.
- * - **Strict attribute types**: `FusionAttributeValue` matches OTel's
+ * - **Structural subtyping**: `VurbTracer` is a subset of OTel's `Tracer`,
+ *   so `trace.getTracer('vurb')` can be passed directly.
+ * - **Strict attribute types**: `VurbAttributeValue` matches OTel's
  *   `SpanAttributeValue` to avoid TypeScript contravariance errors.
  * - **Optional `addEvent`**: Not all tracer implementations support events.
  *   The pipeline uses `span.addEvent?.()` (optional chaining).
@@ -20,21 +20,21 @@
  * // Direct OTel pass-through — no adapter needed
  * registry.attachToServer(server, {
  *     contextFactory: createContext,
- *     tracing: trace.getTracer('mcp-fusion'),
+ *     tracing: trace.getTracer('vurb'),
  * });
  * ```
  *
  * @example
  * ```typescript
  * // Custom tracer (e.g. for testing)
- * const spans: Array<{ name: string; attributes: Map<string, FusionAttributeValue> }> = [];
+ * const spans: Array<{ name: string; attributes: Map<string, VurbAttributeValue> }> = [];
  *
- * const testTracer: FusionTracer = {
+ * const testTracer: VurbTracer = {
  *     startSpan(name, options) {
- *         const attrs = new Map<string, FusionAttributeValue>(
+ *         const attrs = new Map<string, VurbAttributeValue>(
  *             Object.entries(options?.attributes ?? {}),
  *         );
- *         const span: FusionSpan = {
+ *         const span: VurbSpan = {
  *             setAttribute(k, v) { attrs.set(k, v); },
  *             setStatus() {},
  *             addEvent() {},
@@ -75,11 +75,11 @@ export const SpanStatusCode = { UNSET: 0, OK: 1, ERROR: 2 } as const;
  * Strict attribute value type — matches OpenTelemetry's `SpanAttributeValue`.
  *
  * Using `unknown` here would cause TypeScript contravariance errors
- * when assigning an OTel `Tracer` to `FusionTracer` in strict mode.
+ * when assigning an OTel `Tracer` to `VurbTracer` in strict mode.
  *
  * @see {@link https://opentelemetry.io/docs/specs/otel/common/#attribute | OTel Spec: Attributes}
  */
-export type FusionAttributeValue =
+export type VurbAttributeValue =
     | string
     | number
     | boolean
@@ -95,13 +95,13 @@ export type FusionAttributeValue =
  *
  * @see {@link https://opentelemetry.io/docs/specs/otel/trace/api/#span | OTel Spec: Span}
  */
-export interface FusionSpan {
+export interface VurbSpan {
     /**
      * Set a single attribute on this span.
-     * @param key - Attribute key (use `mcp.*` namespace for MCP Fusion attributes)
+     * @param key - Attribute key (use `mcp.*` namespace for Vurb attributes)
      * @param value - Primitive or array of primitives
      */
-    setAttribute(key: string, value: FusionAttributeValue): void;
+    setAttribute(key: string, value: VurbAttributeValue): void;
 
     /**
      * Set the span's status.
@@ -122,7 +122,7 @@ export interface FusionSpan {
      * @param name - Event name (e.g. `'mcp.route'`, `'mcp.validate'`)
      * @param attributes - Optional event attributes
      */
-    addEvent?(name: string, attributes?: Record<string, FusionAttributeValue>): void;
+    addEvent?(name: string, attributes?: Record<string, VurbAttributeValue>): void;
 
     /**
      * End this span. Must be called exactly once.
@@ -144,7 +144,7 @@ export interface FusionSpan {
  *
  * OTel's `Tracer.startSpan()` accepts `(name, options?, context?)`.
  * Our interface matches the first two parameters, so an OTel `Tracer`
- * can be assigned to `FusionTracer` without any adapter.
+ * can be assigned to `VurbTracer` without any adapter.
  *
  * **Context propagation limitation:** Since we don't use OTel's
  * `Context` API (which would require a runtime dependency),
@@ -155,7 +155,7 @@ export interface FusionSpan {
  *
  * @see {@link https://opentelemetry.io/docs/specs/otel/trace/api/#tracer | OTel Spec: Tracer}
  */
-export interface FusionTracer {
+export interface VurbTracer {
     /**
      * Create and start a new span.
      *
@@ -164,6 +164,6 @@ export interface FusionTracer {
      * @returns A started span that MUST be ended via `span.end()`
      */
     startSpan(name: string, options?: {
-        attributes?: Record<string, FusionAttributeValue>;
-    }): FusionSpan;
+        attributes?: Record<string, VurbAttributeValue>;
+    }): VurbSpan;
 }

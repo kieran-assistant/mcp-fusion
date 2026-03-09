@@ -3,7 +3,7 @@
  *
  * Extracts a fully typed `RouterMap` from a `TypedToolRegistry` or
  * an array of `GroupedToolBuilder` instances. This is the key piece
- * that makes the FusionClient tRPC-style experience real.
+ * that makes the VurbClient tRPC-style experience real.
  *
  * **Zero runtime cost** — this module contains only type declarations.
  *
@@ -18,7 +18,7 @@
  *
  * // ── CLIENT SIDE ──
  * import type { AppRouter } from './server';
- * const client = createFusionClient<AppRouter>(transport);
+ * const client = createVurbClient<AppRouter>(transport);
  * await client.execute('projects.list', { workspace_id: 'ws_1' });
  * //                    ^^^^^^^^^^^^^^    ^^^^^^^^^^^^^^^^^^^^^
  * //                    autocomplete!     typed args!

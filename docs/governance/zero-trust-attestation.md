@@ -6,7 +6,7 @@ description: "Cryptographic signing, capability pinning, and runtime verificatio
 # Zero-Trust Attestation
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Sign at Build Time](#sign)
@@ -30,13 +30,13 @@ When attestation is not configured, no cryptographic operations execute — the 
 import {
   computeServerDigest,
   attestServerDigest,
-} from '@vinkius-core/mcp-fusion/introspection';
+} from 'Vurb.ts/introspection';
 
 const serverDigest = computeServerDigest(contracts);
 
 const attestation = await attestServerDigest(serverDigest, {
   signer: 'hmac',
-  secret: process.env.FUSION_SIGNING_SECRET!,
+  secret: process.env.Vurb.ts_SIGNING_SECRET!,
 });
 
 console.log(attestation.signature);
@@ -56,14 +56,14 @@ Store the computed digest from CI as an environment variable, then verify at sta
 import {
   computeServerDigest,
   verifyCapabilityPin,
-} from '@vinkius-core/mcp-fusion/introspection';
+} from 'Vurb.ts/introspection';
 
 const currentDigest = computeServerDigest(contracts);
 
 await verifyCapabilityPin(currentDigest, {
   signer: 'hmac',
-  secret: process.env.FUSION_SIGNING_SECRET!,
-  expectedDigest: process.env.FUSION_EXPECTED_DIGEST!,
+  secret: process.env.Vurb.ts_SIGNING_SECRET!,
+  expectedDigest: process.env.Vurb.ts_EXPECTED_DIGEST!,
   failOnMismatch: true,
 });
 ```
@@ -71,7 +71,7 @@ await verifyCapabilityPin(currentDigest, {
 If the behavioral surface changed between build and startup, the server refuses to start:
 
 ```text
-[MCP Fusion] Zero-Trust attestation failed:
+[Vurb.ts] Zero-Trust attestation failed:
   computed digest 9a8b7c6d... does not match expected a1b2c3d4...
 ```
 
@@ -83,7 +83,7 @@ This catches supply-chain attacks, dependency mutations, and deploy misconfigura
 For compliance requirements or external KMS integration, implement the `AttestationSigner` interface:
 
 ```typescript
-import type { AttestationSigner } from '@vinkius-core/mcp-fusion/introspection';
+import type { AttestationSigner } from 'Vurb.ts/introspection';
 
 const kmsSigner: AttestationSigner = {
   name: 'aws-kms',
@@ -114,7 +114,7 @@ Pass the signer instead of `'hmac'`:
 ```typescript
 const config: ZeroTrustConfig = {
   signer: kmsSigner,
-  expectedDigest: process.env.FUSION_EXPECTED_DIGEST!,
+  expectedDigest: process.env.Vurb.ts_EXPECTED_DIGEST!,
 };
 ```
 
@@ -123,10 +123,10 @@ Any provider works — AWS KMS, GCP Cloud KMS, HashiCorp Vault, Sigstore. The in
 
 ## Exposing Trust to MCP Clients {#mcp-capability}
 
-After attestation, the server can expose a `fusionTrust` capability in the MCP `server.capabilities` object. This allows MCP clients to verify the server's behavioral identity before trusting tool responses:
+After attestation, the server can expose a `vurbTrust` capability in the MCP `server.capabilities` object. This allows MCP clients to verify the server's behavioral identity before trusting tool responses:
 
 ```typescript
-import { buildTrustCapability } from '@vinkius-core/mcp-fusion/introspection';
+import { buildTrustCapability } from 'Vurb.ts/introspection';
 
 const trustCapability = buildTrustCapability(
   attestation,
@@ -134,7 +134,7 @@ const trustCapability = buildTrustCapability(
 );
 ```
 
-The resulting `FusionTrustCapability` object:
+The resulting `VurbTrustCapability` object:
 
 ```typescript
 {
@@ -155,7 +155,7 @@ A client receiving this capability can verify that the server's behavioral surfa
 When `failOnMismatch` is `true` and the digest doesn't match, `verifyCapabilityPin()` throws an `AttestationError`:
 
 ```typescript
-import { AttestationError } from '@vinkius-core/mcp-fusion/introspection';
+import { AttestationError } from 'Vurb.ts/introspection';
 
 try {
   await verifyCapabilityPin(currentDigest, config);
@@ -172,11 +172,11 @@ try {
 For standalone signature verification without capability pinning:
 
 ```typescript
-import { verifyAttestation } from '@vinkius-core/mcp-fusion/introspection';
+import { verifyAttestation } from 'Vurb.ts/introspection';
 
 const result = await verifyAttestation(currentDigest, storedSignature, {
   signer: 'hmac',
-  secret: process.env.FUSION_SIGNING_SECRET!,
+  secret: process.env.Vurb.ts_SIGNING_SECRET!,
 });
 
 if (!result.valid) {
@@ -203,19 +203,19 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '22' }
       - run: npm ci
-      - run: npx fusion lock --check --server ./src/server.ts
+      - run: npx Vurb.ts lock --check --server ./src/server.ts
       - name: Compute behavioral digest
         env:
-          FUSION_SIGNING_SECRET: ${{ secrets.FUSION_SIGNING_SECRET }}
+          Vurb.ts_SIGNING_SECRET: ${{ secrets.Vurb.ts_SIGNING_SECRET }}
         run: |
           DIGEST=$(node -e "
             import('./src/server.ts').then(mod => {
-              const { compileContracts, computeServerDigest } = require('@vinkius-core/mcp-fusion/introspection');
+              const { compileContracts, computeServerDigest } = require('Vurb.ts/introspection');
               const contracts = compileContracts([...mod.registry.getBuilders()]);
               console.log(computeServerDigest(contracts).digest);
             });
           ")
-          echo "FUSION_EXPECTED_DIGEST=$DIGEST" >> $GITHUB_ENV
+          echo "Vurb.ts_EXPECTED_DIGEST=$DIGEST" >> $GITHUB_ENV
 ```
 
 ### Deployment-Time Verification
@@ -224,19 +224,19 @@ jobs:
 deploy:
   runs-on: ubuntu-latest
   env:
-    FUSION_SIGNING_SECRET: ${{ secrets.FUSION_SIGNING_SECRET }}
-    FUSION_EXPECTED_DIGEST: ${{ vars.FUSION_EXPECTED_DIGEST }}
+    Vurb.ts_SIGNING_SECRET: ${{ secrets.Vurb.ts_SIGNING_SECRET }}
+    Vurb.ts_EXPECTED_DIGEST: ${{ vars.Vurb.ts_EXPECTED_DIGEST }}
   steps:
     - uses: actions/checkout@v4
     - run: npm ci
     - name: Verify attestation
       run: |
         node -e "
-          import { compileContracts, computeServerDigest } from '@vinkius-core/mcp-fusion/introspection';
+          import { compileContracts, computeServerDigest } from 'Vurb.ts/introspection';
           import { registry } from './src/server.ts';
           const contracts = compileContracts([...registry.getBuilders()]);
           const digest = computeServerDigest(contracts).digest;
-          if (digest !== process.env.FUSION_EXPECTED_DIGEST) {
+          if (digest !== process.env.Vurb.ts_EXPECTED_DIGEST) {
             console.error('Digest mismatch'); process.exit(1);
           }
           console.log('Attestation verified:', digest);

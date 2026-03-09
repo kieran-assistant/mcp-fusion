@@ -10,16 +10,16 @@
 - [What Works on the Edge](#edge-compatibility)
 - [Compatible Clients](#clients)
 
-Deploy your MCP Fusion server to Cloudflare Workers in one line. No transport hacks, no session workarounds, no infrastructure config. Your existing tools, middleware, Presenters, and governance lockfile run at the edge — unchanged.
+Deploy your Vurb.ts server to Cloudflare Workers in one line. No transport hacks, no session workarounds, no infrastructure config. Your existing tools, middleware, Presenters, and governance lockfile run at the edge — unchanged.
 
 ```typescript
 // worker.ts — the entire file
-import { initFusion } from '@vinkius-core/mcp-fusion';
-import { cloudflareWorkersAdapter } from '@vinkius-core/mcp-fusion-cloudflare';
+import { initVurb } from 'Vurb.ts';
+import { cloudflareWorkersAdapter } from '@vurb/cloudflare';
 import { z } from 'zod';
 
 interface AppContext { db: D1Database; tenantId: string }
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 const listUsers = f.query('users.list')
   .describe('List users in tenant')
@@ -86,10 +86,10 @@ cloudflareWorkersAdapter({ registry, contextFactory })
 ## Installation {#installation}
 
 ```bash
-npm install @vinkius-core/mcp-fusion-cloudflare
+npm install @vurb/cloudflare
 ```
 
-Peer dependencies: `@vinkius-core/mcp-fusion` (^2.0.0), `@modelcontextprotocol/sdk` (^1.12.0).
+Peer dependencies: `Vurb.ts` (^2.0.0), `@modelcontextprotocol/sdk` (^1.12.0).
 
 ## Architecture {#architecture}
 
@@ -99,7 +99,7 @@ The adapter splits work between two phases to minimize per-request CPU cost:
 ┌──────────────────────────────────────────────────────────┐
 │  COLD START (once per isolate)                           │
 │                                                          │
-│  const f = initFusion<AppContext>()                      │
+│  const f = initVurb<AppContext>()                      │
 │  const tool = f.query('name').handle(...)                │
 │  const registry = f.registry()                           │
 │  registry.register(tool)                                 │
@@ -134,7 +134,7 @@ Build tools exactly as you would for a Node.js MCP server. Nothing changes:
 
 ```typescript
 // src/tools.ts
-import { initFusion } from '@vinkius-core/mcp-fusion';
+import { initVurb } from 'Vurb.ts';
 import { z } from 'zod';
 
 interface AppContext {
@@ -143,7 +143,7 @@ interface AppContext {
   tenantId: string;
 }
 
-export const f = initFusion<AppContext>();
+export const f = initVurb<AppContext>();
 
 export const listProjects = f.query('projects.list')
   .describe('List projects in the current workspace')
@@ -180,7 +180,7 @@ export const createProject = f.mutation('projects.create')
 
 ```typescript
 // src/worker.ts
-import { cloudflareWorkersAdapter } from '@vinkius-core/mcp-fusion-cloudflare';
+import { cloudflareWorkersAdapter } from '@vurb/cloudflare';
 import { f, listProjects, createProject } from './tools.js';
 
 // ── Cold Start: compile once ──
@@ -301,7 +301,7 @@ The handler returns raw database rows. The Presenter strips columns to `{ id, na
 | Option | Type | Default | Description |
 |---|---|---|---|
 | `registry` | `RegistryLike` | _(required)_ | Pre-compiled `ToolRegistry` with all tools registered |
-| `serverName` | `string` | `'mcp-fusion-edge'` | MCP server name (visible in capabilities negotiation) |
+| `serverName` | `string` | `'Vurb.ts-edge'` | MCP server name (visible in capabilities negotiation) |
 | `serverVersion` | `string` | `'1.0.0'` | MCP server version string |
 | `contextFactory` | `(req, env, ctx) => T` | — | Creates application context per request from Cloudflare bindings |
 | `attachOptions` | `Record<string, unknown>` | `{}` | Additional options forwarded to `registry.attachToServer()` |
@@ -316,7 +316,7 @@ The handler returns raw database rows. The Presenter strips columns to `{ id, na
 
 ## What Works on the Edge {#edge-compatibility}
 
-Everything in MCP Fusion that doesn't require a filesystem or long-lived process works on Cloudflare Workers:
+Everything in Vurb.ts that doesn't require a filesystem or long-lived process works on Cloudflare Workers:
 
 | Feature | Edge Support | Notes |
 |---|---|---|
@@ -339,7 +339,7 @@ The stateless JSON-RPC endpoint works with any HTTP-capable MCP client:
 - **Vercel AI SDK** — direct JSON-RPC calls
 - **Custom agents** — standard `POST` with JSON-RPC payload
 - **Claude Desktop** — via proxy or direct HTTP config
-- **FusionClient** — the built-in tRPC-style client
+- **VurbClient** — the built-in tRPC-style client
 
 ```typescript
 // Calling from any HTTP client

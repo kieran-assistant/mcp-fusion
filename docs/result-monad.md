@@ -1,7 +1,7 @@
 # Result Monad
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 A lightweight `Result<T>` type following Railway-Oriented Programming. Every step returns `Success<T>` or `Failure`, and TypeScript narrows the type at each checkpoint.
@@ -9,7 +9,7 @@ A lightweight `Result<T>` type following Railway-Oriented Programming. Every ste
 ## The Type {#type}
 
 ```typescript
-import { type Result, type Success, type Failure } from '@vinkius-core/mcp-fusion';
+import { type Result, type Success, type Failure } from 'Vurb.ts';
 
 type Result<T> = Success<T> | Failure;
 
@@ -36,7 +36,7 @@ const user = result.value;               // Narrowed to User
 ## Constructors {#constructors}
 
 ```typescript
-import { succeed, fail, error, toolError } from '@vinkius-core/mcp-fusion';
+import { succeed, fail, error, toolError } from 'Vurb.ts';
 
 succeed(42);
 succeed({ id: 'user_1', name: 'Alice' });
@@ -53,7 +53,7 @@ fail(toolError('NOT_FOUND', {
 ## Database Lookup {#lookup}
 
 ```typescript
-import { succeed, fail, error, success, type Result } from '@vinkius-core/mcp-fusion';
+import { succeed, fail, error, success, type Result } from 'Vurb.ts';
 
 function findProject(db: Database, id: string): Result<Project> {
   const project = db.projects.findFirst({ where: { id } });

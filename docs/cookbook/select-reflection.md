@@ -1,7 +1,7 @@
 # Select Reflection
 
 ::: info Prerequisites
-Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -34,7 +34,7 @@ The Presenter already strips the extra fields — but you still paid for the dat
 Since Presenter schemas are standard Zod objects, you can extract the field names using Zod's `.shape` property:
 
 ```typescript
-import { createPresenter, t } from '@vinkius-core/mcp-fusion';
+import { createPresenter, t } from 'Vurb.ts';
 
 const UserPresenter = createPresenter('User')
   .schema({

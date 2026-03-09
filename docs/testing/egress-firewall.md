@@ -6,7 +6,7 @@ description: "Prove mathematically that sensitive fields never reach the LLM —
 # Egress Firewall
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 The Egress Firewall is the Presenter's Zod schema acting as a **physical barrier** between your database and the LLM. Fields not declared in the schema are stripped in RAM — they never exist in the response object.
@@ -113,7 +113,7 @@ describe('Order Egress Firewall', () => {
 Prove that the structured MVA metadata is invisible to JSON transport:
 
 ```typescript
-import { MVA_META_SYMBOL } from '@vinkius-core/mcp-fusion';
+import { MVA_META_SYMBOL } from 'Vurb.ts';
 
 it('Symbol metadata is invisible to JSON.stringify', async () => {
     const result = await tester.callAction('db_user', 'find_many', { take: 1 });
@@ -133,7 +133,7 @@ it('Symbol metadata is invisible to JSON.stringify', async () => {
 
 ## SOC2 Compliance Matrix
 
-| Control | FusionTester Assertion | Status |
+| Control | VurbTester Assertion | Status |
 |---|---|---|
 | CC6.1 — Logical Access | `passwordHash` absent from `result.data` | ✅ Provable |
 | CC6.1 — Data Classification | `tenantId` absent (multi-tenant isolation) | ✅ Provable |

@@ -12,7 +12,7 @@
  * - ui.markdown() server-rendered UI blocks
  * - suggestActions() for HATEOAS-style affordances
  */
-import { definePresenter, ui } from '@vinkius-core/mcp-fusion';
+import { definePresenter, ui } from 'vurb';
 import { z } from 'zod';
 
 export const SystemPresenter = definePresenter({

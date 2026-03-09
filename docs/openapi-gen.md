@@ -28,10 +28,10 @@ API_BASE_URL=https://api.example.com npx tsx ./generated/server.ts
 ## Install {#install}
 
 ```bash
-npm install @vinkius-core/mcp-fusion-openapi-gen
+npm install @vurb/openapi-gen
 ```
 
-Peer dependencies: `@vinkius-core/mcp-fusion` and `zod`.
+Peer dependencies: `Vurb.ts` and `zod`.
 
 ## Generated Output {#output}
 
@@ -101,7 +101,7 @@ export const petTools = defineTool<ApiContext>('pet', {
 Five compilation stages transform the spec into production-ready TypeScript. Swagger 2.0 specs are auto-converted before processing. Each stage is independently importable:
 
 ```typescript
-import { parseOpenAPI, mapEndpoints, emitFiles, mergeConfig } from '@vinkius-core/mcp-fusion-openapi-gen';
+import { parseOpenAPI, mapEndpoints, emitFiles, mergeConfig } from '@vurb/openapi-gen';
 
 const spec = parseOpenAPI(yamlString);
 const mapped = mapEndpoints(spec);
@@ -144,7 +144,7 @@ The internal `Swagger2Converter` handles all structural differences:
 You can also use the converter standalone:
 
 ```typescript
-import { isSwagger2, convertSwagger2ToV3, parseOpenAPI } from '@vinkius-core/mcp-fusion-openapi-gen';
+import { isSwagger2, convertSwagger2ToV3, parseOpenAPI } from '@vurb/openapi-gen';
 
 const raw = JSON.parse(specJson);
 if (isSwagger2(raw)) {
@@ -161,8 +161,8 @@ const spec = parseOpenAPI(specJson); // works with both v2 and v3
 For rapid prototyping, `loadOpenAPI()` parses the spec at startup and creates live proxy handlers with no code generation step. Accepts both OpenAPI 3.x and Swagger 2.0:
 
 ```typescript
-import { loadOpenAPI } from '@vinkius-core/mcp-fusion-openapi-gen';
-import { defineTool, ToolRegistry } from '@vinkius-core/mcp-fusion';
+import { loadOpenAPI } from '@vurb/openapi-gen';
+import { defineTool, ToolRegistry } from 'Vurb.ts';
 
 const tools = loadOpenAPI(specYaml, {
     baseUrl: 'https://api.example.com',
@@ -191,8 +191,8 @@ When the API spec changes, restart the server and the tools update automatically
 ```typescript
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { defineTool, ToolRegistry, createServerAttachment } from '@vinkius-core/mcp-fusion';
-import { loadOpenAPI } from '@vinkius-core/mcp-fusion-openapi-gen';
+import { defineTool, ToolRegistry, createServerAttachment } from 'Vurb.ts';
+import { loadOpenAPI } from '@vurb/openapi-gen';
 import { readFileSync } from 'node:fs';
 
 const specYaml = readFileSync('./petstore.yaml', 'utf-8');
@@ -364,6 +364,6 @@ const petTools = defineTool<AppCtx>('pet', { /* handlers receive ctx: AppCtx */ 
 | Dependency | Version |
 |---|---|
 | Node.js | ≥ 18 |
-| `@vinkius-core/mcp-fusion` | ^2.0.0 (peer) |
+| `Vurb.ts` | ^2.0.0 (peer) |
 | `zod` | ^3.25.1 \|\| ^4.0.0 (peer) |
 | `yaml` | ^2.7.0 (bundled) |

@@ -1,6 +1,6 @@
 ---
 title: "CLI Reference"
-description: "The fusion CLI — generate, verify, and manage capability lockfiles from the command line."
+description: "The Vurb.ts CLI — generate, verify, and manage capability lockfiles from the command line."
 ---
 
 # CLI Reference
@@ -15,41 +15,41 @@ description: "The fusion CLI — generate, verify, and manage capability lockfil
 - [Progress Reporting](#progress)
 - [Programmatic API](#programmatic)
 
-The `fusion` CLI generates and verifies capability lockfiles from the command line. Two commands cover the entire workflow: `fusion lock` captures the behavioral surface, `fusion lock --check` gates the CI build.
+The `Vurb.ts` CLI generates and verifies capability lockfiles from the command line. Two commands cover the entire workflow: `Vurb.ts lock` captures the behavioral surface, `Vurb.ts lock --check` gates the CI build.
 
 
 ## Installation {#install}
 
-The CLI is included in `@vinkius-core/mcp-fusion` and available via npx:
+The CLI is included in `Vurb.ts` and available via npx:
 
 ```bash
-npx fusion lock --server ./src/server.ts
+npx Vurb.ts lock --server ./src/server.ts
 ```
 
 Or install globally:
 
 ```bash
-npm install -g @vinkius-core/mcp-fusion
-fusion lock --server ./src/server.ts
+npm install -g Vurb.ts
+Vurb.ts lock --server ./src/server.ts
 ```
 
 
 ## Generating a Lockfile {#generate}
 
 ```bash
-fusion lock --server ./src/server.ts
+Vurb.ts lock --server ./src/server.ts
 ```
 
 ```
-  fusion lock — Generating mcp-fusion.lock
+  Vurb.ts lock — Generating vurb.lock
 
   ● Resolving server entrypoint — payments-api (12ms)
   ● Compiling tool contracts — 8 tools (45ms)
   ● Discovering prompts — 3 prompts (2ms)
   ● Computing behavioral digests (120ms)
-  ● Writing mcp-fusion.lock (5ms)
+  ● Writing vurb.lock (5ms)
 
-✓ mcp-fusion.lock generated (8 tools, 3 prompts).
+✓ vurb.lock generated (8 tools, 3 prompts).
   Integrity: sha256:a1b2c3d4e5f6...
 ```
 
@@ -59,13 +59,13 @@ The CLI imports your server entrypoint, resolves the `ToolRegistry`, compiles co
 ## Verifying in CI {#check}
 
 ```bash
-fusion lock --check --server ./src/server.ts
+Vurb.ts lock --check --server ./src/server.ts
 ```
 
 `--check` compares the existing lockfile against the live server surface without writing. Exits with code 0 if up-to-date, code 1 if stale:
 
 ```
-  fusion lock — Verifying mcp-fusion.lock
+  Vurb.ts lock — Verifying vurb.lock
 
   ● Resolving server entrypoint — payments-api (12ms)
   ● Compiling tool contracts — 8 tools (45ms)
@@ -79,7 +79,7 @@ fusion lock --check --server ./src/server.ts
   - Prompts removed: legacy-greeting
 ```
 
-This is the command you put in your CI pipeline. When it fails, someone changed the behavioral surface without running `fusion lock`.
+This is the command you put in your CI pipeline. When it fails, someone changed the behavioral surface without running `Vurb.ts lock`.
 
 
 ## Options {#options}
@@ -104,10 +104,10 @@ export const registry = new ToolRegistry();
 export const serverName = 'payments-api';
 ```
 
-Named `fusion` export (from `initFusion`):
+Named `Vurb.ts` export (from `initVurb`):
 
 ```typescript
-export const fusion = initFusion({
+export const Vurb.ts = initVurb({
   name: 'payments-api',
   registry,
 });
@@ -137,7 +137,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '22' }
       - run: npm ci
-      - run: npx fusion lock --check --server ./src/server.ts
+      - run: npx Vurb.ts lock --check --server ./src/server.ts
 ```
 
 ### GitLab CI
@@ -146,7 +146,7 @@ jobs:
 governance:
   script:
     - npm ci
-    - npx fusion lock --check --server ./src/server.ts
+    - npx Vurb.ts lock --check --server ./src/server.ts
 ```
 
 ### Pre-commit Hook
@@ -154,7 +154,7 @@ governance:
 ```bash
 #!/bin/sh
 # .husky/pre-commit
-npx fusion lock --check --server ./src/server.ts
+npx Vurb.ts lock --check --server ./src/server.ts
 ```
 
 
@@ -191,7 +191,7 @@ import {
   resolveRegistry,
   ProgressTracker,
   createDefaultReporter,
-} from '@vinkius-core/mcp-fusion/cli';
+} from 'Vurb.ts/cli';
 ```
 
 See [Capability Lockfile](/governance/capability-lockfile) for the full programmatic lockfile API (`generateLockfile`, `readLockfile`, `checkLockfile`, `writeLockfile`).

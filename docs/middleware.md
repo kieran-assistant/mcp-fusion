@@ -1,7 +1,7 @@
 # Middleware
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -15,7 +15,7 @@ Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-f
 
 ## Introduction {#introduction}
 
-Every production application has cross-cutting concerns — authentication, authorization, auditing, rate limiting, tenant resolution. Without middleware, you'd duplicate these checks in every handler. This is especially painful when generating tools from [@vinkius-core/mcp-fusion-openapi-gen](/openapi-gen) or [@vinkius-core/mcp-fusion-prisma-gen](/prisma-gen) — dozens of auto-generated handlers that all need the same auth and audit layer:
+Every production application has cross-cutting concerns — authentication, authorization, auditing, rate limiting, tenant resolution. Without middleware, you'd duplicate these checks in every handler. This is especially painful when generating tools from [@vurb/openapi-gen](/openapi-gen) or [@vurb/prisma-gen](/prisma-gen) — dozens of auto-generated handlers that all need the same auth and audit layer:
 
 ```typescript
 // ❌ Without middleware — validation repeated in every tool
@@ -28,16 +28,16 @@ Every production application has cross-cutting concerns — authentication, auth
 })
 ```
 
-MCP Fusion's middleware system lets you extract these concerns into reusable, composable functions that run before (or after) the handler. The context is enriched at each step — fully typed, no casting. This design allows you to enforce a true **Zero-Trust Architecture for AI Agents**, guaranteeing **Data Exfiltration Prevention** at the edge because the untrusted LLM request is sanitized and authorized before it ever touches your database handlers.
+Vurb.ts's middleware system lets you extract these concerns into reusable, composable functions that run before (or after) the handler. The context is enriched at each step — fully typed, no casting. This design allows you to enforce a true **Zero-Trust Architecture for AI Agents**, guaranteeing **Data Exfiltration Prevention** at the edge because the untrusted LLM request is sanitized and authorized before it ever touches your database handlers.
 
 ## f.middleware() — Context Derivation {#f-middleware}
 
 The primary pattern. Create a middleware that derives data and injects it into context — like tRPC's `.use()`:
 
 ```typescript
-import { initFusion } from '@vinkius-core/mcp-fusion';
+import { initVurb } from 'Vurb.ts';
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 const requireAuth = f.middleware(async (ctx) => {
   const user = await db.getUser(ctx.token);
@@ -53,10 +53,10 @@ The returned object merges into `ctx` via `Object.assign`. Downstream handlers s
 
 ## defineMiddleware() — Standalone Packages {#define-middleware}
 
-Same as `f.middleware()` but without needing an `initFusion()` instance — for shared utility packages:
+Same as `f.middleware()` but without needing an `initVurb()` instance — for shared utility packages:
 
 ```typescript
-import { defineMiddleware } from '@vinkius-core/mcp-fusion';
+import { defineMiddleware } from 'Vurb.ts';
 
 const addTenant = defineMiddleware(async (ctx: { orgId: string }) => {
   const tenant = await db.getTenant(ctx.orgId);
@@ -111,7 +111,7 @@ export const sensitiveTool = f.query('admin.sensitive_data')
 For before/after hooks that need to wrap `next()` directly:
 
 ```typescript
-import { type MiddlewareFn } from '@vinkius-core/mcp-fusion';
+import { type MiddlewareFn } from 'Vurb.ts';
 
 const loggingMiddleware: MiddlewareFn<AppContext> = async (ctx, args, next) => {
   console.log(`[${new Date().toISOString()}] Action called`);

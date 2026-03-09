@@ -1,7 +1,7 @@
 # Prompt Engine
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 MCP Prompts are server-side templates that return structured messages — instructions, fetched data, domain rules — as a ready-to-use array. Clients expose them as slash commands. The Prompt Engine is opt-in: skip the `prompts` option on `attachToServer()` and nothing runs.
@@ -13,9 +13,9 @@ Prompt arguments must be **flat primitives** (string, number, boolean, enum). MC
 The Fluent Prompt Builder provides a chainable API that mirrors the Fluent Tool Builder. Use `f.prompt(name)` (no config object) to start the chain:
 
 ```typescript
-import { initFusion, PromptMessage } from '@vinkius-core/mcp-fusion';
+import { initVurb, PromptMessage } from 'Vurb.ts';
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 const SummarizePrompt = f.prompt('summarize')
   .title('Summarize Text')
@@ -93,9 +93,9 @@ Use `f.prompt(name, config)` or `definePrompt(name, config)` for the config-bag 
 ### JSON-First Args
 
 ```typescript
-import { initFusion, PromptMessage, PromptRegistry } from '@vinkius-core/mcp-fusion';
+import { initVurb, PromptMessage, PromptRegistry } from 'Vurb.ts';
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 const SummarizePrompt = f.prompt('summarize', {
   description: 'Summarize text with a given style.',
@@ -120,7 +120,7 @@ Pass `z.object()` when you need transforms, defaults, or refinements:
 
 ```typescript
 import { z } from 'zod';
-import { definePrompt, PromptMessage } from '@vinkius-core/mcp-fusion';
+import { definePrompt, PromptMessage } from 'Vurb.ts';
 
 const AuditPrompt = definePrompt<AppContext>('audit_invoices', {
   description: 'Enterprise billing audit.',
@@ -196,7 +196,7 @@ The third message forces the LLM to continue from that point — enforcing struc
 ## PromptRegistry {#registry}
 
 ```typescript
-import { PromptRegistry } from '@vinkius-core/mcp-fusion';
+import { PromptRegistry } from 'Vurb.ts';
 
 const prompts = new PromptRegistry<AppContext>();
 prompts.register(SummarizePrompt);

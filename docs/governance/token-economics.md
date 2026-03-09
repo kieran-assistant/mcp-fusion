@@ -6,7 +6,7 @@ description: "Cognitive overload detection, context window budget profiling, and
 # Token Economics
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Risk Classification](#risk)
@@ -40,7 +40,7 @@ Both levels classify responses into risk tiers and generate actionable recommend
 These thresholds are the defaults. Override them for stricter context windows:
 
 ```typescript
-import type { TokenThresholds } from '@vinkius-core/mcp-fusion/introspection';
+import type { TokenThresholds } from 'Vurb.ts/introspection';
 
 const customThresholds: TokenThresholds = {
   low: 500,
@@ -55,7 +55,7 @@ const customThresholds: TokenThresholds = {
 `computeStaticProfile()` estimates worst-case token cost from schema metadata. It runs once at build time — no runtime overhead.
 
 ```typescript
-import { computeStaticProfile } from '@vinkius-core/mcp-fusion/introspection';
+import { computeStaticProfile } from 'Vurb.ts/introspection';
 
 const profile = computeStaticProfile(
   'users',                              // tool name
@@ -101,7 +101,7 @@ Conditions that trigger recommendations:
 `profileResponse()` measures actual token usage of a completed tool response. Use this in staging or development to validate that production responses stay within budget:
 
 ```typescript
-import { profileResponse } from '@vinkius-core/mcp-fusion/introspection';
+import { profileResponse } from 'Vurb.ts/introspection';
 
 const analysis = profileResponse(
   'users',
@@ -141,7 +141,7 @@ This is a fast approximation optimized for profiling, not billing. For exact cou
 `aggregateProfiles()` rolls up all tool profiles into a server-level risk assessment:
 
 ```typescript
-import { aggregateProfiles } from '@vinkius-core/mcp-fusion/introspection';
+import { aggregateProfiles } from 'Vurb.ts/introspection';
 
 const summary = aggregateProfiles(allProfiles);
 
@@ -173,7 +173,7 @@ Token economics data flows into the lockfile and diff engine. The `TokenEconomic
 | Became unbounded | `RISKY` | Potential for context flooding |
 | Became bounded | `SAFE` | Guardrail added |
 
-When risk escalates, the lockfile becomes stale, `fusion lock --check` fails in CI, and the diff engine reports the severity. This creates a mandatory review step for any change that increases token cost.
+When risk escalates, the lockfile becomes stale, `Vurb.ts lock --check` fails in CI, and the diff engine reports the severity. This creates a mandatory review step for any change that increases token cost.
 
 
 ## Full Profile Pipeline {#pipeline}
@@ -182,7 +182,7 @@ When risk escalates, the lockfile becomes stale, `fusion lock --check` fails in 
 import {
   computeStaticProfile,
   aggregateProfiles,
-} from '@vinkius-core/mcp-fusion/introspection';
+} from 'Vurb.ts/introspection';
 
 const profiles = Object.entries(toolBuilders).map(([name, builder]) => {
   const schema = builder.presenter?.getSchemaKeys() ?? [];

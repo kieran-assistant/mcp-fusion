@@ -6,7 +6,7 @@ description: "Content-addressed behavioral fingerprinting, temporal comparison, 
 # Surface Integrity
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Computing a Digest](#compute)
@@ -36,7 +36,7 @@ From the MCP protocol's perspective, these are the **same tool** — the name, d
 For a single tool:
 
 ```typescript
-import { computeDigest } from '@vinkius-core/mcp-fusion/introspection';
+import { computeDigest } from 'Vurb.ts/introspection';
 
 const result = computeDigest(contract);
 
@@ -57,7 +57,7 @@ The `components` object is the key insight. When the overall digest changes, com
 For the entire server:
 
 ```typescript
-import { computeServerDigest } from '@vinkius-core/mcp-fusion/introspection';
+import { computeServerDigest } from 'Vurb.ts/introspection';
 
 const serverDigest = computeServerDigest(contracts);
 
@@ -100,7 +100,7 @@ Changes when static analysis detects new I/O capabilities in handler source code
 Given the same `ToolContract`, `computeDigest()` always returns the same digest — regardless of object key insertion order, platform (Node.js, Bun, Deno), timestamp, or process ID. This is achieved through canonical JSON serialization: all objects are serialized with sorted keys before hashing.
 
 ```typescript
-import { canonicalize, sha256 } from '@vinkius-core/mcp-fusion/introspection';
+import { canonicalize, sha256 } from 'Vurb.ts/introspection';
 
 const hash = sha256(canonicalize({ b: 2, a: 1 }));
 const hash2 = sha256(canonicalize({ a: 1, b: 2 }));
@@ -115,7 +115,7 @@ Two tools with identical behavioral contracts produce identical digests, even if
 When you have two snapshots — from a lockfile and the current surface, or from two different branches — compare them:
 
 ```typescript
-import { compareServerDigests } from '@vinkius-core/mcp-fusion/introspection';
+import { compareServerDigests } from 'Vurb.ts/introspection';
 
 const comparison = compareServerDigests(beforeDigest, afterDigest);
 

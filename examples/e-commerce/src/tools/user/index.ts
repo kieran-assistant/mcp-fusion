@@ -1,7 +1,7 @@
 /**
  * User CRUD Tools — Fluent API
  */
-import { f } from '../../fusion.js';
+import { f } from '../../vurb.js';
 import { withAuth } from '../../middleware/auth.js';
 import { UserPresenter, UserListPresenter } from '../../presenters/UserPresenter.js';
 import { userRepo } from '../../db.js';

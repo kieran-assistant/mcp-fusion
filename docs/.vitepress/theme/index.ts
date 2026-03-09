@@ -18,7 +18,7 @@ export default {
         h('span', { class: 'nav-badge-opensource' }, 'Open Source'),
         h('span', { class: 'nav-separator' }, '|'),
         h('a', {
-          href: 'https://github.com/vinkius-labs/mcp-fusion',
+          href: 'https://github.com/vinkius-labs/vurb',
           target: '_blank',
           rel: 'noopener noreferrer',
           class: 'nav-github-link'

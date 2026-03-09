@@ -2,7 +2,7 @@
  * Regression tests for BUGS-v4 low-severity bugs #129, #130, #131.
  *
  * Bug #129 — autoDiscover barrel export deduplication
- * Bug #130 — FusionClient proxy doesn't guard inspection props
+ * Bug #130 — VurbClient proxy doesn't guard inspection props
  * Bug #131 — ExpositionCompiler console.warn in production
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
@@ -10,7 +10,7 @@ import { promises as fs } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { autoDiscover } from '../../src/server/autoDiscover.js';
-import { createFusionClient, type FusionTransport } from '../../src/client/FusionClient.js';
+import { createVurbClient, type VurbTransport } from '../../src/client/VurbClient.js';
 import { success } from '../../src/core/response.js';
 import type { ToolResponse } from '../../src/core/response.js';
 import { z } from 'zod';
@@ -19,7 +19,7 @@ import { GroupedToolBuilder } from '../../src/core/builder/GroupedToolBuilder.js
 
 // ── Helpers ──────────────────────────────────────────────
 
-function createMockTransport(): FusionTransport & {
+function createMockTransport(): VurbTransport & {
     calls: Array<{ name: string; args: Record<string, unknown> }>;
 } {
     const calls: Array<{ name: string; args: Record<string, unknown> }> = [];
@@ -40,7 +40,7 @@ describe('Bug #129 — autoDiscover deduplicates by tool name', () => {
     let tempDir: string;
 
     beforeEach(async () => {
-        tempDir = join(tmpdir(), `mcp-fusion-dedup-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+        tempDir = join(tmpdir(), `vurb-dedup-${Date.now()}-${Math.random().toString(36).slice(2)}`);
         await fs.mkdir(tempDir, { recursive: true });
     });
 
@@ -128,12 +128,12 @@ describe('Bug #129 — autoDiscover deduplicates by tool name', () => {
     });
 });
 
-// ── Bug #130 — FusionClient proxy guards inspection symbols ──
+// ── Bug #130 — VurbClient proxy guards inspection symbols ──
 
-describe('Bug #130 — FusionClient proxy guards inspection props', () => {
+describe('Bug #130 — VurbClient proxy guards inspection props', () => {
     it('Symbol.toPrimitive returns undefined (no crash)', () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
         const proxy = client.proxy as any;
 
         expect(proxy[Symbol.toPrimitive]).toBeUndefined();
@@ -141,7 +141,7 @@ describe('Bug #130 — FusionClient proxy guards inspection props', () => {
 
     it('Symbol.toStringTag returns undefined', () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
         const proxy = client.proxy as any;
 
         expect(proxy[Symbol.toStringTag]).toBeUndefined();
@@ -149,7 +149,7 @@ describe('Bug #130 — FusionClient proxy guards inspection props', () => {
 
     it('Symbol.iterator returns undefined', () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
         const proxy = client.proxy as any;
 
         expect(proxy[Symbol.iterator]).toBeUndefined();
@@ -157,7 +157,7 @@ describe('Bug #130 — FusionClient proxy guards inspection props', () => {
 
     it('Symbol.asyncIterator returns undefined', () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
         const proxy = client.proxy as any;
 
         expect(proxy[Symbol.asyncIterator]).toBeUndefined();
@@ -165,7 +165,7 @@ describe('Bug #130 — FusionClient proxy guards inspection props', () => {
 
     it('Symbol.hasInstance returns undefined', () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
         const proxy = client.proxy as any;
 
         expect(proxy[Symbol.hasInstance]).toBeUndefined();
@@ -173,7 +173,7 @@ describe('Bug #130 — FusionClient proxy guards inspection props', () => {
 
     it('nodejs.util.inspect.custom returns undefined', () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
         const proxy = client.proxy as any;
 
         const inspectSymbol = Symbol.for('nodejs.util.inspect.custom');
@@ -182,7 +182,7 @@ describe('Bug #130 — FusionClient proxy guards inspection props', () => {
 
     it('nested proxy nodes also guard inspection symbols', () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
         const projects = (client.proxy as any).projects;
 
         expect(projects[Symbol.toPrimitive]).toBeUndefined();
@@ -192,7 +192,7 @@ describe('Bug #130 — FusionClient proxy guards inspection props', () => {
 
     it('proxy still works for normal string props after symbol access', async () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
         const proxy = client.proxy as any;
 
         // Access symbol first (shouldn't break anything)

@@ -1,12 +1,12 @@
 /**
  * JWT Auth Tool Factory — Pre-built JWT Verification Tool
  *
- * Creates a complete mcp-fusion tool with verify and status actions.
+ * Creates a complete vurb tool with verify and status actions.
  * Consumers only need to provide their JWT verification config.
  *
  * @example
  * ```ts
- * import { createJwtAuthTool } from '@vinkius-core/mcp-fusion-jwt';
+ * import { createJwtAuthTool } from '@vurb/jwt';
  *
  * const jwtTool = createJwtAuthTool({
  *     secret: process.env.JWT_SECRET!,
@@ -15,8 +15,8 @@
  * ```
  */
 
-import { createTool } from '@vinkius-core/mcp-fusion';
-import type { ToolResponse } from '@vinkius-core/mcp-fusion';
+import { createTool } from 'vurb';
+import type { ToolResponse } from 'vurb';
 import { JwtVerifier } from './JwtVerifier.js';
 import type { JwtVerifierConfig, JwtPayload } from './JwtVerifier.js';
 

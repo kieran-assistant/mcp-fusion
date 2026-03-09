@@ -1,20 +1,20 @@
 # Testing
 
-`@vinkius-core/mcp-fusion-testing` runs the full execution pipeline in RAM — same code path as production — and returns structured `MvaTestResult` objects with each MVA layer decomposed into its own field. Zero tokens, zero servers, deterministic on every CI run.
+`@vurb/testing` runs the full execution pipeline in RAM — same code path as production — and returns structured `MvaTestResult` objects with each MVA layer decomposed into its own field. Zero tokens, zero servers, deterministic on every CI run.
 
 ```bash
-npm install @vinkius-core/mcp-fusion-testing
+npm install @vurb/testing
 ```
 
-Works with Vitest, Jest, Mocha, or `node:test`. The tester returns plain objects — your runner, your choice. Ideal for validating hand-written tools and auto-generated tools from [@vinkius-core/mcp-fusion-openapi-gen](/openapi-gen) or [@vinkius-core/mcp-fusion-prisma-gen](/prisma-gen).
+Works with Vitest, Jest, Mocha, or `node:test`. The tester returns plain objects — your runner, your choice. Ideal for validating hand-written tools and auto-generated tools from [@vurb/openapi-gen](/openapi-gen) or [@vurb/prisma-gen](/prisma-gen).
 
 ## Create a Tester
 
 ```typescript
-import { createFusionTester } from '@vinkius-core/mcp-fusion-testing';
+import { createVurbTester } from '@vurb/testing';
 import { registry } from './server/registry.js';
 
-const tester = createFusionTester(registry, {
+const tester = createVurbTester(registry, {
   contextFactory: () => ({
     prisma: mockPrisma,
     tenantId: 't_enterprise_42',
@@ -23,7 +23,7 @@ const tester = createFusionTester(registry, {
 });
 ```
 
-`createFusionTester` wraps your real `ToolRegistry` and calls `routeCall()` — the same function production uses. No pipeline reimplementation, no mock transport.
+`createVurbTester` wraps your real `ToolRegistry` and calls `routeCall()` — the same function production uses. No pipeline reimplementation, no mock transport.
 
 ## Assert Every MVA Layer
 
@@ -75,14 +75,14 @@ Four tests, 8 ms, zero tokens.
 
 ## How It Works
 
-`ResponseBuilder.build()` attaches MVA metadata via `Symbol.for('mcp-fusion.mva-meta')`. Symbols are invisible to `JSON.stringify`, so the MCP transport never sees them — but `FusionTester` reads them in RAM:
+`ResponseBuilder.build()` attaches MVA metadata via `Symbol.for('Vurb.ts.mva-meta')`. Symbols are invisible to `JSON.stringify`, so the MCP transport never sees them — but `VurbTester` reads them in RAM:
 
 ```typescript
 // MCP transport sees:
 { "content": [{ "type": "text", "text": "<data>...</data>" }] }
 
-// FusionTester reads (Symbol key):
-response[Symbol.for('mcp-fusion.mva-meta')] = {
+// VurbTester reads (Symbol key):
+response[Symbol.for('Vurb.ts.mva-meta')] = {
   data: { id: '1', name: 'Alice', email: 'alice@acme.com' },
   rules: ['Data from Prisma ORM. Do not infer outside this response.'],
   ui: [{ type: 'summary', content: 'User: Alice (alice@acme.com)' }],
@@ -95,7 +95,7 @@ The tester exercises the full pipeline — Zod validation, compiled middleware c
 
 | Guide | Description |
 |---|---|
-| [Quick Start](/testing/quickstart) | Build your first FusionTester in 5 minutes |
+| [Quick Start](/testing/quickstart) | Build your first VurbTester in 5 minutes |
 | [Egress Firewall](/testing/egress-firewall) | Audit PII stripping and field-level security |
 | [System Rules](/testing/system-rules) | Verify LLM governance directives |
 | [UI Blocks](/testing/ui-blocks) | Assert SSR blocks, charts, and cognitive guardrails |

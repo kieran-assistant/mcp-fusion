@@ -16,7 +16,7 @@
  * @module
  */
 import type { DebugObserverFn, GovernanceOperation } from '../observability/DebugObserver.js';
-import type { FusionTracer, FusionAttributeValue } from '../observability/Tracing.js';
+import type { VurbTracer, VurbAttributeValue } from '../observability/Tracing.js';
 import { SpanStatusCode } from '../observability/Tracing.js';
 import type { ToolContract } from './ToolContract.js';
 import type { CapabilityLockfile, LockfileCheckResult, GenerateLockfileOptions } from './CapabilityLockfile.js';
@@ -40,7 +40,7 @@ export interface GovernanceObserverConfig {
     /** Debug event handler — receives GovernanceEvent */
     readonly debug?: DebugObserverFn;
     /** OpenTelemetry-compatible tracer */
-    readonly tracer?: FusionTracer;
+    readonly tracer?: VurbTracer;
 }
 
 // ============================================================================
@@ -92,8 +92,8 @@ export interface GovernanceObserver {
  *
  * @example
  * ```typescript
- * import { createGovernanceObserver } from '@vinkius-core/mcp-fusion/introspection';
- * import { createDebugObserver } from '@vinkius-core/mcp-fusion';
+ * import { createGovernanceObserver } from 'vurb/introspection';
+ * import { createDebugObserver } from 'vurb';
  *
  * const observer = createGovernanceObserver({
  *     debug: createDebugObserver(),
@@ -128,7 +128,7 @@ export function createGovernanceObserver(config: GovernanceObserverConfig): Gove
             // Bug #50: Runtime guard — reject async callbacks passed to sync observe()
             if (result != null && typeof (result as Record<string, unknown>)['then'] === 'function') {
                 throw new Error(
-                    '[MCP Fusion] observe() received an async callback. Use observeAsync() for async operations.',
+                    '[Vurb] observe() received an async callback. Use observeAsync() for async operations.',
                 );
             }
 

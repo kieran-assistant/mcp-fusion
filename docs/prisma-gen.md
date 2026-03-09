@@ -9,11 +9,11 @@
 - [Generated Output](#output)
 - [Requirements](#requirements)
 
-A Prisma Generator that reads `schema.prisma` annotations and produces MCP Fusion ToolBuilders and Presenters with field-level security, tenant isolation, and OOM protection baked into the generated code.
+A Prisma Generator that reads `schema.prisma` annotations and produces Vurb.ts ToolBuilders and Presenters with field-level security, tenant isolation, and OOM protection baked into the generated code.
 
 ```prisma
 generator mcp {
-  provider = "vinkius-prisma-gen"
+  provider = "Vurb.ts-prisma-gen"
   output   = "../src/tools/database"
 }
 
@@ -21,10 +21,10 @@ model User {
   id           String @id @default(uuid())
   email        String @unique
   role         String @default("USER")
-  passwordHash String /// @fusion.hide
-  stripeToken  String /// @fusion.hide
-  creditScore  Int    /// @fusion.describe("Financial score from 0 to 1000. Above 700 is PREMIUM.")
-  tenantId     String /// @fusion.tenantKey
+  passwordHash String /// @vurb.hide
+  stripeToken  String /// @vurb.hide
+  creditScore  Int    /// @vurb.describe("Financial score from 0 to 1000. Above 700 is PREMIUM.")
+  tenantId     String /// @vurb.tenantKey
 }
 ```
 
@@ -37,22 +37,22 @@ npx prisma generate
 ## Install {#install}
 
 ```bash
-npm install @vinkius-core/mcp-fusion-prisma-gen
+npm install @vurb/prisma-gen
 ```
 
-Peer dependencies: `@vinkius-core/mcp-fusion`, `zod`, and `@prisma/generator-helper`.
+Peer dependencies: `Vurb.ts`, `zod`, and `@prisma/generator-helper`.
 
 ## Field-Level Security {#field-security}
 
-`/// @fusion.hide` physically excludes fields from the generated Zod response schema. `/// @fusion.describe()` compiles into `.describe()` calls that inject domain semantics.
+`/// @vurb.hide` physically excludes fields from the generated Zod response schema. `/// @vurb.describe()` compiles into `.describe()` calls that inject domain semantics.
 
 ```prisma
 model User {
   id           String @id @default(uuid())
   email        String @unique
-  passwordHash String /// @fusion.hide
-  stripeToken  String /// @fusion.hide
-  creditScore  Int    /// @fusion.describe("Financial score from 0 to 1000. Above 700 is PREMIUM.")
+  passwordHash String /// @vurb.hide
+  stripeToken  String /// @vurb.hide
+  creditScore  Int    /// @vurb.describe("Financial score from 0 to 1000. Above 700 is PREMIUM.")
 }
 ```
 
@@ -77,11 +77,11 @@ Prisma queries return `passwordHash` and `stripeToken` from the database. The Pr
 
 ## OOM Guard & Tenant Isolation {#oom-guard}
 
-`/// @fusion.tenantKey` injects the tenant filter into every generated query's `WHERE` clause. Pagination is enforced with `take` capped at 50.
+`/// @vurb.tenantKey` injects the tenant filter into every generated query's `WHERE` clause. Pagination is enforced with `take` capped at 50.
 
 ```typescript
 // src/tools/database/userTools.ts (generated)
-export const userTools = defineTool<PrismaFusionContext>('db_user', {
+export const userTools = defineTool<PrismaVurbContext>('db_user', {
     actions: {
         find_many: {
             readOnly: true,
@@ -180,7 +180,7 @@ The generator produces `ToolBuilder` instances and `Presenter` files — no serv
 ```typescript
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { ToolRegistry, createServerAttachment } from '@vinkius-core/mcp-fusion';
+import { ToolRegistry, createServerAttachment } from 'Vurb.ts';
 import { userTools } from './tools/database/userTools.js';
 import { prisma } from './lib/prisma.js';
 
@@ -207,22 +207,22 @@ await server.connect(new StdioServerTransport());
 
 | Annotation | Location | Effect |
 |---|---|---|
-| `/// @fusion.hide` | Field | Excludes from the generated Zod response schema |
-| `/// @fusion.describe("...")` | Field | Adds `.describe()` to the Zod field |
-| `/// @fusion.tenantKey` | Field | Injects into every query's `WHERE` clause from `ctx` |
+| `/// @vurb.hide` | Field | Excludes from the generated Zod response schema |
+| `/// @vurb.describe("...")` | Field | Adds `.describe()` to the Zod field |
+| `/// @vurb.tenantKey` | Field | Injects into every query's `WHERE` clause from `ctx` |
 
 ## Generator Configuration {#configuration}
 
 ```prisma
 generator mcp {
-  provider = "vinkius-prisma-gen"
+  provider = "Vurb.ts-prisma-gen"
   output   = "../src/tools/database"
 }
 ```
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `provider` | `string` | — | Must be `"vinkius-prisma-gen"` |
+| `provider` | `string` | — | Must be `"Vurb.ts-prisma-gen"` |
 | `output` | `string` | `"./generated"` | Output directory for generated files |
 
 ## Generated Output {#output}
@@ -236,7 +236,7 @@ src/tools/database/
 └── index.ts             ← Barrel export
 ```
 
-Each model produces a Presenter (Zod `.strict()` schema with `@fusion.hide` fields removed) and a Tool (`defineTool()` builder with `find_many`, `find_unique`, `create`, `update`, `delete` actions).
+Each model produces a Presenter (Zod `.strict()` schema with `@vurb.hide` fields removed) and a Tool (`defineTool()` builder with `find_many`, `find_unique`, `create`, `update`, `delete` actions).
 
 ## Requirements {#requirements}
 
@@ -244,6 +244,6 @@ Each model produces a Presenter (Zod `.strict()` schema with `@fusion.hide` fiel
 |---|---|
 | Node.js | ≥ 18 |
 | Prisma | ≥ 5.0 |
-| `@vinkius-core/mcp-fusion` | ^2.0.0 (peer) |
+| `Vurb.ts` | ^2.0.0 (peer) |
 | `zod` | ^3.25.1 \|\| ^4.0.0 (peer) |
 | `@prisma/generator-helper` | ^6.0.0 (peer) |

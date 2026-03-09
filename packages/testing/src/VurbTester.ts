@@ -1,7 +1,7 @@
 /**
- * FusionTester — In-Memory MVA Lifecycle Emulator
+ * VurbTester — In-Memory MVA Lifecycle Emulator
  *
- * Runs the **real** MCP Fusion execution pipeline in RAM:
+ * Runs the **real** Vurb execution pipeline in RAM:
  * Zod Input Validation → Middleware Chain → Handler → PostProcessor → Egress Firewall
  *
  * Decomposes the `ToolResponse` into structured `MvaTestResult` objects
@@ -12,10 +12,10 @@
  *
  * @example
  * ```typescript
- * import { createFusionTester } from '@vinkius-core/mcp-fusion-testing';
+ * import { createVurbTester } from '@vurb/testing';
  * import { registry } from '../src/server/registry.js';
  *
- * const tester = createFusionTester(registry, {
+ * const tester = createVurbTester(registry, {
  *     contextFactory: () => ({
  *         prisma: mockPrisma,
  *         tenantId: 't_777',
@@ -30,12 +30,12 @@
  *
  * @module
  */
-import type { ToolRegistry } from '@vinkius-core/mcp-fusion';
-import { MVA_META_SYMBOL } from '@vinkius-core/mcp-fusion';
-import type { MvaMeta } from '@vinkius-core/mcp-fusion';
+import type { ToolRegistry } from 'vurb';
+import { MVA_META_SYMBOL } from 'vurb';
+import type { MvaMeta } from 'vurb';
 import type { TesterOptions, MvaTestResult } from './types.js';
 
-// ── FusionTester Class ───────────────────────────────────
+// ── VurbTester Class ───────────────────────────────────
 
 /**
  * In-memory MVA lifecycle emulator.
@@ -45,7 +45,7 @@ import type { TesterOptions, MvaTestResult } from './types.js';
  *
  * @typeParam TContext - Application context type (matches your ToolRegistry)
  */
-export class FusionTester<TContext> {
+export class VurbTester<TContext> {
     constructor(
         private readonly registry: ToolRegistry<TContext>,
         private readonly options: TesterOptions<TContext>,
@@ -146,15 +146,15 @@ export class FusionTester<TContext> {
 // ── Factory ──────────────────────────────────────────────
 
 /**
- * Create a FusionTester for the given registry.
+ * Create a VurbTester for the given registry.
  *
  * @param registry - The application's ToolRegistry instance
  * @param options - Context factory and configuration
- * @returns A new FusionTester instance
+ * @returns A new VurbTester instance
  *
  * @example
  * ```typescript
- * const tester = createFusionTester(registry, {
+ * const tester = createVurbTester(registry, {
  *     contextFactory: () => ({
  *         prisma: mockPrisma,
  *         tenantId: 't_enterprise_42',
@@ -162,9 +162,9 @@ export class FusionTester<TContext> {
  * });
  * ```
  */
-export function createFusionTester<TContext>(
+export function createVurbTester<TContext>(
     registry: ToolRegistry<TContext>,
     options: TesterOptions<TContext>,
-): FusionTester<TContext> {
-    return new FusionTester(registry, options);
+): VurbTester<TContext> {
+    return new VurbTester(registry, options);
 }

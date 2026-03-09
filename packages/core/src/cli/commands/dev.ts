@@ -1,5 +1,5 @@
 /**
- * `fusion dev` — HMR development server.
+ * `vurb dev` — HMR development server.
  * @module
  */
 import type { CliArgs } from '../args.js';
@@ -18,7 +18,7 @@ export async function commandDev(args: CliArgs, reporter?: ProgressReporter): Pr
         const detected = inferServerEntry(args.cwd);
         if (!detected) {
             console.error('Error: Could not auto-detect server entrypoint.\n');
-            console.error('Usage: fusion dev --server ./src/server.ts');
+            console.error('Usage: vurb dev --server ./src/server.ts');
             process.exit(1);
         }
         args.server = detected;
@@ -26,7 +26,7 @@ export async function commandDev(args: CliArgs, reporter?: ProgressReporter): Pr
 
     const serverEntry = args.server;
 
-    process.stderr.write(`\n  ${ansi.bold('fusion dev')} ${ansi.dim('— HMR Development Server')}\n\n`);
+    process.stderr.write(`\n  ${ansi.bold('vurb dev')} ${ansi.dim('— HMR Development Server')}\n\n`);
 
     // Step 1: Resolve registry
     progress.start('resolve', 'Resolving server entrypoint');

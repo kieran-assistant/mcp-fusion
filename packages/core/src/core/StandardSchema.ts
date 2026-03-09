@@ -1,7 +1,7 @@
 /**
  * StandardSchema — Universal Schema Abstraction Layer
  *
- * Decouples the MCP Fusion validation engine from Zod specifically,
+ * Decouples the Vurb validation engine from Zod specifically,
  * enabling support for any validator that implements the Standard Schema
  * specification (`@standard-schema/spec`).
  *
@@ -28,7 +28,7 @@
  *
  * @example
  * ```typescript
- * import { toStandardValidator } from '@vinkius-core/mcp-fusion';
+ * import { toStandardValidator } from 'vurb';
  * import * as v from 'valibot';
  *
  * // Valibot schemas work natively via Standard Schema
@@ -56,7 +56,7 @@ export interface StandardSchemaIssue {
  * Standard Schema v1 spec — the universal validator contract.
  *
  * Any schema library implementing this interface can be used with
- * MCP Fusion's validation pipeline.
+ * Vurb's validation pipeline.
  */
 export interface StandardSchemaV1<TInput = unknown, TOutput = TInput> {
     readonly '~standard': {
@@ -73,22 +73,22 @@ export interface StandardSchemaV1<TInput = unknown, TOutput = TInput> {
  */
 export type InferStandardOutput<T> = T extends StandardSchemaV1<unknown, infer O> ? O : never;
 
-// ── Fusion Validator ─────────────────────────────────────
+// ── Vurb Validator ─────────────────────────────────────
 
 /**
- * Fusion's internal validation result.
+ * Vurb's internal validation result.
  */
 export type ValidationResult<T> =
     | { readonly success: true; readonly data: T }
     | { readonly success: false; readonly issues: readonly StandardSchemaIssue[] };
 
 /**
- * Universal validator interface used internally by MCP Fusion.
+ * Universal validator interface used internally by Vurb.
  *
  * Wraps any schema library (Zod, Valibot, ArkType, etc.) into
  * a consistent validation contract.
  */
-export interface FusionValidator<T = unknown> {
+export interface VurbValidator<T = unknown> {
     /** Run validation and return a result (never throws) */
     validate(value: unknown): ValidationResult<T>;
     /** Vendor identifier (e.g. 'zod', 'valibot', 'arktype') */
@@ -100,13 +100,13 @@ export interface FusionValidator<T = unknown> {
 // ── Adapters ─────────────────────────────────────────────
 
 /**
- * Create a FusionValidator from a Standard Schema v1 compatible schema.
+ * Create a VurbValidator from a Standard Schema v1 compatible schema.
  *
  * This is the primary entry point for non-Zod validators. Any schema
  * library implementing the Standard Schema spec can be used directly.
  *
  * @param schema - A Standard Schema v1 compatible schema
- * @returns A {@link FusionValidator} wrapping the schema
+ * @returns A {@link VurbValidator} wrapping the schema
  *
  * @example
  * ```typescript
@@ -124,7 +124,7 @@ export interface FusionValidator<T = unknown> {
  */
 export function toStandardValidator<T>(
     schema: StandardSchemaV1<unknown, T>,
-): FusionValidator<T> {
+): VurbValidator<T> {
     const spec = schema['~standard'];
 
     return {
@@ -136,9 +136,9 @@ export function toStandardValidator<T>(
             // 'value' in Promise is false. Detect and throw early. (Bug #9 fix)
             if (result != null && typeof (result as any).then === 'function') {
                 throw new Error(
-                    `[MCP-Fusion] Schema validator "${spec.vendor}" returned a Promise. ` +
+                    `[Vurb] Schema validator "${spec.vendor}" returned a Promise. ` +
                     'Async validators are not supported — use a synchronous schema. ' +
-                    'See: https://mcp-fusion.vinkius.com/docs/standard-schema',
+                    'See: https://vurb.vinkius.com/docs/standard-schema',
                 );
             }
 
@@ -154,13 +154,13 @@ export function toStandardValidator<T>(
 }
 
 /**
- * Create a FusionValidator from a raw Zod schema.
+ * Create a VurbValidator from a raw Zod schema.
  *
  * This adapter uses Zod's `.safeParse()` method and maps the result
- * to the standard FusionValidator interface.
+ * to the standard VurbValidator interface.
  *
  * @param schema - A Zod schema (z.object, z.string, etc.)
- * @returns A {@link FusionValidator} wrapping the Zod schema
+ * @returns A {@link VurbValidator} wrapping the Zod schema
  *
  * @example
  * ```typescript
@@ -173,7 +173,7 @@ export function toStandardValidator<T>(
  * // { success: true, data: { name: 'Alice' } }
  * ```
  */
-export function fromZodSchema<T>(schema: ZodSchemaLike<T>): FusionValidator<T> {
+export function fromZodSchema<T>(schema: ZodSchemaLike<T>): VurbValidator<T> {
     return {
         validate(value: unknown): ValidationResult<T> {
             const result = schema.safeParse(value);
@@ -219,7 +219,7 @@ export function isStandardSchema(value: unknown): value is StandardSchemaV1 {
 }
 
 /**
- * Auto-detect and create a FusionValidator from any supported schema.
+ * Auto-detect and create a VurbValidator from any supported schema.
  *
  * Detection order:
  * 1. Standard Schema v1 (Valibot, ArkType, etc.)
@@ -227,10 +227,10 @@ export function isStandardSchema(value: unknown): value is StandardSchemaV1 {
  * 3. Throws if unrecognized
  *
  * @param schema - Any supported schema
- * @returns A {@link FusionValidator}
+ * @returns A {@link VurbValidator}
  * @throws If the schema type is not recognized
  */
-export function autoValidator<T = unknown>(schema: unknown): FusionValidator<T> {
+export function autoValidator<T = unknown>(schema: unknown): VurbValidator<T> {
     if (isStandardSchema(schema)) {
         return toStandardValidator(schema as StandardSchemaV1<unknown, T>);
     }
@@ -241,7 +241,7 @@ export function autoValidator<T = unknown>(schema: unknown): FusionValidator<T> 
 
     throw new Error(
         'Unsupported schema type. Expected a Standard Schema v1 (' +
-        'Valibot, ArkType) or Zod schema. See: https://mcp-fusion.vinkius.com/docs/standard-schema'
+        'Valibot, ArkType) or Zod schema. See: https://vurb.vinkius.com/docs/standard-schema'
     );
 }
 

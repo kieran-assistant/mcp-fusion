@@ -1,12 +1,12 @@
 /**
- * Bug #51 — FusionClient.terminalCall — action field spread order
+ * Bug #51 — VurbClient.terminalCall — action field spread order
  *
  * THE BUG: `{ action: actionName, ...args }` — spread order places
  * `action` BEFORE `...args`. If the user's schema has a field named
  * `action`, the user's value overwrites the routing field. Server
  * routes to the wrong handler.
  *
- * WHY EXISTING TESTS MISSED IT: All FusionClient tests use schemas
+ * WHY EXISTING TESTS MISSED IT: All VurbClient tests use schemas
  * without a field named `action`. No test ever verified that the
  * routing field takes precedence over user-supplied fields.
  *
@@ -14,13 +14,13 @@
  */
 import { describe, it, expect } from 'vitest';
 import {
-    createFusionClient,
-    type FusionTransport,
-} from '../../src/client/FusionClient.js';
+    createVurbClient,
+    type VurbTransport,
+} from '../../src/client/VurbClient.js';
 import { success } from '../../src/core/response.js';
 import type { ToolResponse } from '../../src/core/response.js';
 
-function createCapturingTransport(): FusionTransport & {
+function createCapturingTransport(): VurbTransport & {
     calls: Array<{ name: string; args: Record<string, unknown> }>;
 } {
     const calls: Array<{ name: string; args: Record<string, unknown> }> = [];
@@ -33,10 +33,10 @@ function createCapturingTransport(): FusionTransport & {
     };
 }
 
-describe('Bug #51: FusionClient routing field overwrite', () => {
+describe('Bug #51: VurbClient routing field overwrite', () => {
     it('routing action field is NOT overwritten by user args', async () => {
         const transport = createCapturingTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         // User has a field named 'action' in their schema
         await client.execute('orders.create' as never, { action: 'userValue', name: 'test' } as never);
@@ -49,7 +49,7 @@ describe('Bug #51: FusionClient routing field overwrite', () => {
 
     it('user args are preserved alongside routing field', async () => {
         const transport = createCapturingTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         await client.execute('orders.create' as never, { name: 'Widget', qty: 5 } as never);
 
@@ -62,7 +62,7 @@ describe('Bug #51: FusionClient routing field overwrite', () => {
 
     it('non-dotted actions pass args directly (no action field injected)', async () => {
         const transport = createCapturingTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         await client.execute('simple-tool' as never, { x: 1 } as never);
 
@@ -73,7 +73,7 @@ describe('Bug #51: FusionClient routing field overwrite', () => {
 
     it('action field consistently wins even with deeply nested args', async () => {
         const transport = createCapturingTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         const complexArgs = {
             action: 'malicious-override',
@@ -91,7 +91,7 @@ describe('Bug #51: FusionClient routing field overwrite', () => {
 
     it('multiple dots use first segment as tool and rest as action', async () => {
         const transport = createCapturingTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         await client.execute('ns.tool.action' as never, { x: 1 } as never);
 
@@ -101,7 +101,7 @@ describe('Bug #51: FusionClient routing field overwrite', () => {
 
     it('empty args with action routing works', async () => {
         const transport = createCapturingTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         await client.execute('orders.list' as never, {} as never);
 

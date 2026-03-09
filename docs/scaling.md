@@ -1,7 +1,7 @@
 # Scaling
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -15,7 +15,7 @@ Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-f
 
 Every tool definition in `tools/list` includes a name, description, and full JSON Schema. The LLM receives this entire payload as system context. As tool count grows, three failures cascade: context saturation (fewer tokens for reasoning), semantic collision (similar tool names confuse routing), and parameter confusion (overlapping field names like `id` or `status` cause cross-contamination).
 
-MCP Fusion provides four mechanisms to keep tool payloads manageable as your server scales — especially critical when using generators like [@vinkius-core/mcp-fusion-prisma-gen](/prisma-gen), [@vinkius-core/mcp-fusion-openapi-gen](/openapi-gen), or [@vinkius-core/mcp-fusion-n8n](/n8n-connector) that can produce dozens of tools from a single schema.
+Vurb.ts provides four mechanisms to keep tool payloads manageable as your server scales — especially critical when using generators like [@vurb/prisma-gen](/prisma-gen), [@vurb/openapi-gen](/openapi-gen), or [@vurb/n8n](/n8n-connector) that can produce dozens of tools from a single schema.
 
 ## Grouping Reduces Tool Count {#grouping}
 
@@ -47,15 +47,15 @@ One entry with all operations nested:
 ]
 ```
 
-The discriminator enum anchors the LLM to valid operations. If it sends an invalid action, Fusion returns a structured error with the valid options.
+The discriminator enum anchors the LLM to valid operations. If it sends an invalid action, Vurb.ts returns a structured error with the valid options.
 
 ## Tag Filtering {#tag-filtering}
 
 `.tags()` on the Fluent API lets you classify tools, then filter which ones appear in `tools/list`:
 
 ```typescript
-import { initFusion } from '@vinkius-core/mcp-fusion';
-const f = initFusion<AppContext>();
+import { initVurb } from 'Vurb.ts';
+const f = initVurb<AppContext>();
 
 const usersTool = f.query('users.list')
   .describe('List users')
@@ -116,14 +116,14 @@ Structured error responses let the LLM self-correct without retry loops. Every v
 
 Token compression and tool grouping reduce cognitive load — but your MCP server still runs as a single Node.js process. To scale horizontally without managing infrastructure, deploy to serverless runtimes where each invocation runs in its own isolate.
 
-MCP Fusion's adapters cache registry compilation at module scope — Zod reflection, Presenter compilation, schema generation — and execute warm requests as stateless JSON-RPC calls. No shared memory, no session affinity, no connection pooling.
+Vurb.ts's adapters cache registry compilation at module scope — Zod reflection, Presenter compilation, schema generation — and execute warm requests as stateless JSON-RPC calls. No shared memory, no session affinity, no connection pooling.
 
 ### Vercel — Auto-Scaling MCP Functions
 
 Each invocation compiles tools once at cold start and reuses the cached registry for subsequent calls. Edge Runtime distributes your MCP server globally with ~0ms cold starts:
 
 ```typescript
-import { vercelAdapter } from '@vinkius-core/mcp-fusion-vercel';
+import { vercelAdapter } from '@vurb/vercel';
 export const POST = vercelAdapter({ registry, contextFactory });
 export const runtime = 'edge';
 ```
@@ -133,7 +133,7 @@ export const runtime = 'edge';
 Workers spawn a V8 isolate per request — true horizontal scaling with zero coordination. Your tools access D1 and KV at the edge without cross-isolate state:
 
 ```typescript
-import { cloudflareWorkersAdapter } from '@vinkius-core/mcp-fusion-cloudflare';
+import { cloudflareWorkersAdapter } from '@vurb/cloudflare';
 export default cloudflareWorkersAdapter({ registry, contextFactory });
 ```
 

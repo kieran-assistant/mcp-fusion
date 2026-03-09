@@ -6,10 +6,10 @@ description: "The tests/ layer in the MVA convention — folder structure, file 
 # Convention
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
-The **MVA Convention** organizes code into three architectural layers: **Model**, **View**, **Agent**. The `@vinkius-core/mcp-fusion-testing` package introduces a fourth layer: **Tests**.
+The **MVA Convention** organizes code into three architectural layers: **Model**, **View**, **Agent**. The `@vurb/testing` package introduces a fourth layer: **Tests**.
 
 ## Structure
 
@@ -25,7 +25,7 @@ tests/
 ├── guards/         ← Middleware & OOM Guard tests
 ├── rules/          ← System Rules verification
 ├── blocks/         ← UI Blocks & truncation tests
-└── setup.ts        ← Shared FusionTester instance
+└── setup.ts        ← Shared VurbTester instance
 ```
 
 ## Dependency Flow
@@ -36,7 +36,7 @@ models/  →  views/  →  agents/  →  index.ts  →  server.ts
                                     tests/
 ```
 
-Tests import **only** the registry barrel (`index.ts`). They never import individual handlers, Presenters, or schemas directly. The FusionTester exercises the entire pipeline through `ToolRegistry.routeCall()`.
+Tests import **only** the registry barrel (`index.ts`). They never import individual handlers, Presenters, or schemas directly. The VurbTester exercises the entire pipeline through `ToolRegistry.routeCall()`.
 
 ## File Naming
 
@@ -49,14 +49,14 @@ Tests import **only** the registry barrel (`index.ts`). They never import indivi
 
 ## The `setup.ts` File
 
-Every test suite shares a single `FusionTester` instance:
+Every test suite shares a single `VurbTester` instance:
 
 ```typescript
 // tests/setup.ts
-import { createFusionTester } from '@vinkius-core/mcp-fusion-testing';
+import { createVurbTester } from '@vurb/testing';
 import { registry } from '../src/index.js';
 
-export const tester = createFusionTester(registry, {
+export const tester = createVurbTester(registry, {
     contextFactory: () => ({
         prisma: mockPrisma,
         tenantId: 't_test',

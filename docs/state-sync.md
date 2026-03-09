@@ -1,7 +1,7 @@
 # State Sync
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -20,7 +20,7 @@ Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-f
 
 LLMs have no sense of time. After calling `sprints.list` and then `sprints.create`, the agent still believes the list is unchanged — nothing told it the data is stale. It makes decisions on outdated information.
 
-MCP Fusion's State Sync injects RFC 7234-inspired cache-control signals into MCP responses, guiding the agent to re-read after mutations. LLMs are trained on web pages with HTTP cache headers — they interpret `no-store` as "re-fetch before using" and `immutable` as "never changes." Zero overhead when not configured.
+Vurb.ts's State Sync injects RFC 7234-inspired cache-control signals into MCP responses, guiding the agent to re-read after mutations. LLMs are trained on web pages with HTTP cache headers — they interpret `no-store` as "re-fetch before using" and `immutable` as "never changes." Zero overhead when not configured.
 
 > Based on ["Your LLM Agents are Temporally Blind"](https://arxiv.org/abs/2510.23853)
 
@@ -29,9 +29,9 @@ MCP Fusion's State Sync injects RFC 7234-inspired cache-control signals into MCP
 The simplest way to declare state sync is directly on the tool builder:
 
 ```typescript
-import { initFusion } from '@vinkius-core/mcp-fusion';
+import { initVurb } from 'Vurb.ts';
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 // Reference data — safe to cache forever
 const listCountries = f.query('countries.list')
@@ -86,7 +86,7 @@ const updateTask = f.action('tasks.update')
 For full control over cache policies across your entire server, configure `stateSync` at the registry level:
 
 ```typescript
-import { ToolRegistry } from '@vinkius-core/mcp-fusion';
+import { ToolRegistry } from 'Vurb.ts';
 
 const registry = new ToolRegistry<AppContext>();
 registry.registerAll(sprintsTool, tasksTool, countriesEnumTool);
@@ -198,7 +198,7 @@ stateSync: {
 notificationSink: (notification) => {
   server.notification(notification);
 }
-// → { method: 'notifications/resources/updated', params: { uri: 'fusion://stale/sprints.*' } }
+// → { method: 'notifications/resources/updated', params: { uri: 'Vurb.ts://stale/sprints.*' } }
 ```
 
 Fire-and-forget. Async rejections are swallowed.
@@ -208,7 +208,7 @@ Fire-and-forget. Async rejections are swallowed.
 `detectOverlaps()` catches policy ordering bugs at startup:
 
 ```typescript
-import { detectOverlaps } from '@vinkius-core/mcp-fusion';
+import { detectOverlaps } from 'Vurb.ts';
 
 const warnings = detectOverlaps([
   { match: 'sprints.*', cacheControl: 'no-store' },

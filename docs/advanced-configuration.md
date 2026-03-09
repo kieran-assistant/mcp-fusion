@@ -1,7 +1,7 @@
 # Advanced Configuration
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [TOON Token Compression](#toon)
@@ -11,12 +11,12 @@ Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-f
 
 ## TOON Token Compression {#toon}
 
-Fusion generates Markdown descriptions for tool actions by default. `.toonDescription()` switches to [Token-Oriented Object Notation (TOON)](https://github.com/toon-format/toon) — a pipe-delimited table format that preserves LLM structural perception at roughly half the tokens:
+Vurb.ts generates Markdown descriptions for tool actions by default. `.toonDescription()` switches to [Token-Oriented Object Notation (TOON)](https://github.com/toon-format/toon) — a pipe-delimited table format that preserves LLM structural perception at roughly half the tokens:
 
 ```typescript
-import { initFusion } from '@vinkius-core/mcp-fusion';
+import { initVurb } from 'Vurb.ts';
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 const adminUsers = f.query('admin.list_users')
   .describe('List all platform users')
@@ -66,7 +66,7 @@ A public chat assistant never sees the `billing` tool. The LLM can't call what i
 The default routing field is `"action"`. Some domains have their own vocabulary. Use `createTool()` to set a custom discriminator at the group level:
 
 ```typescript
-import { createTool } from '@vinkius-core/mcp-fusion';
+import { createTool } from 'Vurb.ts';
 
 const storage = createTool<AppContext>('storage')
   .discriminator('operation')
@@ -83,7 +83,7 @@ The LLM now sends `{ "operation": "upload", ... }`. The compiled schema, descrip
 
 The MCP specification defines [Annotations](https://modelcontextprotocol.io/specification/2025-03-26/server/tools#annotations) — UI hints for AI clients like Claude Desktop and Cursor.
 
-Fusion infers `readOnlyHint` and `destructiveHint` from semantic verbs automatically. Override explicitly on any tool:
+Vurb.ts infers `readOnlyHint` and `destructiveHint` from semantic verbs automatically. Override explicitly on any tool:
 
 ```typescript
 const database = f.query('database.query')

@@ -149,8 +149,8 @@ export class DeviceAuthenticator {
         while (Date.now() < expiresAt) {
             signal?.throwIfAborted();
 
-            await sleep(interval, signal);
-
+            // Poll first, then sleep — RFC 8628 §3.4 specifies
+            // the interval is between polling requests, not before the first.
             const result = await this.attemptTokenExchange({
                 deviceCode: codeResponse.device_code,
             });
@@ -163,15 +163,12 @@ export class DeviceAuthenticator {
 
             if (err.error === 'slow_down') {
                 interval += 5000; // RFC 8628 §3.5: increase by 5 seconds
-                continue;
+            } else if (err.error !== 'authorization_pending') {
+                // Terminal error
+                throw new Error(err.error_description ?? err.error);
             }
 
-            if (err.error === 'authorization_pending') {
-                continue;
-            }
-
-            // Terminal error
-            throw new Error(err.error_description ?? err.error);
+            await sleep(interval, signal);
         }
 
         throw new Error('Device authorization expired. Start a new flow.');
@@ -223,10 +220,16 @@ export class DeviceAuthenticator {
 
 function sleep(ms: number, signal?: AbortSignal): Promise<void> {
     return new Promise((resolve, reject) => {
-        const timer = setTimeout(resolve, ms);
-        signal?.addEventListener('abort', () => {
+        // Bug #BUG-3: Use a named handler so it can be removed when the
+        // timer fires normally, preventing listener accumulation on the signal.
+        const onAbort = () => {
             clearTimeout(timer);
-            reject(signal.reason ?? new DOMException('Aborted', 'AbortError'));
-        }, { once: true });
+            reject(signal!.reason ?? new DOMException('Aborted', 'AbortError'));
+        };
+        const timer = setTimeout(() => {
+            signal?.removeEventListener('abort', onAbort);
+            resolve();
+        }, ms);
+        signal?.addEventListener('abort', onAbort, { once: true });
     });
 }

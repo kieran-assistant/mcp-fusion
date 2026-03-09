@@ -249,7 +249,7 @@ describe('Bug #5 — Telemetry underscore parsing via routing map', () => {
         expect(action).toBe('totally_unknown_tool');
     });
 
-    it('dot separator also works without underscore confusion', () => {
+    it('dot separator also works without underscore convurb', () => {
         const builder = createMockBuilder('user_accounts', ['list']);
         const result = compileExposition([builder as any], 'flat', '.');
 

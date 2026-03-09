@@ -1,7 +1,7 @@
 {
-  "name": "@vinkius-core/mcp-fusion-cloudflare",
+  "name": "@vurb/cloudflare",
   "version": "3.1.31",
-  "description": "Cloudflare Workers adapter for MCP Fusion. Deploys your MCP server to the edge with zero config — stateless JSON-RPC, cold-start caching, and native env injection.",
+  "description": "Cloudflare Workers adapter for Vurb. Deploys your MCP server to the edge with zero config — stateless JSON-RPC, cold-start caching, and native env injection.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,7 +17,7 @@
   },
   "keywords": [
     "mcp",
-    "mcp-fusion",
+    "vurb",
     "cloudflare",
     "workers",
     "edge",
@@ -26,16 +26,16 @@
     "ai",
     "llm"
   ],
-  "author": "Vinkius Labs",
+  "author": "Renato Marinho",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vinkius-labs/mcp-fusion.git",
+    "url": "git+https://github.com/vinkius-labs/vurb.ts.git",
     "directory": "packages/cloudflare"
   },
   "bugs": {
-    "url": "https://github.com/vinkius-labs/mcp-fusion/issues"
+    "url": "https://github.com/vinkius-labs/vurb.ts/issues"
   },
-  "homepage": "https://mcp-fusion.vinkius.com/",
+  "homepage": "https://vurb.vinkius.com/",
   "files": [
     "dist",
     "README.md"
@@ -47,11 +47,11 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@vinkius-core/mcp-fusion": "^2.0.0",
+    "vurb": "^3.0.0",
     "@modelcontextprotocol/sdk": "^1.12.0"
   },
   "license": "Apache-2.0",
   "devDependencies": {
-    "@vinkius-core/mcp-fusion": ">=2.14.0"
+    "vurb": ">=3.0.0"
   }
 }

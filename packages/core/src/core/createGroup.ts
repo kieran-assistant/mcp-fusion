@@ -14,7 +14,7 @@
  *
  * @example
  * ```typescript
- * import { createGroup, success } from '@vinkius-core/mcp-fusion';
+ * import { createGroup, success } from 'vurb';
  *
  * const billing = createGroup({
  *   name: 'billing',

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createFusionClient, type FusionTransport } from '../../src/client/FusionClient.js';
+import { createVurbClient, type VurbTransport } from '../../src/client/VurbClient.js';
 import { success, error } from '../../src/core/response.js';
 import { type ToolResponse } from '../../src/core/response.js';
 
@@ -7,7 +7,7 @@ import { type ToolResponse } from '../../src/core/response.js';
 // Mock Transport Helper
 // ============================================================================
 
-function createMockTransport(): FusionTransport & {
+function createMockTransport(): VurbTransport & {
     calls: Array<{ name: string; args: Record<string, unknown> }>;
 } {
     const calls: Array<{ name: string; args: Record<string, unknown> }> = [];
@@ -21,19 +21,19 @@ function createMockTransport(): FusionTransport & {
 }
 
 // ============================================================================
-// createFusionClient() — Unit Tests
+// createVurbClient() — Unit Tests
 // ============================================================================
 
-describe('createFusionClient()', () => {
+describe('createVurbClient()', () => {
     it('should create a client with execute method', () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
         expect(typeof client.execute).toBe('function');
     });
 
     it('should split dotted action path into tool + action', async () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         await client.execute('projects.create', { name: 'Vinkius V2' });
 
@@ -47,7 +47,7 @@ describe('createFusionClient()', () => {
 
     it('should handle simple (non-dotted) action names', async () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         await client.execute('ping', {});
 
@@ -58,7 +58,7 @@ describe('createFusionClient()', () => {
 
     it('should handle nested group actions (two dots)', async () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         await client.execute('platform.users.list', { limit: 10 });
 
@@ -71,7 +71,7 @@ describe('createFusionClient()', () => {
 
     it('should handle deeply nested paths (three+ dots)', async () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         await client.execute('a.b.c.d', { x: 1 });
 
@@ -83,26 +83,26 @@ describe('createFusionClient()', () => {
     });
 
     it('should return the transport response', async () => {
-        const transport: FusionTransport = {
+        const transport: VurbTransport = {
             async callTool() {
                 return success('result from server');
             },
         };
 
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
         const result = await client.execute('test.action', {});
 
         expect(result.content[0].text).toBe('result from server');
     });
 
     it('should pass through error responses', async () => {
-        const transport: FusionTransport = {
+        const transport: VurbTransport = {
             async callTool() {
                 return error('Something went wrong');
             },
         };
 
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
         const result = await client.execute('test.action', {});
 
         expect(result.isError).toBe(true);
@@ -111,7 +111,7 @@ describe('createFusionClient()', () => {
 
     it('should handle multiple sequential calls', async () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         await client.execute('a.one', { x: 1 });
         await client.execute('b.two', { y: 2 });
@@ -128,7 +128,7 @@ describe('createFusionClient()', () => {
         };
 
         const transport = createMockTransport();
-        const client = createFusionClient<MyRouter>(transport);
+        const client = createVurbClient<MyRouter>(transport);
 
         await client.execute('projects.list', { workspace_id: 'ws_1' });
         await client.execute('projects.create', { workspace_id: 'ws_1', name: 'Test' });
@@ -138,24 +138,24 @@ describe('createFusionClient()', () => {
 });
 
 // ============================================================================
-// FusionClient — Error / Edge Cases
+// VurbClient — Error / Edge Cases
 // ============================================================================
 
-describe('FusionClient error handling', () => {
+describe('VurbClient error handling', () => {
     it('should propagate transport exceptions as rejected promises', async () => {
-        const transport: FusionTransport = {
+        const transport: VurbTransport = {
             async callTool() {
                 throw new Error('Network failure');
             },
         };
 
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
         await expect(client.execute('test.action', {})).rejects.toThrow('Network failure');
     });
 
     it('should handle empty args object', async () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         await client.execute('tool.action', {});
 
@@ -164,7 +164,7 @@ describe('FusionClient error handling', () => {
 
     it('should handle args with special characters in values', async () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         await client.execute('tool.action', { query: 'hello "world" & <script>' });
 
@@ -173,7 +173,7 @@ describe('FusionClient error handling', () => {
 
     it('should handle action name with leading dot', async () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         await client.execute('.weird', { x: 1 });
 
@@ -183,7 +183,7 @@ describe('FusionClient error handling', () => {
 
     it('should handle action name with trailing dot', async () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         await client.execute('tool.', { x: 1 });
 
@@ -193,7 +193,7 @@ describe('FusionClient error handling', () => {
 
     it('should handle concurrent calls without interference', async () => {
         let callCount = 0;
-        const transport: FusionTransport = {
+        const transport: VurbTransport = {
             async callTool(name) {
                 callCount++;
                 await new Promise(r => setTimeout(r, 10));
@@ -201,7 +201,7 @@ describe('FusionClient error handling', () => {
             },
         };
 
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         const results = await Promise.all([
             client.execute('a.one', {}),
@@ -217,7 +217,7 @@ describe('FusionClient error handling', () => {
 
     it('should preserve routing action even when args include an "action" key (Bug #51 fix)', async () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         // User passes { action: 'custom' } — but the routing action must take precedence
         await client.execute('tool.fromPath', { action: 'fromUser' });

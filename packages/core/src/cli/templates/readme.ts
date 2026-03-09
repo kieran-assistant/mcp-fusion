@@ -7,7 +7,7 @@ import type { ProjectConfig } from '../types.js';
 /** Generate `README.md` with Claude/Cursor config snippets */
 export function readme(config: ProjectConfig): string {
     const clientEntry = config.transport === 'sse'
-        ? { url: 'http://localhost:3001/sse' }
+        ? { url: 'http://localhost:3001/mcp' }
         : { command: 'npx', args: ['tsx', 'src/server.ts'] };
 
     const clientConfig = JSON.stringify({
@@ -17,18 +17,18 @@ export function readme(config: ProjectConfig): string {
     }, null, 2);
 
     const sseNote = config.transport === 'sse'
-        ? `\n> **Note:** SSE transport requires the server to be running first. Run \\\`npm start\\\` before connecting.`
+        ? `\n> **Note:** Streamable HTTP transport requires the server to be running first. Run \\\`npm start\\\` before connecting.`
         : '';
 
     return `# ${config.name}
 
-MCP Server built with [MCP Fusion](https://mcp-fusion.vinkius.com/) — the MVA framework for the Model Context Protocol.
+MCP Server built with [Vurb](https://vurb.vinkius.com/) — the MVA framework for the Model Context Protocol.
 
 ## Quick Start
 
 \`\`\`bash
 npm install
-fusion dev
+vurb dev
 \`\`\`
 ${config.testing ? `
 ## Testing
@@ -41,7 +41,7 @@ npm test
 
 \`\`\`
 src/
-├── fusion.ts          # initFusion<AppContext>() — context center
+├── vurb.ts          # initVurb<AppContext>() — context center
 ├── context.ts         # AppContext type + factory
 ├── server.ts          # Bootstrap with autoDiscover
 ├── tools/             # Drop a file → it's a tool (autoDiscover)
@@ -78,7 +78,7 @@ Create a new file in \`src/tools/\`. It's automatically discovered:
 
 \`\`\`typescript
 // src/tools/my-domain/my-tool.ts
-import { f } from '../../fusion.js';
+import { f } from '../../vurb.js';
 
 export default f.query('my_domain.my_tool')
     .describe('What this tool does')
@@ -92,10 +92,10 @@ No registration needed. The \`autoDiscover()\` system picks it up automatically.
 
 ## Documentation
 
-- [MCP Fusion Docs](https://mcp-fusion.vinkius.com/)
-- [Presenter — Egress Firewall](https://mcp-fusion.vinkius.com/presenter)
-- [DX Guide — initFusion()](https://mcp-fusion.vinkius.com/dx-guide)
-- [Testing](https://mcp-fusion.vinkius.com/testing)
+- [Vurb Docs](https://vurb.vinkius.com/)
+- [Presenter — Egress Firewall](https://vurb.vinkius.com/presenter)
+- [DX Guide — initVurb()](https://vurb.vinkius.com/dx-guide)
+- [Testing](https://vurb.vinkius.com/testing)
 `;
 }
 
@@ -113,7 +113,7 @@ function vectorReadmeSection(config: ProjectConfig): string {
 
 2. Edit \`prisma/schema.prisma\` to define your models
 
-3. Generate the Prisma client and Fusion tools:
+3. Generate the Prisma client and Vurb tools:
    \`\`\`bash
    npm run db:generate
    \`\`\`
@@ -123,7 +123,7 @@ function vectorReadmeSection(config: ProjectConfig): string {
    npm run db:push
    \`\`\`
 
-Use \`/// @fusion.hide\` on sensitive fields to strip them from the Egress Firewall.
+Use \`/// @vurb.hide\` on sensitive fields to strip them from the Egress Firewall.
 `;
         case 'n8n':
             return `
@@ -146,7 +146,7 @@ Use \`/// @fusion.hide\` on sensitive fields to strip them from the Egress Firew
 
 2. Generate the MCP server from the spec:
    \`\`\`bash
-   npx @vinkius-core/mcp-fusion-openapi-gen ./openapi.yaml --outDir ./src/generated
+   npx @vurb/openapi-gen ./openapi.yaml --outDir ./src/generated
    \`\`\`
 
 3. Import and register the generated tools in \`src/server.ts\`

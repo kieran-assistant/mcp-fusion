@@ -37,7 +37,7 @@ describe('Bug #50: GovernanceObserver.observe() rejects async callbacks', () => 
 
         expect(() => {
             observer.observe('lockfile.generate', 'test', async () => 'done');
-        }).toThrow('[MCP Fusion]');
+        }).toThrow('[Vurb]');
     });
 
     it('rejects custom thenable objects (duck typing)', () => {

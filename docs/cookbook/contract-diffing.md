@@ -2,13 +2,13 @@
 
 - [Introduction](#introduction)
 - [What Changes Break Agents?](#breaking)
-- [Using fusion lock --check](#using)
+- [Using Vurb.ts lock --check](#using)
 - [CI Integration](#ci)
 - [Reading the Diff Output](#reading)
 
 ## Introduction {#introduction}
 
-When you rename a tool, change a parameter, or modify a Presenter schema, existing agent workflows can break silently. The `fusion lock --check` command detects these changes by comparing the current server against the committed [lockfile](/cookbook/capability-lockfile) — so you catch breaking changes before deployment.
+When you rename a tool, change a parameter, or modify a Presenter schema, existing agent workflows can break silently. The `Vurb.ts lock --check` command detects these changes by comparing the current server against the committed [lockfile](/cookbook/capability-lockfile) — so you catch breaking changes before deployment.
 
 ## What Changes Break Agents? {#breaking}
 
@@ -22,12 +22,12 @@ When you rename a tool, change a parameter, or modify a Presenter schema, existi
 | Add a new tool | ❌ No | Agent simply gains a new capability |
 | Change Presenter schema | ⚠️ Maybe | If agent logic depends on specific fields |
 
-## Using fusion lock --check {#using}
+## Using Vurb.ts lock --check {#using}
 
-After committing a `mcp-fusion.lock`, use `--check` to verify the current server matches:
+After committing a `vurb.lock`, use `--check` to verify the current server matches:
 
 ```bash
-fusion lock --check --server ./src/server.ts
+Vurb.ts lock --check --server ./src/server.ts
 ```
 
 If the tool surface has drifted, the CLI reports exactly what changed:
@@ -60,14 +60,14 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
       - run: npm ci
-      - run: npx fusion lock --check --server ./src/server.ts
+      - run: npx Vurb.ts lock --check --server ./src/server.ts
 ```
 
 If the check fails, the developer knows they changed the tool surface and must:
 
 1. Review the changes to ensure they're intentional
-2. Regenerate the lockfile: `fusion lock --server ./src/server.ts`
-3. Commit the updated `mcp-fusion.lock`
+2. Regenerate the lockfile: `Vurb.ts lock --server ./src/server.ts`
+3. Commit the updated `vurb.lock`
 
 ## Reading the Diff Output {#reading}
 
@@ -82,4 +82,4 @@ The diff output uses three prefixes:
 The check compiles behavioral contracts from each tool builder and compares their digests against the lockfile. A `~` changed entry means the tool's schema, annotations, or presenter configuration has been modified — even if the tool name stayed the same.
 
 > [!IMPORTANT]
-> After a deliberate breaking change, regenerate the lockfile: `fusion lock --server ./src/server.ts`. Commit the updated `mcp-fusion.lock` so future checks compare against the new baseline.
+> After a deliberate breaking change, regenerate the lockfile: `Vurb.ts lock --server ./src/server.ts`. Commit the updated `vurb.lock` so future checks compare against the new baseline.

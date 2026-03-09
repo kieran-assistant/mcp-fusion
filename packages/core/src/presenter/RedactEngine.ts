@@ -175,7 +175,7 @@ export function compileRedactor(config: RedactConfig): RedactFn | undefined {
 /**
  * Pre-load the `fast-redact` module.
  *
- * Called during `initFusion()` boot sequence alongside other
+ * Called during `initVurb()` boot sequence alongside other
  * optional dependencies. Not required — the engine degrades
  * gracefully if `fast-redact` is not installed.
  *

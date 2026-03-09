@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { initFusion } from '../../src/core/initFusion.js';
+import { initVurb } from '../../src/core/initVurb.js';
 import { StateSyncLayer } from '../../src/state-sync/StateSyncLayer.js';
 
 describe('StateSyncBuilder', () => {
-    const f = initFusion();
+    const f = initVurb();
 
     it('should create a StateSyncLayer via f.stateSync()', () => {
         const builder = f.stateSync();

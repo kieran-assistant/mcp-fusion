@@ -1,7 +1,7 @@
 # Transactional Workflows
 
 ::: info Prerequisites
-Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -17,7 +17,7 @@ Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-
 
 AI agents are stochastic. When a business workflow requires multiple steps — create a user, charge a card, send an email — the agent treats each step as an independent tool call. If any step fails, the previous steps have already executed. The result: corrupted data, phantom charges, and orphaned records.
 
-MCP Fusion solves this **without any new abstraction**. The key insight: don't expose multi-step workflows as separate tools. Compose them into a single `f.mutation()` with manual compensation logic in the handler.
+Vurb.ts solves this **without any new abstraction**. The key insight: don't expose multi-step workflows as separate tools. Compose them into a single `f.mutation()` with manual compensation logic in the handler.
 
 ## The Problem {#problem}
 
@@ -38,9 +38,9 @@ This is not an edge case. It is the **default behavior** of every AI agent inter
 Instead of 3 tools, expose **1 tool** that handles the entire workflow. The agent makes one call. The server orchestrates all steps internally. If any step fails, the handler compensates all previous steps before returning a self-healing error.
 
 ```typescript
-import { initFusion } from '@vinkius-core/mcp-fusion';
+import { initVurb } from 'Vurb.ts';
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 export default f.mutation('onboarding.provision')
   .describe('Provision a new user with billing and welcome email')

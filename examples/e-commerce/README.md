@@ -1,6 +1,6 @@
-# MCP Fusion — E-Commerce Example
+# Vurb.ts — E-Commerce Example
 
-Full-featured MCP server built with **MCP Fusion** showcasing the complete pipeline — tools, Presenters, middleware, prompts — plus the **Inspector TUI** for real-time observability.
+Full-featured MCP server built with **Vurb.ts** showcasing the complete pipeline — tools, Presenters, middleware, prompts — plus the **Inspector TUI** for real-time observability.
 
 ## What's Inside
 
@@ -77,7 +77,7 @@ The **Inspector** is the interactive terminal dashboard that connects to your se
 ### Demo Mode (no server needed)
 
 ```bash
-npx fusion insp --demo
+npx Vurb.ts insp --demo
 ```
 
 Launches a built-in simulator that emits realistic events so you can explore the TUI immediately.
@@ -89,17 +89,17 @@ Launches a built-in simulator that emits realistic events so you can explore the
 npm start
 
 # Terminal 2 — Launch Inspector
-npx fusion inspect
+npx Vurb.ts inspect
 ```
 
 ### Headless Mode (CI / ECS / K8s)
 
 ```bash
 # Colored stderr output
-npx fusion insp --out stderr --demo
+npx Vurb.ts insp --out stderr --demo
 
 # NDJSON (for log aggregation)
-FUSION_LOG_FORMAT=json npx fusion insp --out stderr
+Vurb.ts_LOG_FORMAT=json npx Vurb.ts insp --out stderr
 ```
 
 ### What You See in the Inspector
@@ -166,12 +166,12 @@ Show system health
 | Command | Description |
 |---------|-------------|
 | `npm start` | Start the MCP server (stdio) |
-| `fusion dev` | Start HMR dev server with auto-reload |
+| `Vurb.ts dev` | Start HMR dev server with auto-reload |
 | `npm run build` | Compile TypeScript |
 | `npm run typecheck` | Type-check without compiling |
 | `npm test` | Run tests |
-| `npx fusion insp --demo` | Inspector TUI with simulator |
-| `npx fusion inspect` | Inspector TUI connected to server |
+| `npx Vurb.ts insp --demo` | Inspector TUI with simulator |
+| `npx Vurb.ts inspect` | Inspector TUI connected to server |
 
 ---
 
@@ -181,7 +181,7 @@ Show system health
 e-commerce/
 ├── src/
 │   ├── server.ts          # Bootstrap — startServer() + autoDiscover
-│   ├── fusion.ts          # initFusion<AppContext>()
+│   ├── vurb.ts          # initVurb<AppContext>()
 │   ├── context.ts         # AppContext type
 │   ├── db.ts              # In-memory database
 │   ├── middleware/

@@ -1,6 +1,6 @@
 ---
 title: "Testing Quick Start"
-description: "Build your first FusionTester in 5 minutes — zero servers, zero tokens, full pipeline fidelity."
+description: "Build your first VurbTester in 5 minutes — zero servers, zero tokens, full pipeline fidelity."
 ---
 
 # Quick Start
@@ -9,33 +9,33 @@ Get your first deterministic AI governance test running in 5 minutes.
 
 ## Prerequisites
 
-- An existing **MCP Fusion** application with a `ToolRegistry` and at least one Tool
+- An existing **Vurb.ts** application with a `ToolRegistry` and at least one Tool
 - A test runner installed (Vitest recommended, but Jest/Mocha/`node:test` all work)
 
 ## Step 1: Install
 
 ```bash
-npm install @vinkius-core/mcp-fusion-testing
+npm install @vurb/testing
 ```
 
 No additional configuration needed. Zero runtime dependencies.
 
 ## Step 2: Create the Test Setup
 
-Create a `tests/setup.ts` file with your shared `FusionTester` instance:
+Create a `tests/setup.ts` file with your shared `VurbTester` instance:
 
 ```typescript
 // tests/setup.ts
-import { createFusionTester } from '@vinkius-core/mcp-fusion-testing';
+import { createVurbTester } from '@vurb/testing';
 import { registry } from '../src/index.js';
 
 /**
- * Shared FusionTester instance.
+ * Shared VurbTester instance.
  * 
  * The contextFactory produces the mock context for every test call.
  * Inject your fake database, auth tokens, tenant IDs here.
  */
-export const tester = createFusionTester(registry, {
+export const tester = createVurbTester(registry, {
     contextFactory: () => ({
         prisma: {
             user: {
@@ -241,7 +241,7 @@ jobs:
       - run: npx vitest run --reporter=verbose
 ```
 
-The FusionTester runs entirely in RAM. Your CI/CD pipeline **never** calls an LLM API. No `OPENAI_API_KEY` required. No `ANTHROPIC_API_KEY` required. No rate limits. No flaky tests from API outages.
+The VurbTester runs entirely in RAM. Your CI/CD pipeline **never** calls an LLM API. No `OPENAI_API_KEY` required. No `ANTHROPIC_API_KEY` required. No rate limits. No flaky tests from API outages.
 
 ### Combining Filters
 
@@ -399,7 +399,7 @@ describe('Error Handling', () => {
 
 ## API Reference
 
-### `createFusionTester(registry, options)`
+### `createVurbTester(registry, options)`
 
 | Parameter | Type | Description |
 |---|---|---|
@@ -412,7 +412,7 @@ describe('Error Handling', () => {
 |---|---|---|---|
 | `toolName` | `string` | ✅ | Registered tool name (e.g. `'db_user'`) |
 | `actionName` | `string` | ✅ | Action discriminator (e.g. `'find_many'`) |
-| `args` | `object` | ❌ | Action arguments (without the `action` discriminator — FusionTester injects it) |
+| `args` | `object` | ❌ | Action arguments (without the `action` discriminator — VurbTester injects it) |
 | `overrideContext` | `Partial<TContext>` | ❌ | Per-test context overrides (shallow-merged with `contextFactory()` output) |
 
 ### `MvaTestResult`
@@ -442,7 +442,7 @@ tests/
 │   └── order.rules.test.ts
 ├── blocks/                     ← UI Blocks & truncation tests
 │   └── analytics.blocks.test.ts
-└── setup.ts                    ← Shared FusionTester instance
+└── setup.ts                    ← Shared VurbTester instance
 ```
 
 ### Running by Governance Concern

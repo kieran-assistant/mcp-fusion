@@ -1,12 +1,12 @@
 {
-    "name": "@vinkius-core/mcp-fusion",
-    "version": "3.1.31",
+    "name": "vurb",
+    "version": "3.2.0",
     "description": "MVA (Model-View-Agent) framework for the Model Context Protocol. Structured perception packages with Presenters, cognitive guardrails, self-healing errors, action consolidation, and tRPC-style type safety — so AI agents perceive and act on your data deterministically.",
     "type": "module",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "bin": {
-        "fusion": "./dist/cli/fusion.js"
+        "vurb": "./dist/cli/vurb.js"
     },
     "exports": {
         ".": {
@@ -90,16 +90,16 @@
         "state-machine",
         "anti-hallucination"
     ],
-    "author": "Vinkius Labs",
+    "author": "Renato Marinho",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/vinkius-labs/mcp-fusion.git",
+        "url": "git+https://github.com/vinkius-labs/vurb.ts.git",
         "directory": "packages/core"
     },
     "bugs": {
-        "url": "https://github.com/vinkius-labs/mcp-fusion/issues"
+        "url": "https://github.com/vinkius-labs/vurb.ts/issues"
     },
-    "homepage": "https://mcp-fusion.vinkius.com/",
+    "homepage": "https://vurb.vinkius.com/",
     "files": [
         "dist",
         "README.md",

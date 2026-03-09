@@ -6,7 +6,7 @@ description: "Multi-layer static analysis with entitlement scanning, code evalua
 # Blast Radius Analysis
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Scanning Source Code](#scan)
@@ -28,7 +28,7 @@ The MCP protocol has no mechanism to enforce this. Tool annotations like `readOn
 ## Scanning Source Code {#scan}
 
 ```typescript
-import { scanSource, buildEntitlements } from '@vinkius-core/mcp-fusion/introspection';
+import { scanSource, buildEntitlements } from 'Vurb.ts/introspection';
 
 const source = `
   import { readFile, writeFile } from 'node:fs/promises';
@@ -77,7 +77,7 @@ The `raw` array preserves every specific identifier that triggered a match — u
 Detecting capabilities alone isn't enough. The value is in comparing what the code *does* against what it *claims* to do:
 
 ```typescript
-import { validateClaims } from '@vinkius-core/mcp-fusion/introspection';
+import { validateClaims } from 'Vurb.ts/introspection';
 
 const violations = validateClaims(matches, {
   readOnly: true,
@@ -115,7 +115,7 @@ One exception: `codeEvaluation` cannot be safely allowed with `readOnly: true`. 
 `scanAndValidate()` combines scanning, validation, and evasion detection into a single call:
 
 ```typescript
-import { scanAndValidate } from '@vinkius-core/mcp-fusion/introspection';
+import { scanAndValidate } from 'Vurb.ts/introspection';
 
 const report = scanAndValidate(source, {
   readOnly: true,
@@ -158,7 +158,7 @@ cp.exec('rm -rf /');
 No static string literal matches `child_process` — the pattern library sees nothing. This is where evasion heuristics take over:
 
 ```typescript
-import { scanEvasionIndicators } from '@vinkius-core/mcp-fusion/introspection';
+import { scanEvasionIndicators } from 'Vurb.ts/introspection';
 
 const indicators = scanEvasionIndicators(suspiciousSource);
 // [
@@ -197,7 +197,7 @@ Entitlement scan results don't exist in isolation. They flow into the broader co
 The `EntitlementReport.entitlements` become the `entitlements` section of the `ToolContract`. From there, they affect every other governance module:
 
 - **BehaviorDigest** — the entitlements component hash changes when capabilities change
-- **CapabilityLockfile** — `fusion lock --check` fails if the lockfile's entitlements section is stale
+- **CapabilityLockfile** — `Vurb.ts lock --check` fails if the lockfile's entitlements section is stale
 - **ContractDiff** — reports a `BREAKING` severity delta when a handler gains a new I/O capability (e.g., "Handler gained 'subprocess' entitlement")
 
 This means adding a single `import { exec } from 'child_process'` to a read-only handler will cascade through the entire governance pipeline — the lockfile becomes stale, the diff reports a breaking change, and the CI gate blocks the PR.
@@ -206,7 +206,7 @@ This means adding a single `import { exec } from 'child_process'` to a read-only
 ## CI Safety Gate {#ci}
 
 ```typescript
-import { scanAndValidate } from '@vinkius-core/mcp-fusion/introspection';
+import { scanAndValidate } from 'Vurb.ts/introspection';
 import { readFileSync } from 'node:fs';
 
 const handlerSource = readFileSync('./src/handlers/invoices.ts', 'utf8');

@@ -1,5 +1,5 @@
 /**
- * initFusion() — tRPC-Style Context Initialization
+ * initVurb() — tRPC-Style Context Initialization
  *
  * Eliminates the need to pass `<AppContext>` as a generic parameter
  * everywhere. Define your context type once, and every `f.query()`,
@@ -7,18 +7,18 @@
  *
  * @example
  * ```typescript
- * // src/fusion.ts — defined once in the project
- * import { initFusion } from '@vinkius-core/mcp-fusion';
+ * // src/vurb.ts — defined once in the project
+ * import { initVurb } from 'vurb';
  *
  * interface AppContext {
  *   db: PrismaClient;
  *   user: { id: string; role: string };
  * }
  *
- * export const f = initFusion<AppContext>();
+ * export const f = initVurb<AppContext>();
  *
  * // src/tools/billing.ts — clean fluent API
- * import { f } from '../fusion';
+ * import { f } from '../vurb';
  *
  * export const getInvoice = f.query('billing.get_invoice')
  *     .describe('Get an invoice by ID')
@@ -57,15 +57,15 @@ import { StateMachineGate, type FsmConfig } from '../fsm/StateMachineGate.js';
 // ── Config Types ─────────────────────────────────────────
 
 /**
- * The initialized Fusion instance.
+ * The initialized Vurb instance.
  *
  * Provides context-typed factory methods for tools, presenters,
  * prompts, middleware, and registry. Every method automatically
- * inherits the `TContext` defined in `initFusion<TContext>()`.
+ * inherits the `TContext` defined in `initVurb<TContext>()`.
  *
  * @typeParam TContext - The application context type
  */
-export interface FusionInstance<TContext> {
+export interface VurbInstance<TContext> {
 
     // ── Semantic Verbs (THE Fluent API) ──────────────────
 
@@ -321,18 +321,18 @@ export interface FusionInstance<TContext> {
 // ── Factory ──────────────────────────────────────────────
 
 /**
- * Initialize a Fusion instance with a fixed context type.
+ * Initialize a Vurb instance with a fixed context type.
  *
  * Call once per project. All factory methods on the returned instance
  * automatically inherit the context type — zero generic repetition.
  *
  * @typeParam TContext - The application-level context type
- * @returns A {@link FusionInstance} with context-typed factories
+ * @returns A {@link VurbInstance} with context-typed factories
  *
  * @example
  * ```typescript
- * // Single definition, typically in src/fusion.ts
- * export const f = initFusion<AppContext>();
+ * // Single definition, typically in src/vurb.ts
+ * export const f = initVurb<AppContext>();
  *
  * // Build tools with the Fluent API
  * const listUsers = f.query('users.list')
@@ -343,7 +343,7 @@ export interface FusionInstance<TContext> {
  *     });
  * ```
  */
-export function initFusion<TContext = void>(): FusionInstance<TContext> {
+export function initVurb<TContext = void>(): VurbInstance<TContext> {
     return {
         // ── Semantic Verbs ────────────────────────────────
 
@@ -453,7 +453,7 @@ const _sandboxFinalizer: FinalizationRegistry<string> | undefined =
     typeof FinalizationRegistry !== 'undefined'
         ? new FinalizationRegistry<string>((label) => {
             console.warn(
-                `[mcp-fusion] SandboxEngine was garbage-collected without dispose(). ` +
+                `[vurb] SandboxEngine was garbage-collected without dispose(). ` +
                 `This leaks native V8 Isolate memory. Call engine.dispose() when done. (${label})`,
             );
         })

@@ -1,8 +1,8 @@
 /**
- * CommandTop — MCP Fusion Inspector TUI
+ * CommandTop — Vurb Inspector TUI
  *
  * Full-screen interactive terminal dashboard that connects to a running
- * MCP Fusion server via Shadow Socket (Named Pipe / Unix Domain Socket).
+ * Vurb server via Shadow Socket (Named Pipe / Unix Domain Socket).
  *
  * Architecture:
  *   ┌──────────────────────────────────────────────────────┐
@@ -30,7 +30,7 @@ import {
     getTelemetryPath, discoverSockets,
     type TelemetryEvent, type TopologyEvent, type TopologyTool,
     type HeartbeatEvent,
-} from '@vinkius-core/mcp-fusion';
+} from 'vurb';
 
 // ============================================================================
 // Types
@@ -407,7 +407,7 @@ function renderHeader(cols: number, state: TuiState): string {
     let output = '';
 
     // Row 1: Title bar
-    const title = ' FUSION INSPECTOR ';
+    const title = ' VURB INSPECTOR ';
     const liveIndicator = state.pid > 0
         ? ansi.green(`● LIVE: PID ${state.pid}`)
         : ansi.red('○ CONNECTING…');
@@ -907,7 +907,7 @@ export interface TopOptions {
 /**
  * Launch the Inspector TUI.
  *
- * Connects to a running MCP Fusion server via Shadow Socket
+ * Connects to a running Vurb server via Shadow Socket
  * and renders the interactive dashboard.
  *
  * Uses deterministic socket paths based on project fingerprint (cwd hash),

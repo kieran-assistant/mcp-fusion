@@ -1,25 +1,25 @@
 <p align="center">
-  <h1 align="center">@vinkius-core/mcp-fusion-cloudflare</h1>
+  <h1 align="center">@vurb/cloudflare</h1>
   <p align="center">
-    <strong>Cloudflare Workers Adapter</strong> — Deploy MCP Fusion servers to the edge with zero config
+    <strong>Cloudflare Workers Adapter</strong> — Deploy Vurb.ts servers to the edge with zero config
   </p>
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@vinkius-core/mcp-fusion-cloudflare"><img src="https://img.shields.io/npm/v/@vinkius-core/mcp-fusion-cloudflare?color=blue" alt="npm" /></a>
-  <a href="https://github.com/vinkius-labs/mcp-fusion/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-green" alt="License" /></a>
+  <a href="https://www.npmjs.com/package/@vurb/cloudflare"><img src="https://img.shields.io/npm/v/@vurb/cloudflare?color=blue" alt="npm" /></a>
+  <a href="https://github.com/vinkius-labs/vurb.ts/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-green" alt="License" /></a>
   <img src="https://img.shields.io/badge/node-%3E%3D18-brightgreen" alt="Node" />
 </p>
 
 ---
 
-> Cloudflare Workers adapter for MCP Fusion. Deploys your MCP server to the edge — stateless JSON-RPC, cold-start caching, native env injection, zero polyfills.
+> Cloudflare Workers adapter for Vurb.ts. Deploys your MCP server to the edge — stateless JSON-RPC, cold-start caching, native env injection, zero polyfills.
 
 ## Quick Start
 
 ```typescript
 // src/index.ts (Cloudflare Worker)
-import { createCloudflareHandler } from '@vinkius-core/mcp-fusion-cloudflare';
+import { createCloudflareHandler } from '@vurb/cloudflare';
 import { registry } from './registry.js';
 
 export default {
@@ -60,22 +60,22 @@ const handler = createCloudflareHandler(registry, {
 ## Installation
 
 ```bash
-npm install @vinkius-core/mcp-fusion-cloudflare
+npm install @vurb/cloudflare
 ```
 
 ### Peer Dependencies
 
 | Package | Version |
 |---------|---------|
-| `@vinkius-core/mcp-fusion` | `^2.0.0` |
+| `Vurb.ts` | `^2.0.0` |
 | `@modelcontextprotocol/sdk` | `^1.12.0` |
 
 ## Requirements
 
 - **Cloudflare Workers** (WinterCG runtime)
-- **MCP Fusion** ≥ 2.0.0 (peer dependency)
+- **Vurb.ts** ≥ 2.0.0 (peer dependency)
 - `wrangler` CLI for deployment
 
 ## License
 
-[Apache-2.0](https://github.com/vinkius-labs/mcp-fusion/blob/main/LICENSE)
+[Apache-2.0](https://github.com/vinkius-labs/vurb.ts/blob/main/LICENSE)

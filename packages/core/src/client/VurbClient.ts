@@ -1,5 +1,5 @@
 /**
- * FusionClient — Type-Safe MCP Client (tRPC-style)
+ * VurbClient — Type-Safe MCP Client (tRPC-style)
  *
  * Provides end-to-end type safety from server to client.
  * The server exports its router type, and the client consumes it
@@ -14,10 +14,10 @@
  * export type AppRouter = InferRouter<typeof registry>;
  *
  * // ── CLIENT (agent.ts) ──
- * import { createFusionClient } from '@vinkius-core/mcp-fusion/client';
+ * import { createVurbClient } from 'vurb/client';
  * import type { AppRouter } from './mcp-server';
  *
- * const client = createFusionClient<AppRouter>(transport);
+ * const client = createVurbClient<AppRouter>(transport);
  * const result = await client.execute('projects.create', { name: 'Vinkius V2' });
  * //                                   ^^^^^^^^^^^^^^^^    ^^^^^^^^^^^^^^^^^
  * //                                   autocomplete!       typed args!
@@ -32,10 +32,10 @@ import { type ToolResponse } from '../core/response.js';
 // ============================================================================
 
 /**
- * Transport interface for the fusion client.
+ * Transport interface for the Vurb client.
  * This abstracts the MCP transport layer (stdio, HTTP, WebSocket, etc.)
  */
-export interface FusionTransport {
+export interface VurbTransport {
     /** Call a tool by name with arguments */
     callTool(name: string, args: Record<string, unknown>): Promise<ToolResponse>;
 }
@@ -102,7 +102,7 @@ export type ClientMiddleware = (
  * Provides typed access to self-healing fields so client code
  * can programmatically react to server errors without regex parsing.
  */
-export class FusionClientError extends Error {
+export class VurbClientError extends Error {
     /** Error code from the `code` attribute (e.g. `'NOT_FOUND'`). */
     readonly code: string;
     /** Recovery suggestion from `<recovery>` element. */
@@ -125,7 +125,7 @@ export class FusionClientError extends Error {
         },
     ) {
         super(message);
-        this.name = 'FusionClientError';
+        this.name = 'VurbClientError';
         this.code = code;
         this.raw = raw;
         this.recovery = options?.recovery;
@@ -139,9 +139,9 @@ export class FusionClientError extends Error {
 // ============================================================================
 
 /**
- * Options for creating a FusionClient.
+ * Options for creating a VurbClient.
  */
-export interface FusionClientOptions {
+export interface VurbClientOptions {
     /**
      * Client-side middleware pipeline.
      *
@@ -150,7 +150,7 @@ export interface FusionClientOptions {
      *
      * @example
      * ```typescript
-     * const client = createFusionClient<AppRouter>(transport, {
+     * const client = createVurbClient<AppRouter>(transport, {
      *     middleware: [authMiddleware, loggingMiddleware],
      * });
      * ```
@@ -158,7 +158,7 @@ export interface FusionClientOptions {
     middleware?: ClientMiddleware[];
 
     /**
-     * When `true`, `execute()` throws a {@link FusionClientError}
+     * When `true`, `execute()` throws a {@link VurbClientError}
      * for responses with `isError: true`.
      *
      * When `false` (default), error responses are returned normally
@@ -189,7 +189,7 @@ export interface FusionClientOptions {
  *
  * @typeParam TRouter - The router map inferred from the server's registry
  */
-export interface FusionClient<TRouter extends RouterMap> {
+export interface VurbClient<TRouter extends RouterMap> {
     /**
      * Execute a tool action with full type safety.
      *
@@ -412,13 +412,13 @@ function compileClientMiddleware(
  * @typeParam TRouter - The router map (use `InferRouter<typeof registry>`)
  * @param transport - The MCP transport layer
  * @param options - Client options (middleware, error handling)
- * @returns A typed {@link FusionClient}
+ * @returns A typed {@link VurbClient}
  *
  * @example
  * ```typescript
  * import type { AppRouter } from './mcp-server';
  *
- * const client = createFusionClient<AppRouter>(transport);
+ * const client = createVurbClient<AppRouter>(transport);
  *
  * // Full autocomplete + type validation:
  * await client.execute('projects.create', { name: 'Vinkius V2' });
@@ -433,7 +433,7 @@ function compileClientMiddleware(
  * @example
  * ```typescript
  * // With client middleware and throwOnError
- * const client = createFusionClient<AppRouter>(transport, {
+ * const client = createVurbClient<AppRouter>(transport, {
  *     throwOnError: true,
  *     middleware: [
  *         async (action, args, next) => {
@@ -446,10 +446,10 @@ function compileClientMiddleware(
  * });
  * ```
  */
-export function createFusionClient<TRouter extends RouterMap>(
-    transport: FusionTransport,
-    options?: FusionClientOptions,
-): FusionClient<TRouter> {
+export function createVurbClient<TRouter extends RouterMap>(
+    transport: VurbTransport,
+    options?: VurbClientOptions,
+): VurbClient<TRouter> {
     const throwOnError = options?.throwOnError ?? false;
     const discriminatorKey = options?.discriminatorKey ?? 'action';
 
@@ -493,10 +493,10 @@ export function createFusionClient<TRouter extends RouterMap>(
                 if (parsed.recovery !== undefined) {
                     opts.recovery = parsed.recovery;
                 }
-                throw new FusionClientError(parsed.message, parsed.code, result, opts);
+                throw new VurbClientError(parsed.message, parsed.code, result, opts);
             }
 
-            throw new FusionClientError(text || 'Unknown error', 'UNKNOWN', result);
+            throw new VurbClientError(text || 'Unknown error', 'UNKNOWN', result);
         }
 
         return result;

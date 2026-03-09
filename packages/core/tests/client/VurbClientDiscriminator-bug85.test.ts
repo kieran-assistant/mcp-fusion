@@ -1,17 +1,17 @@
 /**
- * Bug #85 — FusionClient hardcodes discriminator to 'action'
+ * Bug #85 — VurbClient hardcodes discriminator to 'action'
  *
- * Verifies that FusionClient supports a configurable discriminator
- * key via FusionClientOptions, defaulting to 'action' but allowing
+ * Verifies that VurbClient supports a configurable discriminator
+ * key via VurbClientOptions, defaulting to 'action' but allowing
  * custom keys like 'command' to match server configuration.
  *
  * @module
  */
 import { describe, it, expect } from 'vitest';
-import { createFusionClient, type FusionTransport } from '../../src/client/FusionClient.js';
+import { createVurbClient, type VurbTransport } from '../../src/client/VurbClient.js';
 import { success, type ToolResponse } from '../../src/core/response.js';
 
-function createMockTransport(): FusionTransport & {
+function createMockTransport(): VurbTransport & {
     calls: Array<{ name: string; args: Record<string, unknown> }>;
 } {
     const calls: Array<{ name: string; args: Record<string, unknown> }> = [];
@@ -24,10 +24,10 @@ function createMockTransport(): FusionTransport & {
     };
 }
 
-describe('Bug #85 — FusionClient discriminatorKey', () => {
+describe('Bug #85 — VurbClient discriminatorKey', () => {
     it('should default to "action" when no discriminatorKey is provided', async () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         await client.execute('projects.create', { name: 'test' });
 
@@ -39,7 +39,7 @@ describe('Bug #85 — FusionClient discriminatorKey', () => {
 
     it('should use custom discriminatorKey when provided', async () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport, {
+        const client = createVurbClient(transport, {
             discriminatorKey: 'command',
         });
 
@@ -55,7 +55,7 @@ describe('Bug #85 — FusionClient discriminatorKey', () => {
 
     it('should work with nested group paths (two dots)', async () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport, {
+        const client = createVurbClient(transport, {
             discriminatorKey: 'op',
         });
 
@@ -71,7 +71,7 @@ describe('Bug #85 — FusionClient discriminatorKey', () => {
 
     it('should not inject discriminator for simple (non-dotted) actions', async () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport, {
+        const client = createVurbClient(transport, {
             discriminatorKey: 'command',
         });
 
@@ -84,7 +84,7 @@ describe('Bug #85 — FusionClient discriminatorKey', () => {
 
     it('should let user args take precedence over auto-injected discriminator', async () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport, {
+        const client = createVurbClient(transport, {
             discriminatorKey: 'action',
         });
 
@@ -97,7 +97,7 @@ describe('Bug #85 — FusionClient discriminatorKey', () => {
 
     it('should work alongside throwOnError option', async () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport, {
+        const client = createVurbClient(transport, {
             discriminatorKey: 'cmd',
             throwOnError: false,
         });

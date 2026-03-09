@@ -147,10 +147,10 @@ Each failed retry is a full round-trip: input tokens + output tokens + latency +
 
 ### The Solution: `toolError()` with Recovery Guidance
 
-**MCP Fusion** provides `toolError()` — a structured error builder that includes recovery hints, suggested actions, and corrective arguments:
+**Vurb.ts** provides `toolError()` — a structured error builder that includes recovery hints, suggested actions, and corrective arguments:
 
 ```typescript
-import { toolError, success } from '@vinkius-core/mcp-fusion';
+import { toolError, success } from 'Vurb.ts';
 
 handler: async (ctx, args) => {
     const invoice = await ctx.db.invoices.findUnique(args.id);

@@ -1,12 +1,8 @@
----
-outline: deep
----
-
 # DLP Compliance Engine — PII Redaction
 
 Every MCP server that touches user data faces a critical risk: if a tool returns raw database records, **Personally Identifiable Information (PII)** flows through JSON-RPC directly to the LLM provider's servers. One leaked field — a Social Security number, a credit card, a medical diagnosis — can trigger **millions in GDPR / LGPD / HIPAA fines**.
 
-MCP Fusion's DLP engine makes data leakage **physically impossible** at the framework level. Sensitive fields are structurally masked before the JSON ever leaves the Presenter — the LLM receives `[REDACTED]` instead of the real value.
+Vurb.ts's DLP engine makes data leakage **physically impossible** at the framework level. Sensitive fields are structurally masked before the JSON ever leaves the Presenter — the LLM receives `[REDACTED]` instead of the real value.
 
 > [!IMPORTANT]
 > **GDPR / LGPD / HIPAA Compliant by Design.**
@@ -68,7 +64,7 @@ If `fast-redact` is not installed, the framework logs a warning and passes data 
 One method call. The framework compiles the redaction function at configuration time and applies it automatically on every `make()` call:
 
 ```typescript
-import { createPresenter, t, ui } from '@vinkius-core/mcp-fusion';
+import { createPresenter, t, ui } from 'Vurb.ts';
 
 export const PatientPresenter = createPresenter('Patient')
     .schema({
@@ -116,7 +112,7 @@ Replace `[REDACTED]` with a custom mask:
 For teams that prefer configuration objects over the fluent chain:
 
 ```typescript
-import { definePresenter } from '@vinkius-core/mcp-fusion';
+import { definePresenter } from 'Vurb.ts';
 import { z } from 'zod';
 
 export const EmployeePresenter = definePresenter({
@@ -186,7 +182,7 @@ Both methods return `this` for chaining.
 For maximum performance, pre-load `fast-redact` at application bootstrap:
 
 ```typescript
-import { initRedactEngine } from '@vinkius-core/mcp-fusion';
+import { initRedactEngine } from 'Vurb.ts';
 
 // Call once at boot — loads fast-redact into memory
 await initRedactEngine();
@@ -199,7 +195,7 @@ This ensures the dynamic `import('fast-redact')` is resolved before the first re
 Use `compileRedactor()` directly when you need redaction outside the Presenter pipeline:
 
 ```typescript
-import { compileRedactor } from '@vinkius-core/mcp-fusion';
+import { compileRedactor } from 'Vurb.ts';
 
 const redact = await compileRedactor({
     paths: ['*.password', 'users[*].token'],
@@ -216,7 +212,7 @@ if (redact) {
 
 ## GDPR Compliance Matrix
 
-| Requirement | How MCP Fusion Addresses It |
+| Requirement | How Vurb.ts Addresses It |
 |---|---|
 | **Data Minimization** (Art. 5.1c) | `.redactPII()` ensures only non-sensitive fields reach the LLM |
 | **Purpose Limitation** (Art. 5.1b) | Redaction is structural — PII never leaves the server boundary |
@@ -309,10 +305,10 @@ If multiple objects share a field name (e.g., `email`), use wildcards:
 Call `initRedactEngine()` during application startup to avoid first-request latency:
 
 ```typescript
-import { initFusion, initRedactEngine } from '@vinkius-core/mcp-fusion';
+import { initVurb, initRedactEngine } from 'Vurb.ts';
 
 await initRedactEngine();
-const server = initFusion({ /* ... */ });
+const server = initVurb({ /* ... */ });
 ```
 
 ### 4. Audit Your Redaction Paths

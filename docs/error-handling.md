@@ -1,7 +1,7 @@
 # Error Handling
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -20,13 +20,13 @@ Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-f
 
 When an AI agent hits an error, the default behavior is to give up or hallucinate a workaround. A generic `"Not found"` message leaves the LLM guessing — it might retry with the same invalid input, apologize to the user, or invent a tool name that doesn't exist.
 
-MCP Fusion makes errors **self-healing**. Every error carries structured XML with a code, message, recovery instructions, and available next actions. The agent reads the structured envelope and immediately follows the recovery path — no human intervention needed.
+Vurb.ts makes errors **self-healing**. Every error carries structured XML with a code, message, recovery instructions, and available next actions. The agent reads the structured envelope and immediately follows the recovery path — no human intervention needed.
 
 ```text
 Without structured errors:
   AI: "I encountered an error. The project was not found."  ← gives up
 
-With MCP Fusion errors:
+With Vurb.ts errors:
   AI reads: <recovery>Call projects.list first</recovery>
   AI: → calls projects.list → finds the correct ID → retries successfully
 ```
@@ -36,9 +36,9 @@ With MCP Fusion errors:
 For straightforward failures, the `error()` helper wraps your message in a standard MCP `isError: true` response:
 
 ```typescript
-import { initFusion, error, success } from '@vinkius-core/mcp-fusion';
+import { initVurb, error, success } from 'Vurb.ts';
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 export const getProject = f.query('projects.get')
   .describe('Get a project by ID')
@@ -63,7 +63,7 @@ This works, but the AI only sees a text message — it doesn't know what to try 
 Shortcut for missing fields — tells the agent exactly which parameter to provide:
 
 ```typescript
-import { required } from '@vinkius-core/mcp-fusion';
+import { required } from 'Vurb.ts';
 
 .handle(async (input, ctx) => {
   if (!input.workspace_id) return required('workspace_id');
@@ -83,7 +83,7 @@ import { required } from '@vinkius-core/mcp-fusion';
 `toolError()` creates a rich error envelope with everything the AI needs to self-correct:
 
 ```typescript
-import { toolError, success } from '@vinkius-core/mcp-fusion';
+import { toolError, success } from 'Vurb.ts';
 
 export const getInvoice = f.query('billing.get_invoice')
   .describe('Get an invoice by its ID')
@@ -129,7 +129,7 @@ The agent reads `<available_actions>` and calls `billing.list_invoices` instead 
 For maximum readability, use the fluent `ErrorBuilder` via `f.error()`. It chains naturally and returns directly from handlers:
 
 ```typescript
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 export const chargeInvoice = f.mutation('billing.charge')
   .describe('Process a payment for an invoice')
@@ -259,7 +259,7 @@ Missing or misspelled discriminators produce structured corrections:
 For multi-step operations, use the [Result monad](/result-monad) to compose validation chains:
 
 ```typescript
-import { succeed, fail, error, success, type Result } from '@vinkius-core/mcp-fusion';
+import { succeed, fail, error, success, type Result } from 'Vurb.ts';
 
 function findUser(db: Database, id: string): Result<User> {
   const user = db.users.get(id);

@@ -6,7 +6,7 @@
  *
  * @example
  * ```typescript
- * import { Role, createAnnotations } from '@vinkius-core/mcp-fusion';
+ * import { Role, createAnnotations } from 'vurb';
  *
  * const annotations = createAnnotations({
  *     audience: [Role.USER, Role.ASSISTANT],

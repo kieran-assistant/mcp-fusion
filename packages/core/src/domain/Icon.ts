@@ -6,7 +6,7 @@
  *
  * @example
  * ```typescript
- * import { createIcon } from '@vinkius-core/mcp-fusion';
+ * import { createIcon } from 'vurb';
  *
  * const icon = createIcon({
  *     src: 'https://example.com/icon.png',

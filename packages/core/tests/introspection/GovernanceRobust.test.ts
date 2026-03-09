@@ -98,15 +98,15 @@ import type { GovernanceObserver } from '../../src/introspection/GovernanceObser
 import { createDebugObserver } from '../../src/observability/DebugObserver.js';
 import type { DebugEvent, GovernanceEvent } from '../../src/observability/DebugObserver.js';
 import { SpanStatusCode } from '../../src/observability/Tracing.js';
-import type { FusionTracer, FusionSpan, FusionAttributeValue } from '../../src/observability/Tracing.js';
+import type { VurbTracer, VurbSpan, VurbAttributeValue } from '../../src/observability/Tracing.js';
 import {
     parseArgs,
     ProgressTracker,
     createDefaultReporter,
-    MCP_FUSION_VERSION,
+    VURB_VERSION,
     HELP,
-} from '../../src/cli/fusion.js';
-import type { ProgressStep, ProgressReporter } from '../../src/cli/fusion.js';
+} from '../../src/cli/vurb.js';
+import type { ProgressStep, ProgressReporter } from '../../src/cli/vurb.js';
 import { definePrompt } from '../../src/prompt/definePrompt.js';
 
 // ============================================================================
@@ -206,14 +206,14 @@ function createPromptBuilder(overrides: Partial<{
     };
 }
 
-function createMockTracer(): { tracer: FusionTracer; spans: Array<{ name: string; attrs: Map<string, FusionAttributeValue>; ended: boolean; status?: { code: number; message?: string } }> } {
-    const spans: Array<{ name: string; attrs: Map<string, FusionAttributeValue>; ended: boolean; status?: { code: number; message?: string } }> = [];
-    const tracer: FusionTracer = {
+function createMockTracer(): { tracer: VurbTracer; spans: Array<{ name: string; attrs: Map<string, VurbAttributeValue>; ended: boolean; status?: { code: number; message?: string } }> } {
+    const spans: Array<{ name: string; attrs: Map<string, VurbAttributeValue>; ended: boolean; status?: { code: number; message?: string } }> = [];
+    const tracer: VurbTracer = {
         startSpan(name, options) {
-            const attrs = new Map<string, FusionAttributeValue>(
+            const attrs = new Map<string, VurbAttributeValue>(
                 Object.entries(options?.attributes ?? {}),
             );
-            const span: FusionSpan & { _data: typeof spans[number] } = {
+            const span: VurbSpan & { _data: typeof spans[number] } = {
                 _data: { name, attrs, ended: false },
                 setAttribute(k, v) { attrs.set(k, v); },
                 setStatus(s) { span._data.status = s; },
@@ -879,7 +879,7 @@ describe('Corruption: parseLockfile resilience', () => {
         const base = {
             lockfileVersion: 1,
             serverName: 'test',
-            fusionVersion: '1.0.0',
+            vurbVersion: '1.0.0',
             generatedAt: new Date().toISOString(),
             integrityDigest: 'sha256:abc',
             capabilities: { tools: {} },
@@ -890,8 +890,8 @@ describe('Corruption: parseLockfile resilience', () => {
         expect(parseLockfile(JSON.stringify({ ...base, integrityDigest: undefined }))).toBeNull();
         // Missing generatedAt
         expect(parseLockfile(JSON.stringify({ ...base, generatedAt: undefined }))).toBeNull();
-        // Missing fusionVersion
-        expect(parseLockfile(JSON.stringify({ ...base, fusionVersion: undefined }))).toBeNull();
+        // Missing vurbVersion
+        expect(parseLockfile(JSON.stringify({ ...base, vurbVersion: undefined }))).toBeNull();
         // Missing capabilities
         expect(parseLockfile(JSON.stringify({ ...base, capabilities: undefined }))).toBeNull();
         // Missing capabilities.tools
@@ -902,7 +902,7 @@ describe('Corruption: parseLockfile resilience', () => {
         const bad = {
             lockfileVersion: 1,
             serverName: 'test',
-            fusionVersion: '1.0.0',
+            vurbVersion: '1.0.0',
             generatedAt: new Date().toISOString(),
             integrityDigest: 'sha256:abc',
             capabilities: { tools: 'not-an-object' },
@@ -914,7 +914,7 @@ describe('Corruption: parseLockfile resilience', () => {
         const bad = {
             lockfileVersion: 1,
             serverName: 'test',
-            fusionVersion: '1.0.0',
+            vurbVersion: '1.0.0',
             generatedAt: new Date().toISOString(),
             integrityDigest: 'sha256:abc',
             capabilities: [],
@@ -1498,31 +1498,31 @@ describe('CLI: ProgressTracker', () => {
 
 describe('CLI: parseArgs edge cases', () => {
     it('handles unknown flags gracefully', async () => {
-        const args = parseArgs(['node', 'fusion', 'lock', '--verbose', '--format', 'json']);
+        const args = parseArgs(['node', 'vurb', 'lock', '--verbose', '--format', 'json']);
         expect(args.command).toBe('lock');
         // Unknown flags are ignored silently
     });
 
     it('handles --server without value (dangling flag)', async () => {
-        expect(() => parseArgs(['node', 'fusion', 'lock', '--server'])).toThrow(/missing value/i);
+        expect(() => parseArgs(['node', 'vurb', 'lock', '--server'])).toThrow(/missing value/i);
     });
 
     it('handles --name without value', async () => {
-        expect(() => parseArgs(['node', 'fusion', 'lock', '--name'])).toThrow(/missing value/i);
+        expect(() => parseArgs(['node', 'vurb', 'lock', '--name'])).toThrow(/missing value/i);
     });
 
     it('handles paths with spaces', async () => {
-        const args = parseArgs(['node', 'fusion', 'lock', '--server', 'path with spaces/server.ts']);
+        const args = parseArgs(['node', 'vurb', 'lock', '--server', 'path with spaces/server.ts']);
         expect(args.server).toBe('path with spaces/server.ts');
     });
 
     it('handles multiple commands (first wins)', async () => {
-        const args = parseArgs(['node', 'fusion', 'lock', 'check']);
+        const args = parseArgs(['node', 'vurb', 'lock', 'check']);
         expect(args.command).toBe('lock');
     });
 
     it('handles short flags', async () => {
-        const args = parseArgs(['node', 'fusion', 'lock', '-s', './server.ts', '-n', 'my-server', '-h']);
+        const args = parseArgs(['node', 'vurb', 'lock', '-s', './server.ts', '-n', 'my-server', '-h']);
         expect(args.server).toBe('./server.ts');
         expect(args.name).toBe('my-server');
         expect(args.help).toBe(true);
@@ -1614,7 +1614,7 @@ describe('formatDiffReport: Edge cases', () => {
 // ============================================================================
 
 describe('Lockfile: Cross-version behavior', () => {
-    it('lockfiles from different fusionVersions are not stale', async () => {
+    it('lockfiles from different vurbVersions are not stale', async () => {
         const contracts = { t: await makeContract() };
         const lockfileV1 = await generateLockfile('test', contracts, '1.0.0');
         // Check against same contracts but different version — lockfile was generated with 1.0.0

@@ -10,7 +10,7 @@ import { GroupItem } from './GroupItem.js';
  *
  * @example
  * ```typescript
- * import { Tool, createToolAnnotations } from '@vinkius-core/mcp-fusion';
+ * import { Tool, createToolAnnotations } from 'vurb';
  *
  * const tool = new Tool('read_file');
  * tool.title = 'Read File';

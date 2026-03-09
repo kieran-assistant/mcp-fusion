@@ -4,7 +4,7 @@
  * **Evolution 1: Zero-Trust Runtime**
  *
  * Provides cryptographic attestation and capability pinning
- * for MCP Fusion tool contracts. This module enables:
+ * for Vurb tool contracts. This module enables:
  *
  * 1. **Digital Signing**: Sign a `ToolContract` or `ServerDigest`
  *    using HMAC-SHA256 (built-in) or pluggable external signers
@@ -15,7 +15,7 @@
  *    (signed) digest. If they differ, fail fast with a clear
  *    attestation error.
  *
- * 3. **Capability Pinning**: Expose a `fusionTrust` capability
+ * 3. **Capability Pinning**: Expose a `vurbTrust` capability
  *    in the MCP `server.capabilities` that clients can inspect
  *    to verify the server's behavioral identity.
  *
@@ -125,7 +125,7 @@ export interface AttestationResult {
  * Clients can inspect this to verify the server's behavioral
  * identity before trusting tool responses.
  */
-export interface FusionTrustCapability {
+export interface VurbTrustCapability {
     /** Current server behavioral digest */
     readonly serverDigest: string;
     /** Attestation signature (if signed) */
@@ -254,7 +254,7 @@ export async function verifyCapabilityPin(
 
     if (!result.valid && (config.failOnMismatch ?? true)) {
         throw new AttestationError(
-            `[MCP Fusion] Zero-Trust attestation failed: ${result.error}`,
+            `[Vurb] Zero-Trust attestation failed: ${result.error}`,
             result,
         );
     }
@@ -263,7 +263,7 @@ export async function verifyCapabilityPin(
 }
 
 /**
- * Build the `fusionTrust` capability object for MCP exposure.
+ * Build the `vurbTrust` capability object for MCP exposure.
  *
  * @param attestation - A completed attestation result
  * @param toolCount - Number of tools in the registry
@@ -272,7 +272,7 @@ export async function verifyCapabilityPin(
 export function buildTrustCapability(
     attestation: AttestationResult,
     toolCount: number,
-): FusionTrustCapability {
+): VurbTrustCapability {
     return {
         serverDigest: attestation.computedDigest,
         signature: attestation.signature,
@@ -313,7 +313,7 @@ export class AttestationError extends Error {
 function resolveSigner(config: ZeroTrustConfig): AttestationSigner {
     if (config.signer === 'hmac') {
         if (!config.secret) {
-            throw new Error('[MCP Fusion] HMAC signer requires a secret. Set zeroTrust.secret or use a custom signer.');
+            throw new Error('[Vurb] HMAC signer requires a secret. Set zeroTrust.secret or use a custom signer.');
         }
         return createHmacSigner(config.secret);
     }

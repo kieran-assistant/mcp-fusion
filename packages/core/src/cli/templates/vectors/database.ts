@@ -7,9 +7,9 @@
 export function prismaSchema(): string {
     return `// Prisma Schema — Database-Driven MCP Server
 //
-// The @vinkius-core/mcp-fusion-prisma-gen generator reads annotations
+// The @vurb/prisma-gen generator reads annotations
 // and auto-generates Presenters + ToolBuilders with:
-// - Field-level security (/// @fusion.hide)
+// - Field-level security (/// @vurb.hide)
 // - Tenant isolation
 // - OOM protection
 
@@ -17,8 +17,8 @@ generator client {
     provider = "prisma-client-js"
 }
 
-generator fusion {
-    provider = "@vinkius-core/mcp-fusion-prisma-gen"
+generator vurb {
+    provider = "@vurb/prisma-gen"
 }
 
 datasource db {
@@ -31,7 +31,7 @@ model User {
     email     String   @unique
     name      String
 
-    /// @fusion.hide — Stripped by the Egress Firewall before reaching the LLM
+    /// @vurb.hide — Stripped by the Egress Firewall before reaching the LLM
     password  String
 
     role      String   @default("USER")
@@ -64,7 +64,7 @@ export function dbUsersToolTs(): string {
  * - .handle(input, ctx) — input.take is typed as number | undefined
  * - Implicit success() wrapping
  */
-import { f } from '../../fusion.js';
+import { f } from '../../vurb.js';
 
 export default f.query('db.list_users')
     .describe('List users from the database')

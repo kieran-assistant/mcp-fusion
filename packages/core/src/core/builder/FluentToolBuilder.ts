@@ -8,7 +8,7 @@
  *
  * @example
  * ```typescript
- * const f = initFusion<AppContext>();
+ * const f = initVurb<AppContext>();
  *
  * const listUsers = f.query('users.list')
  *     .describe('List users from the database')
@@ -21,7 +21,7 @@
  * ```
  *
  * @see {@link FluentRouter} for prefix grouping
- * @see {@link initFusion} for the factory that creates these builders
+ * @see {@link initVurb} for the factory that creates these builders
  *
  * @module
  */
@@ -72,7 +72,7 @@ function resolveArrayItemType(itemType: 'string' | 'number' | 'boolean'): ZodTyp
 /**
  * Fluent builder that accumulates types at each step.
  *
- * @typeParam TContext - Base application context (from `initFusion<TContext>()`)
+ * @typeParam TContext - Base application context (from `initVurb<TContext>()`)
  * @typeParam TInput - Accumulated input type (built by `with*()` methods)
  * @typeParam TCtx - Accumulated context type (enriched by `.use()`)
  */

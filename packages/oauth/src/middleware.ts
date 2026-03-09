@@ -1,13 +1,13 @@
 /**
  * Auth Middleware — requireAuth()
  *
- * mcp-fusion middleware that ensures requests are authenticated
+ * vurb middleware that ensures requests are authenticated
  * by checking the context for a valid token via TokenManager.
  *
  * @example
  * ```ts
  * import { requireAuth } from '@vinkius-core/oauth';
- * import { createTool } from '@vinkius-core/mcp-fusion';
+ * import { createTool } from 'vurb';
  *
  * const projects = createTool<AppContext>('projects')
  *     .use(requireAuth())
@@ -15,8 +15,8 @@
  * ```
  */
 
-import { toolError } from '@vinkius-core/mcp-fusion';
-import type { ToolResponse } from '@vinkius-core/mcp-fusion';
+import { toolError } from 'vurb';
+import type { ToolResponse } from 'vurb';
 
 // ============================================================================
 // Types
@@ -50,7 +50,7 @@ export interface RequireAuthOptions {
 // ============================================================================
 
 /**
- * Creates a mcp-fusion middleware that rejects unauthenticated requests.
+ * Creates a vurb middleware that rejects unauthenticated requests.
  *
  * Returns a `toolError('AUTH_REQUIRED')` with self-healing hints
  * when no valid token is found.

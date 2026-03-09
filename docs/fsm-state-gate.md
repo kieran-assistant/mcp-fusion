@@ -1,12 +1,8 @@
----
-outline: deep
----
-
 # FSM State Gate — Temporal Anti-Hallucination
 
 LLMs are chaotic. Even with HATEOAS `suggestActions`, a model can ignore the suggestion and call `cart.pay` with an empty cart. Zod validates the **format** — but the **timing** (state) is wrong. The AI enters an error loop.
 
-MCP Fusion's FSM State Gate makes temporal hallucination **physically impossible**: if the workflow state is `empty`, the `cart.pay` tool doesn't exist in `tools/list`. The LLM literally cannot call it. When the user adds an item, the FSM advances, the framework emits `notifications/tools/list_changed`, and `cart.pay` magically appears.
+Vurb.ts's FSM State Gate makes temporal hallucination **physically impossible**: if the workflow state is `empty`, the `cart.pay` tool doesn't exist in `tools/list`. The LLM literally cannot call it. When the user adds an item, the FSM advances, the framework emits `notifications/tools/list_changed`, and `cart.pay` magically appears.
 
 > [!IMPORTANT]
 > **The first framework where it is physically impossible for an AI to execute tools out of order.**
@@ -14,7 +10,7 @@ MCP Fusion's FSM State Gate makes temporal hallucination **physically impossible
 
 ## The Thesis: Three Layers of Anti-Hallucination
 
-MCP Fusion now has three complementary layers that, together, make temporal hallucination nearly impossible:
+Vurb.ts now has three complementary layers that, together, make temporal hallucination nearly impossible:
 
 | Layer | Tech | What It Does |
 |---|---|---|
@@ -70,10 +66,10 @@ npm install xstate
 ### Step 1 — Define the FSM
 
 ```typescript
-import { initFusion } from '@vinkius-core/mcp-fusion';
+import { initVurb } from 'Vurb.ts';
 
 interface AppContext { db: PrismaClient; userId: string }
-export const f = initFusion<AppContext>();
+export const f = initVurb<AppContext>();
 
 // Define the checkout workflow
 const gate = f.fsm({
@@ -164,7 +160,7 @@ When `transition` is provided, the framework automatically calls `gate.transitio
 MCP is stateless by nature. On platforms like Vercel or Cloudflare Workers, the FSM state must survive across requests. The framework provides `fsmStore` for this:
 
 ```typescript
-import type { FsmStateStore } from '@vinkius-core/mcp-fusion';
+import type { FsmStateStore } from 'Vurb.ts';
 
 // Redis-backed state store
 const fsmStore: FsmStateStore = {
@@ -242,7 +238,7 @@ After `add_item` succeeds:
 For maximum performance, pre-load the XState engine at application bootstrap:
 
 ```typescript
-import { initFsmEngine } from '@vinkius-core/mcp-fusion';
+import { initFsmEngine } from 'Vurb.ts';
 
 // Call once at boot — loads xstate into memory
 const hasXState = await initFsmEngine();
@@ -256,7 +252,7 @@ This ensures the dynamic `import('xstate')` is resolved before the first request
 For custom pipelines or testing, use `StateMachineGate` directly:
 
 ```typescript
-import { StateMachineGate } from '@vinkius-core/mcp-fusion';
+import { StateMachineGate } from 'Vurb.ts';
 
 const gate = new StateMachineGate({
     id: 'approval',

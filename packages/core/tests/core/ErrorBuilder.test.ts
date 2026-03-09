@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { ErrorBuilder } from '../../src/core/builder/ErrorBuilder.js';
-import { initFusion } from '../../src/core/initFusion.js';
+import { initVurb } from '../../src/core/initVurb.js';
 
 describe('ErrorBuilder', () => {
     it('should construct a basic error response', () => {
@@ -56,9 +56,9 @@ describe('ErrorBuilder', () => {
     });
 });
 
-describe('initFusion — f.error()', () => {
+describe('initVurb — f.error()', () => {
     it('should expose f.error() which returns an ErrorBuilder', () => {
-        const f = initFusion();
+        const f = initVurb();
         const builder = f.error('UNAUTHORIZED', 'Login required');
         
         expect(builder).toBeInstanceOf(ErrorBuilder);

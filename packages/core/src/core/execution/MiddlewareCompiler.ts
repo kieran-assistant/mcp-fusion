@@ -42,10 +42,23 @@ function isAsyncGeneratorFunction(fn: unknown): boolean {
 }
 
 /**
+ * Set of middleware functions that have already triggered the
+ * "forgot return next()" warning. Keyed by function identity
+ * to ensure each middleware warns at most once across all chains.
+ * @internal
+ */
+const _warnedMiddlewares = new WeakSet<Function>();
+
+/**
  * Wrap a handler with a middleware stack (right-to-left composition).
  *
  * This is the single canonical implementation of the middleware
  * wrapping pattern. No other file should duplicate this loop.
+ *
+ * Includes a runtime guard: if a middleware returns `undefined`,
+ * a one-time warning is emitted. This catches the common junior
+ * mistake of forgetting `return next()`, which silently prevents
+ * the handler from executing.
  *
  * @param handler - The innermost function to wrap
  * @param middlewares - Middleware stack (outermost first, applied right-to-left)
@@ -61,8 +74,18 @@ export function wrapChain<TContext>(
         const mw = middlewares[i];
         if (!mw) continue;
         const nextFn = chain;
-        chain = (ctx: TContext, args: Record<string, unknown>) =>
-            mw(ctx, args, () => nextFn(ctx, args));
+        chain = async (ctx: TContext, args: Record<string, unknown>) => {
+            const result = await mw(ctx, args, () => nextFn(ctx, args));
+            if (result === undefined && !_warnedMiddlewares.has(mw)) {
+                _warnedMiddlewares.add(mw);
+                console.warn(
+                    `[vurb] Middleware "${mw.name || '(anonymous)'}" returned undefined. ` +
+                    `Did you forget "return next()"? Without it, the handler never executes ` +
+                    `and the tool silently returns an empty response.`,
+                );
+            }
+            return result;
+        };
     }
 
     return chain;

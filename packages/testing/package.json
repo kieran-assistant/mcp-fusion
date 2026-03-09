@@ -1,7 +1,7 @@
 {
-  "name": "@vinkius-core/mcp-fusion-testing",
+  "name": "@vurb/testing",
   "version": "3.1.31",
-  "description": "In-memory MVA lifecycle emulator for MCP Fusion. Runs the full pipeline (Zod Input → Middlewares → Handler → Egress Firewall) without network transport. Returns structured MvaTestResult objects — zero coupling to Jest/Vitest.",
+  "description": "In-memory MVA lifecycle emulator for Vurb. Runs the full pipeline (Zod Input → Middlewares → Handler → Egress Firewall) without network transport. Returns structured MvaTestResult objects — zero coupling to Jest/Vitest.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,7 +18,7 @@
   },
   "keywords": [
     "mcp",
-    "mcp-fusion",
+    "vurb",
     "testing",
     "mva",
     "emulator",
@@ -27,16 +27,16 @@
     "soc2",
     "compliance"
   ],
-  "author": "Vinkius Labs",
+  "author": "Renato Marinho",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vinkius-labs/mcp-fusion.git",
+    "url": "git+https://github.com/vinkius-labs/vurb.ts.git",
     "directory": "packages/testing"
   },
   "bugs": {
-    "url": "https://github.com/vinkius-labs/mcp-fusion/issues"
+    "url": "https://github.com/vinkius-labs/vurb.ts/issues"
   },
-  "homepage": "https://mcp-fusion.vinkius.com/",
+  "homepage": "https://vurb.vinkius.com/",
   "files": [
     "dist",
     "README.md"
@@ -48,11 +48,11 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@vinkius-core/mcp-fusion": "^2.0.0",
+    "vurb": "^3.0.0",
     "zod": "^3.25.1 || ^4.0.0"
   },
   "license": "Apache-2.0",
   "devDependencies": {
-    "@vinkius-core/mcp-fusion": ">=2.14.0"
+    "vurb": ">=3.0.0"
   }
 }

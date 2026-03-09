@@ -1,9 +1,9 @@
 /**
- * `fusion deploy` — bundle, compress & upload to Edge.
+ * `vurb deploy` — bundle, compress & upload to Edge.
  *
  * Produces a Fat Bundle (IIFE, platform: browser) that is fully
  * self-contained for execution in a V8 Isolate. All dependencies
- * (zod, mcp-fusion, MCP SDK) are bundled inside. Node.js built-in
+ * (zod, vurb, MCP SDK) are bundled inside. Node.js built-in
  * modules are aliased to edge-stub.ts (AST-compatible stubs).
  *
  * @module
@@ -17,7 +17,7 @@ import type { CliArgs } from '../args.js';
 import { ProgressTracker } from '../progress.js';
 import { ansi, VINKIUS_CLOUD_URL } from '../constants.js';
 import { ask, inferServerEntry } from '../utils.js';
-import { loadEnv, readFusionRc } from '../rc.js';
+import { loadEnv, readVurbRc } from '../rc.js';
 
 // ── Edge Stub Aliases ────────────────────────────────────────────────────────
 // Maps node:* to edge-stub.ts (internal, NOT in package.json exports).
@@ -26,7 +26,7 @@ import { loadEnv, readFusionRc } from '../rc.js';
 // any transport is created.
 function edgeStubAliases(): Record<string, string> {
     const require = createRequire(import.meta.url);
-    const pkgDir = dirname(require.resolve('@vinkius-core/mcp-fusion'));
+    const pkgDir = dirname(require.resolve('vurb'));
     const stubPath = resolve(pkgDir, 'edge-stub.js');
     const stubs: Record<string, string> = {};
     for (const mod of [
@@ -48,10 +48,10 @@ export async function commandDeploy(args: CliArgs): Promise<void> {
     progress.start('read-config', 'Reading configuration');
     loadEnv(cwd);
 
-    const rc = readFusionRc(cwd);
+    const rc = readVurbRc(cwd);
     const remote = rc.remote ?? VINKIUS_CLOUD_URL;
     const serverId = rc.serverId;
-    const token = args.token ?? process.env['FUSION_DEPLOY_TOKEN'];
+    const token = args.token ?? process.env['VURB_DEPLOY_TOKEN'];
 
     // Bug #76 fix: warn when token would be sent over plaintext HTTP
     if (token && remote) {
@@ -67,11 +67,11 @@ export async function commandDeploy(args: CliArgs): Promise<void> {
     }
 
     if (!serverId) {
-        progress.fail('read-config', 'Reading configuration', 'run: fusion remote --server-id <uuid>');
+        progress.fail('read-config', 'Reading configuration', 'run: vurb remote --server-id <uuid>');
         process.exit(1);
     }
     if (!token) {
-        progress.fail('read-config', 'Reading configuration', 'set FUSION_DEPLOY_TOKEN=<connection-token> in .env');
+        progress.fail('read-config', 'Reading configuration', 'set VURB_DEPLOY_TOKEN=<connection-token> in .env');
         process.exit(1);
     }
     progress.done('read-config', 'Reading configuration');
@@ -285,5 +285,5 @@ export async function commandDeploy(args: CliArgs): Promise<void> {
     process.stderr.write(`  ${ansi.dim('size:')}    ${rawKB}KB -> ${compressedKB}KB gzip (${ratio}% smaller)\n`);
     process.stderr.write(`  ${ansi.dim('url:')}     ${ansi.cyan(data.url)}\n`);
     process.stderr.write(`  ${ansi.dim('time:')}    ${elapsed}s\n`);
-    process.stderr.write(`\n  ${ansi.dim('MCP Fusion')} ${ansi.dim('->')} ${ansi.cyan('Vinkius Edge')}\n\n`);
+    process.stderr.write(`\n  ${ansi.dim('Vurb')} ${ansi.dim('->')} ${ansi.cyan('Vinkius Edge')}\n\n`);
 }

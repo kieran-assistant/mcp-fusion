@@ -1,7 +1,7 @@
 # Without MVA vs With MVA
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Before & After: Invoice](#invoice)
@@ -9,7 +9,7 @@ Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-f
 - [Before & After: Error Recovery](#errors)
 - [The Architecture Difference](#architecture)
 
-Every tool response in a raw MCP server is `JSON.stringify()` — the AI receives a flat blob and guesses what it means. This creates a severe **Context DDoS** that destroys token economics. MCP Fusion's MVA pattern replaces guessing with a structured perception package: validated data + domain rules + UI blocks + suggested next actions. 
+Every tool response in a raw MCP server is `JSON.stringify()` — the AI receives a flat blob and guesses what it means. This creates a severe **Context DDoS** that destroys token economics. Vurb.ts's MVA pattern replaces guessing with a structured perception package: validated data + domain rules + UI blocks + suggested next actions. 
 
 This architecture makes it the ultimate strategy for **Legacy API Migration**, allowing you to wrap ancient REST/SOAP monoliths into clean, deterministic AI Agents without rebuilding your entire backend. The resulting server works with every MCP client: Cursor, Claude Desktop, Claude Code, Windsurf, Cline, and VS Code with GitHub Copilot.
 
@@ -31,7 +31,7 @@ This architecture makes it the ultimate strategy for **Legacy API Migration**, a
 | **Deployment** | Stdio only — manual HTTP bridging | One-line adapters for [Vercel Edge](/vercel-adapter), [Cloudflare Workers](/cloudflare-adapter), and [AWS Lambda](/aws-connector) |
 | **Code generation** | Write every tool by hand | [OpenAPI Generator](/openapi-gen) turns any spec into a typed MCP server. [Prisma Generator](/prisma-gen) creates CRUD tools from schema. |
 | **Integrations** | Build connectors from scratch | [n8n bridge](/n8n-connector) exposes workflows as tools. [OAuth Device Flow](/oauth) for enterprise auth. |
-| **Type safety** | Manual casting | `createFusionClient()` with end-to-end inference |
+| **Type safety** | Manual casting | `createVurbClient()` with end-to-end inference |
 
 ## Before & After: Invoice {#invoice}
 
@@ -55,11 +55,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 **With MVA:**
 
 ```typescript
-import { createPresenter, suggest, ui } from '@vinkius-core/mcp-fusion';
-import { initFusion } from '@vinkius-core/mcp-fusion';
+import { createPresenter, suggest, ui } from 'Vurb.ts';
+import { initVurb } from 'Vurb.ts';
 import { z } from 'zod';
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 const InvoicePresenter = createPresenter('Invoice')
     .schema(z.object({

@@ -1,5 +1,5 @@
 /**
- * MCP Fusion — Root Barrel Export
+ * Vurb — Root Barrel Export
  *
  * Public API entry point. Aggregates all bounded-context modules
  * into a single flat namespace for consumers.
@@ -7,7 +7,7 @@
  * Architecture:
  *   src/
  *   ├── core/          ← Builder, Registry, Execution, Middleware, Schema
- *   ├── client/        ← tRPC-style FusionClient
+ *   ├── client/        ← tRPC-style VurbClient
  *   ├── observability/ ← Debug Observer, Tracing
  *   ├── presenter/     ← MVA View Layer
  *   ├── prompt/        ← Prompt Engine
@@ -65,7 +65,7 @@ export {
     succeed, fail,
     progress,
     defineMiddleware, resolveMiddleware,
-    initFusion,
+    initVurb,
     createGroup,
     toStandardValidator, fromZodSchema, isStandardSchema, autoValidator,
     // Fluent API
@@ -83,19 +83,19 @@ export type {
     MiddlewareDefinition, MergeContext, InferContextOut,
     ConcurrencyConfig, EgressConfig,
     SandboxConfig, SandboxResult, SandboxErrorCode,
-    FusionInstance,
+    VurbInstance,
     GroupConfig, GroupAction, CompiledGroup,
     StandardSchemaV1, StandardSchemaIssue, InferStandardOutput,
-    FusionValidator, ValidationResult,
+    VurbValidator, ValidationResult,
     SemanticDefaults,
     StateSyncHint,
 } from './core/index.js';
 
 // ── Client (tRPC-style type-safe) ────────────────────────
 /** @category Client */
-export { createFusionClient, createTypedRegistry, FusionClientError } from './client/index.js';
+export { createVurbClient, createTypedRegistry, VurbClientError } from './client/index.js';
 /** @category Client */
-export type { FusionClient, FusionTransport, RouterMap, InferRouter, TypedToolRegistry, ClientMiddleware, FusionClientOptions } from './client/index.js';
+export type { VurbClient, VurbTransport, RouterMap, InferRouter, TypedToolRegistry, ClientMiddleware, VurbClientOptions } from './client/index.js';
 
 // ── Observability (Debug + Tracing) ──────────────────────
 /** @category Observability */
@@ -107,7 +107,7 @@ export type {
     DebugEvent, DebugObserverFn,
     RouteEvent, ValidateEvent, MiddlewareEvent, ExecuteEvent, ErrorEvent,
     GovernanceEvent, GovernanceOperation,
-    FusionSpan, FusionTracer, FusionAttributeValue,
+    VurbSpan, VurbTracer, VurbAttributeValue,
     TelemetryEvent, TelemetrySink,
     TelemetryBusConfig, TelemetryBusInstance,
     DlpRedactEvent, PresenterSliceEvent, PresenterRulesEvent,
@@ -262,7 +262,7 @@ export type {
     ZeroTrustConfig,
     AttestationSigner,
     AttestationResult,
-    FusionTrustCapability,
+    VurbTrustCapability,
 } from './introspection/CryptoAttestation.js';
 /** @category Governance */
 export {

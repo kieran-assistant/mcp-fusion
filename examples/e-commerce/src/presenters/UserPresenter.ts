@@ -1,7 +1,7 @@
 /**
  * User Presenter — MVA View Layer
  */
-import { definePresenter, ui } from '@vinkius-core/mcp-fusion';
+import { definePresenter, ui } from 'vurb';
 import { z } from 'zod';
 
 export const UserPresenter = definePresenter({

@@ -11,7 +11,7 @@
  *
  * @example
  * ```typescript
- * import { createPresenter, t, ui } from '@vinkius-core/mcp-fusion';
+ * import { createPresenter, t, ui } from 'vurb';
  *
  * const InvoicePresenter = createPresenter('Invoice')
  *     .schema({

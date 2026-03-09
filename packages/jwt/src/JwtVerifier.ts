@@ -12,7 +12,7 @@
  *
  * @example
  * ```ts
- * import { JwtVerifier } from '@vinkius-core/mcp-fusion-jwt';
+ * import { JwtVerifier } from '@vurb/jwt';
  *
  * // With symmetric secret (HS256)
  * const verifier = new JwtVerifier({ secret: 'my-secret' });
@@ -239,10 +239,13 @@ export class JwtVerifier {
             .update(`${headerB64}.${payloadB64}`)
             .digest('base64url' as crypto.BinaryToTextEncoding);
 
-        if (!crypto.timingSafeEqual(
-            Buffer.from(signatureB64, 'base64url' as BufferEncoding),
-            Buffer.from(expectedSignature, 'base64url' as BufferEncoding),
-        )) {
+        // Guard against RangeError from timingSafeEqual when
+        // a malformed JWT carries a truncated or oversized signature.
+        // The length check is safe — the expected length (32 bytes for
+        // SHA-256) is publicly known and leaks no secret information.
+        const sigBuf = Buffer.from(signatureB64, 'base64url' as BufferEncoding);
+        const expBuf = Buffer.from(expectedSignature, 'base64url' as BufferEncoding);
+        if (sigBuf.length !== expBuf.length || !crypto.timingSafeEqual(sigBuf, expBuf)) {
             return null;
         }
 

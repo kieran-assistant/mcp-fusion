@@ -18,11 +18,11 @@ import { z } from 'zod';
 import { createTool, GroupedToolBuilder } from '../../src/core/builder/GroupedToolBuilder.js';
 import { defineTool } from '../../src/core/builder/defineTool.js';
 import { createTypedRegistry } from '../../src/client/createTypedRegistry.js';
-import { createFusionClient } from '../../src/client/FusionClient.js';
+import { createVurbClient } from '../../src/client/VurbClient.js';
 import { success, error } from '../../src/core/response.js';
 import { ToolRegistry } from '../../src/core/registry/ToolRegistry.js';
 import type { InferRouter, TypedToolRegistry } from '../../src/client/InferRouter.js';
-import type { FusionTransport, RouterMap } from '../../src/client/FusionClient.js';
+import type { VurbTransport, RouterMap } from '../../src/client/VurbClient.js';
 
 // ============================================================================
 // Test Context
@@ -669,17 +669,17 @@ describe('Backward compatibility', () => {
         expect(registry.has('test')).toBe(true);
     });
 
-    it('should still support manual RouterMap definition for FusionClient', async () => {
+    it('should still support manual RouterMap definition for VurbClient', async () => {
         // The old way: manually define RouterMap
         type ManualRouter = {
             'echo.say': { message: string };
         };
 
-        const transport: FusionTransport = {
+        const transport: VurbTransport = {
             callTool: async (_name, args) => success(String((args as Record<string, unknown>)['message'])),
         };
 
-        const client = createFusionClient<ManualRouter>(transport);
+        const client = createVurbClient<ManualRouter>(transport);
         const result = await client.execute('echo.say', { message: 'manual' });
         expect(result.content[0].text).toBe('manual');
     });
@@ -690,7 +690,7 @@ describe('Backward compatibility', () => {
 // ============================================================================
 
 describe('Full pipeline integration', () => {
-    it('createTool → createTypedRegistry → InferRouter → FusionClient — complete flow', async () => {
+    it('createTool → createTypedRegistry → InferRouter → VurbClient — complete flow', async () => {
         const projects = createTool<AppContext>('projects')
             .commonSchema(z.object({ workspace_id: z.string() }))
             .action({
@@ -726,11 +726,11 @@ describe('Full pipeline integration', () => {
             db: { query: async () => [] },
         };
 
-        const transport: FusionTransport = {
+        const transport: VurbTransport = {
             callTool: (name, args) => reg.registry.routeCall(ctx, name, args),
         };
 
-        const client = createFusionClient<AppRouter>(transport);
+        const client = createVurbClient<AppRouter>(transport);
 
         // All calls are type-safe
         const r1 = await client.execute('projects.list', { workspace_id: 'ws_1', status: 'active' });

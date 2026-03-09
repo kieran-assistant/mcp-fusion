@@ -1,10 +1,10 @@
-# mcp-fusion
+# Vurb.ts
 
-> The AI-First DX for the Model Context Protocol, building MCP servers where AI agents are first-class consumers.
+> The MVA framework for production MCP servers. Structured perception for AI agents — zero hallucination, zero data leaks.
 
-## What is mcp-fusion?
+## What is Vurb.ts?
 
-mcp-fusion is a TypeScript framework for the Model Context Protocol (MCP) that introduces the **MVA (Model-View-Agent)** architectural pattern — created by Renato Marinho at Vinkius Labs. Instead of dumping raw JSON and hoping the AI figures it out, MVA adds a **Presenter** (the View layer) that gives every response structure: validated data, domain rules, rendered charts, action affordances, and cognitive guardrails.
+Vurb.ts is a TypeScript framework for the Model Context Protocol (MCP) that introduces the **MVA (Model-View-Agent)** architectural pattern — created by Renato Marinho at Vinkius Labs. Instead of dumping raw JSON and hoping the AI figures it out, MVA adds a **Presenter** (the View layer) that gives every response structure: validated data, domain rules, rendered charts, action affordances, and cognitive guardrails.
 
 ## Core Architecture: MVA (Model-View-Agent)
 
@@ -21,7 +21,7 @@ The Presenter replaces the human-centric View with an agent-centric perception l
 - **Presenter**: **THE core differentiator** — domain-level Egress Firewall. Schema validation, JIT system rules, server-rendered UI, action affordances, cognitive guardrails, relational composition. Define once, reuse across every tool and prompt.
 - **definePresenter()**: Declarative object-config API — auto-rules from Zod `.describe()`, embeds, agentLimit, suggestActions
 - **createPresenter()**: Fluent builder for domain-level Presenters — `.schema()`, `.systemRules()`, `.uiBlocks()`, `.embed()`
-- **initFusion()**: tRPC-style context initialization — define context once, every `f.query()`, `f.mutation()`, `f.action()`, `f.prompt()`, `f.router()`, `f.presenter()` inherits it
+- **initVurb()**: tRPC-style context initialization — define context once, every `f.query()`, `f.mutation()`, `f.action()`, `f.prompt()`, `f.router()`, `f.presenter()` inherits it
 - **Fluent API (Recommended)**: The primary API surface — Semantic Verbs (`f.query()`, `f.mutation()`, `f.action()`) return a `FluentToolBuilder` with type-chaining `with*()` methods. Each method narrows the TypeScript generic so `input` and `ctx` are fully typed inside `.handle()` — zero manual interface declarations.
 - **FluentToolBuilder**: Type-chaining builder behind semantic verbs. 12 parameter methods (`.withString()`, `.withOptionalString()`, `.withNumber()`, `.withOptionalNumber()`, `.withBoolean()`, `.withOptionalBoolean()`, `.withEnum()`, `.withOptionalEnum()`, `.withArray()`, `.withOptionalArray()`), plus `.describe()`, `.instructions()`, `.use()`, `.returns()`, `.tags()`, `.readOnly()`, `.destructive()`, `.idempotent()`, `.invalidates()`, `.cached()`, `.stale()`, `.concurrency()`, `.egress()`, `.annotations()`, `.toonDescription()`, `.handle()` (terminal).
 - **FluentRouter**: Prefix grouping — shares prefix, middleware, and tags across child tools. `f.router('users').use(authMw)` → `users.query('list')`, `users.mutation('delete')`. Eliminates repetitive `'users.'` prefixes.
@@ -52,51 +52,51 @@ The Presenter replaces the human-centric View with an agent-centric perception l
 - **autoDiscover()**: File-based routing — scan directory, auto-register tools from file structure. Deduplicates by tool name (barrel re-exports don't cause double registration)
 - **createDevServer()**: HMR dev server — file changes reload tools, sends MCP notifications/tools/list_changed
 - **Standard Schema**: Decouple from Zod — `autoValidator()` supports Valibot, ArkType, TypeBox via Standard Schema v1
-- **Subpath Exports**: Tree-shakeable imports — `mcp-fusion/client`, `/ui`, `/presenter`, `/schema`, `/dev`, `/prompt`
-- **Governance Stack**: 8-module introspection layer — ToolContract materialization, ContractDiff, BehaviorDigest (SHA-256), CapabilityLockfile (`mcp-fusion.lock`), CryptoAttestation (HMAC-SHA-256), TokenEconomics profiling, EntitlementScanner (blast radius), SemanticProbe (LLM-as-Judge)
+- **Subpath Exports**: Tree-shakeable imports — `Vurb.ts/client`, `/ui`, `/presenter`, `/schema`, `/dev`, `/prompt`
+- **Governance Stack**: 8-module introspection layer — ToolContract materialization, ContractDiff, BehaviorDigest (SHA-256), CapabilityLockfile (`vurb.lock`), CryptoAttestation (HMAC-SHA-256), TokenEconomics profiling, EntitlementScanner (blast radius), SemanticProbe (LLM-as-Judge)
 - **GovernanceObserver**: Observability bridge — wraps governance operations with DebugEvent emission and optional OTel tracing spans
-- **CLI**: `fusion` — unified CLI for project management, development, governance, and observability
+- **CLI**: `Vurb.ts` — unified CLI for project management, development, governance, and observability
 
 ## CLI Commands
 
 ```bash
-# Scaffold a new MCP Fusion server project
-fusion create <name> [--transport stdio|sse] [--vector vanilla|prisma|n8n|openapi|oauth] [--testing|--no-testing] [--yes|-y]
+# Scaffold a new Vurb.ts server project
+Vurb.ts create <name> [--transport stdio|sse] [--vector vanilla|prisma|n8n|openapi|oauth] [--testing|--no-testing] [--yes|-y]
 
 # Start HMR dev server with auto-reload (auto-detects server entrypoint)
-fusion dev [--server|-s <path>] [--dir|-d <path>]
+Vurb.ts dev [--server|-s <path>] [--dir|-d <path>]
 
-# Generate or update the capability lockfile (mcp-fusion.lock)
-fusion lock [--server|-s <path>] [--name|-n <name>] [--cwd <dir>]
+# Generate or update the capability lockfile (vurb.lock)
+Vurb.ts lock [--server|-s <path>] [--name|-n <name>] [--cwd <dir>]
 
 # Verify lockfile is up to date (CI gate — exits non-zero on drift)
-fusion lock --check
+Vurb.ts lock --check
 
 # Launch the real-time TUI Inspector dashboard
-fusion inspect [--demo|-d] [--out|-o tui|stderr] [--pid|-p <pid>] [--path <ipc-path>]
+Vurb.ts inspect [--demo|-d] [--out|-o tui|stderr] [--pid|-p <pid>] [--path <ipc-path>]
 
 # Shorthand aliases
-fusion insp          # = fusion inspect
-fusion dbg           # = fusion debug
+Vurb.ts insp          # = Vurb.ts inspect
+Vurb.ts dbg           # = Vurb.ts debug
 ```
 
 | Command | What It Does |
 |---|---|
-| `fusion create <name>` | Scaffold a full MCP server project (15+ files, Cursor pre-configured, autoDiscover, tests) |
-| `fusion dev` | Start the HMR dev server — file changes reload tools, sends `tools/list_changed` notifications |
-| `fusion lock` | Generate/update `mcp-fusion.lock` — capability lockfile with SHA-256 behavioral digest |
-| `fusion lock --check` | CI gate — verify lockfile matches current tool contracts (fails if drift detected) |
-| `fusion inspect` | Real-time TUI dashboard — tool calls, latency, errors, Presenter events |
-| `fusion insp --demo` | Launch Inspector with built-in simulator (no running server needed) |
+| `Vurb.ts create <name>` | Scaffold a full MCP server project (15+ files, Cursor pre-configured, autoDiscover, tests) |
+| `Vurb.ts dev` | Start the HMR dev server — file changes reload tools, sends `tools/list_changed` notifications |
+| `Vurb.ts lock` | Generate/update `vurb.lock` — capability lockfile with SHA-256 behavioral digest |
+| `Vurb.ts lock --check` | CI gate — verify lockfile matches current tool contracts (fails if drift detected) |
+| `Vurb.ts inspect` | Real-time TUI dashboard — tool calls, latency, errors, Presenter events |
+| `Vurb.ts insp --demo` | Launch Inspector with built-in simulator (no running server needed) |
 
 ## Quick Start — Fluent API with Semantic Verbs (Recommended)
 
 ```typescript
-import { initFusion, definePresenter, ui, PromptMessage } from '@vinkius-core/mcp-fusion';
+import { initVurb, definePresenter, ui, PromptMessage } from 'Vurb.ts';
 import { z } from 'zod';
 
 interface AppContext { db: PrismaClient; user: { id: string; role: string } }
-export const f = initFusion<AppContext>();
+export const f = initVurb<AppContext>();
 
 // ═══════════════════════════════════════════════════════════
 // STEP 1: THE PRESENTER — Egress Firewall & Perception Layer
@@ -384,11 +384,11 @@ const processInvoice = f.mutation('billing.process')
 ## Quick Start — f.tool() Config-Bag API (Alternative)
 
 ```typescript
-import { initFusion, definePresenter, ui, PromptMessage } from '@vinkius-core/mcp-fusion';
+import { initVurb, definePresenter, ui, PromptMessage } from 'Vurb.ts';
 import { z } from 'zod';
 
 interface AppContext { db: PrismaClient; user: { id: string; role: string } }
-export const f = initFusion<AppContext>();
+export const f = initVurb<AppContext>();
 
 // Config-bag style — pass a config object to f.tool()
 const getInvoice = f.tool({
@@ -439,7 +439,7 @@ Works everywhere — `f.tool()`, `defineTool()`, `f.prompt()`, `definePrompt()`:
 ## Quick Start — MVA with Presenter (Classic Builder)
 
 ```typescript
-import { createPresenter, ui, defineTool, success } from '@vinkius-core/mcp-fusion';
+import { createPresenter, ui, defineTool, success } from 'Vurb.ts';
 import { z } from 'zod';
 
 // 1. Define the Presenter — the MVA View Layer (builder API)
@@ -483,7 +483,7 @@ registry.attachToServer(server, {
 ## Quick Start — defineTool() (No Zod Required)
 
 ```typescript
-import { defineTool, ToolRegistry, success, error } from '@vinkius-core/mcp-fusion';
+import { defineTool, ToolRegistry, success, error } from 'Vurb.ts';
 
 const projects = defineTool<AppContext>('projects', {
     description: 'Manage workspace projects',
@@ -516,7 +516,7 @@ const projects = defineTool<AppContext>('projects', {
 ## Quick Start — createTool() (Full Zod Power)
 
 ```typescript
-import { createTool, ToolRegistry, success, error } from '@vinkius-core/mcp-fusion';
+import { createTool, ToolRegistry, success, error } from 'Vurb.ts';
 import { z } from 'zod';
 
 const projects = createTool<AppContext>('projects')
@@ -556,7 +556,7 @@ AFTER: Handler returns raw data. Presenter validates through Zod (stripping unde
 ### definePresenter() — Object Config (Recommended)
 
 ```typescript
-import { definePresenter, ui } from '@vinkius-core/mcp-fusion';
+import { definePresenter, ui } from 'Vurb.ts';
 
 const InvoicePresenter = definePresenter({
     name: 'Invoice',
@@ -578,7 +578,7 @@ const InvoicePresenter = definePresenter({
 ### createPresenter() — Fluent Builder
 
 ```typescript
-import { createPresenter, ui } from '@vinkius-core/mcp-fusion';
+import { createPresenter, ui } from 'Vurb.ts';
 
 const UserPresenter = createPresenter('User')
     .schema(z.object({ id: z.string(), name: z.string(), role: z.string() }))
@@ -623,7 +623,7 @@ Opt-in feature that injects a `_select` parameter into the input schema, allowin
 **Shallow filtering only**: `_select` lists top-level keys. Nested objects are returned whole when selected.
 
 ```typescript
-import { createTool, createPresenter } from '@vinkius-core/mcp-fusion';
+import { createTool, createPresenter } from 'Vurb.ts';
 import { z } from 'zod';
 
 const InvoicePresenter = createPresenter('Invoice')
@@ -657,7 +657,7 @@ const billing = createTool<AppContext>('billing')
 ## ResponseBuilder (Manual Composition)
 
 ```typescript
-import { ResponseBuilder } from '@vinkius-core/mcp-fusion';
+import { ResponseBuilder } from 'Vurb.ts';
 
 const response = ResponseBuilder.create(data)
     .systemRules(['Format currency in USD'])
@@ -670,7 +670,7 @@ const response = ResponseBuilder.create(data)
 ## DX Shortcuts
 
 ```typescript
-import { response, ui } from '@vinkius-core/mcp-fusion';
+import { response, ui } from 'Vurb.ts';
 
 return response.ok(data);                          // Simple success
 return response.withRules(data, ['Rule 1']);        // Data + rules
@@ -718,7 +718,7 @@ createTool<AppContext>('projects')
 ## Self-Healing Errors
 
 ```typescript
-import { toolError } from '@vinkius-core/mcp-fusion';
+import { toolError } from 'Vurb.ts';
 
 return toolError('INVALID_DATE_RANGE', {
     message: 'Start date must be before end date',
@@ -778,7 +778,7 @@ registry.attachToServer(server, {
             metrics.increment('cache.invalidations', { tool: event.causedBy });
         },
         notificationSink: (notification) => {
-            // notification: { method: 'notifications/resources/updated', params: { uri: 'fusion://stale/sprints.*' } }
+            // notification: { method: 'notifications/resources/updated', params: { uri: 'Vurb.ts://stale/sprints.*' } }
             server.notification(notification);
         },
     },
@@ -788,7 +788,7 @@ registry.attachToServer(server, {
 ### Policy Overlap Detection
 
 ```typescript
-import { detectOverlaps } from '@vinkius-core/mcp-fusion';
+import { detectOverlaps } from 'Vurb.ts';
 
 const warnings = detectOverlaps([
     { match: 'sprints.*', cacheControl: 'no-store' },
@@ -859,7 +859,7 @@ registry.attachToServer(server, {
         },
     },
 });
-// Exposes fusion://manifest.json via MCP resources/list + resources/read
+// Exposes Vurb.ts://manifest.json via MCP resources/list + resources/read
 // Manifest includes: all tools, actions (destructive/readOnly flags, required_fields),
 // input schemas, presenter references — RBAC-filtered per session
 ```
@@ -894,12 +894,12 @@ registry.attachToServer(server, {
 
 **Grouped** — density at scale: one schema, one description, shared params appear once. Best for large domain APIs (50+ actions) and token-constrained contexts.
 
-MCP annotation semantics: Fusion emits `destructiveHint: false` on non-destructive actions because the MCP spec defaults `destructiveHint` to `true` (assume dangerous). Read-only actions get both `readOnlyHint: true` and `destructiveHint: false`. Destructive actions get `destructiveHint: true`. `readOnlyHint: false` is never emitted (matches spec default).
+MCP annotation semantics: Vurb.ts emits `destructiveHint: false` on non-destructive actions because the MCP spec defaults `destructiveHint` to `true` (assume dangerous). Read-only actions get both `readOnlyHint: true` and `destructiveHint: false`. Destructive actions get `destructiveHint: true`. `readOnlyHint: false` is never emitted (matches spec default).
 
 ## Response Helpers
 
 ```typescript
-import { success, error, required, toonSuccess, toolError } from '@vinkius-core/mcp-fusion';
+import { success, error, required, toonSuccess, toolError } from 'Vurb.ts';
 
 return success('Task completed');
 return success({ id: '123', name: 'Acme' });
@@ -936,7 +936,7 @@ handler: async function* (ctx, args) {
 Server-side hydrated prompt templates with schema-informed coercion and lifecycle sync. The `definePrompt()` factory enforces a **flat schema constraint** — prompt arguments must be primitives (string, number, boolean, enum) because MCP clients render them as forms. **No Zod required** — JSON descriptors work everywhere.
 
 ```typescript
-import { definePrompt, PromptMessage } from '@vinkius-core/mcp-fusion';
+import { definePrompt, PromptMessage } from 'Vurb.ts';
 
 // No-Zod prompt — JSON descriptors for args
 const SummarizePrompt = definePrompt<AppContext>('summarize', {
@@ -1040,11 +1040,11 @@ registry.configurePagination({ pageSize: 50 }); // enable pagination
 9. Presenters are immutable after creation — define once, reuse across tools
 10. `.agentLimit()` automatically truncates and injects guidance blocks
 
-## Public API (all from '@vinkius-core/mcp-fusion')
+## Public API (all from 'Vurb.ts')
 
 ### Context Initialization & Fluent Factory
-- `initFusion<TContext>()` → FusionInstance — define context once, inherit everywhere
-- `FusionInstance<TContext>` — .query(), .mutation(), .action(), .router(), .prompt(), .presenter(), .middleware(), .registry(), .error(), .stateSync(), .tool(), .defineTool()
+- `initVurb<TContext>()` → VurbInstance — define context once, inherit everywhere
+- `VurbInstance<TContext>` — .query(), .mutation(), .action(), .router(), .prompt(), .presenter(), .middleware(), .registry(), .error(), .stateSync(), .tool(), .defineTool()
 - `f.query(name)` → FluentToolBuilder — semantic verb: readOnly:true by default
 - `f.mutation(name)` → FluentToolBuilder — semantic verb: destructive:true by default
 - `f.action(name)` → FluentToolBuilder — semantic verb: neutral (no defaults)
@@ -1058,7 +1058,7 @@ registry.configurePagination({ pageSize: 50 }); // enable pagination
 - `f.stateSync()` → StateSyncBuilder — fluent cache/invalidation configuration
 - `f.tool(config)` → GroupedToolBuilder — config-bag alternative, handler receives `{ input, ctx }`
 - `f.defineTool(name, config)` → GroupedToolBuilder — full ToolConfig power
-- `FusionToolConfig<TContext, TInput>` — { name, description?, input?, tags?, annotations?, readOnly?, destructive?, idempotent?, middleware?, returns?, handler }
+- `VurbToolConfig<TContext, TInput>` — { name, description?, input?, tags?, annotations?, readOnly?, destructive?, idempotent?, middleware?, returns?, handler }
 
 ### FluentToolBuilder — Type-Chaining Tool Builder
 - `FluentToolBuilder<TContext, TInput, TCtx>` — accumulated generics narrow at each step
@@ -1147,32 +1147,32 @@ registry.configurePagination({ pageSize: 50 }); // enable pagination
 - `autoDiscover(registry, dir, options?)` — scan directory, auto-register tool builders (deduplicates by tool name)
 - `AutoDiscoverOptions` — { pattern?, recursive?, loader?, resolve? }
 
-### Dev Server (v2.7+, from 'mcp-fusion/dev')
+### Dev Server (v2.7+, from 'Vurb.ts/dev')
 - `createDevServer(config)` → DevServer — HMR-enabled development server
 - `DevServerConfig` — { dir, extensions?, debounce?, setup, onReload?, server? }
 - `DevServer` — .start(), .stop(), .reload(reason?)
 
-### Standard Schema (v2.7+, from 'mcp-fusion/schema')
+### Standard Schema (v2.7+, from 'Vurb.ts/schema')
 - `StandardSchemaV1<TInput, TOutput>` — universal validator contract interface
-- `FusionValidator<T>` — .validate(value) → ValidationResult, .vendor, .schema
-- `toStandardValidator(schema)` → FusionValidator — wrap Standard Schema v1 (Valibot, ArkType, etc.)
-- `fromZodSchema(schema)` → FusionValidator — wrap Zod via safeParse()
-- `autoValidator(schema)` → FusionValidator — auto-detect schema type and wrap
+- `VurbValidator<T>` — .validate(value) → ValidationResult, .vendor, .schema
+- `toStandardValidator(schema)` → VurbValidator — wrap Standard Schema v1 (Valibot, ArkType, etc.)
+- `fromZodSchema(schema)` → VurbValidator — wrap Zod via safeParse()
+- `autoValidator(schema)` → VurbValidator — auto-detect schema type and wrap
 - `isStandardSchema(value)` → boolean — duck-type check for Standard Schema v1
 - `ValidationResult<T>` — { success: true, data: T } | { success: false, issues: StandardSchemaIssue[] }
 - `InferStandardOutput<T>` — infer output type from Standard Schema
 
 ### Subpath Exports (v2.7+)
-- `@vinkius-core/mcp-fusion` — full framework
-- `@vinkius-core/mcp-fusion/client` — FusionClient only
-- `@vinkius-core/mcp-fusion/ui` — UI blocks only
-- `@vinkius-core/mcp-fusion/presenter` — Presenter + definePresenter
-- `@vinkius-core/mcp-fusion/prompt` — Prompt engine
-- `@vinkius-core/mcp-fusion/state-sync` — State Sync layer
-- `@vinkius-core/mcp-fusion/observability` — Debug observers + tracing
-- `@vinkius-core/mcp-fusion/dev` — autoDiscover + createDevServer
-- `@vinkius-core/mcp-fusion/schema` — Standard Schema adapters
-- `@vinkius-core/mcp-fusion/testing` — FusionTester
+- `Vurb.ts` — full framework
+- `Vurb.ts/client` — VurbClient only
+- `Vurb.ts/ui` — UI blocks only
+- `Vurb.ts/presenter` — Presenter + definePresenter
+- `Vurb.ts/prompt` — Prompt engine
+- `Vurb.ts/state-sync` — State Sync layer
+- `Vurb.ts/observability` — Debug observers + tracing
+- `Vurb.ts/dev` — autoDiscover + createDevServer
+- `Vurb.ts/schema` — Standard Schema adapters
+- `Vurb.ts/testing` — VurbTester
 
 ### Builder
 - `createTool<TContext>(name)` → GroupedToolBuilder (fluent builder, requires Zod)
@@ -1199,12 +1199,12 @@ registry.configurePagination({ pageSize: 50 }); // enable pagination
 ### Registry
 - `ToolRegistry<TContext>` — .register(), .registerAll(), .getAllTools(), .getTools(filter), .routeCall(), .attachToServer(), .has(), .clear(), .size
 
-### FusionClient (tRPC-style)
-- `createFusionClient<TRouter>(transport, options?)` → FusionClient — type-safe client with autocomplete, middleware, error parsing
-- `FusionClient<TRouter>` — .execute(action, args) with full type inference, .executeBatch(calls, options?) for parallel/sequential batch execution
-- `FusionClientError` — Structured error class: code, message, recovery, availableActions, severity, raw
+### VurbClient (tRPC-style)
+- `createVurbClient<TRouter>(transport, options?)` → VurbClient — type-safe client with autocomplete, middleware, error parsing
+- `VurbClient<TRouter>` — .execute(action, args) with full type inference, .executeBatch(calls, options?) for parallel/sequential batch execution
+- `VurbClientError` — Structured error class: code, message, recovery, availableActions, severity, raw
 - `ClientMiddleware` — `(action, args, next) => Promise<ToolResponse>` — request interceptor type
-- `FusionClientOptions` — `{ middleware?: ClientMiddleware[], throwOnError?: boolean }`
+- `VurbClientOptions` — `{ middleware?: ClientMiddleware[], throwOnError?: boolean }`
 
 ### Response Helpers
 - `success(data)` → ToolResponse
@@ -1263,11 +1263,11 @@ registry.configurePagination({ pageSize: 50 }); // enable pagination
 - `GovernanceOperation` — `'contract.compile' | 'contract.diff' | 'digest.compute' | 'lockfile.generate' | 'lockfile.check' | 'lockfile.write' | 'lockfile.read' | 'attestation.sign' | 'attestation.verify' | 'entitlement.scan' | 'token.profile'`
 - `createGovernanceObserver(config)` → GovernanceObserver — wraps governance operations with debug events and optional tracing spans
 - `createNoopObserver()` → GovernanceObserver — zero-overhead passthrough
-- `GovernanceObserverConfig` — { debug?: DebugObserverFn, tracer?: FusionTracer }
+- `GovernanceObserverConfig` — { debug?: DebugObserverFn, tracer?: VurbTracer }
 - `GovernanceObserver` — .observe(operation, label, fn), .observeAsync(operation, label, fn)
 
 ### Tracing (OpenTelemetry-Compatible)
-- `FusionTracer` / `FusionSpan` — structural subtyping interfaces matching OpenTelemetry (no `@opentelemetry/api` dependency)
+- `VurbTracer` / `VurbSpan` — structural subtyping interfaces matching OpenTelemetry (no `@opentelemetry/api` dependency)
 - `SpanStatusCode` — exported constants: `UNSET` (0), `OK` (1), `ERROR` (2)
 - `.tracing(tracer)` on builders — per-tool tracing
 - `ToolRegistry.enableTracing(tracer)` — propagate to all builders
@@ -1290,7 +1290,7 @@ registry.configurePagination({ pageSize: 50 }); // enable pagination
 - `EgressConfig` — { maxPayloadBytes: number }
 - `ToolExposition` — 'flat' | 'grouped'
 - `IntrospectionConfig<TContext>` — { enabled, uri?, filter? }
-- `ManifestPayload` — { server, mcp_fusion_version, architecture, capabilities: { tools, presenters } }
+- `ManifestPayload` — { server, Vurb.ts_version, architecture, capabilities: { tools, presenters } }
 - `ManifestTool` — { description, tags, actions, input_schema }
 - `ManifestAction` — { description, destructive, idempotent, readOnly, required_fields, returns_presenter }
 - `ManifestPresenter` — { schema_keys, ui_blocks_supported, has_contextual_rules }
@@ -1300,7 +1300,7 @@ registry.configurePagination({ pageSize: 50 }); // enable pagination
 - `PromptBuilder<TContext>` — DIP interface: .name, .getDefinition(), .handleGet(), .tags
 - `PromptConfig<TContext>` — { title?, description?, args?, tags?, middleware?, hydrationTimeout?, handler }
 
-### Governance (from '@vinkius-core/mcp-fusion/introspection')
+### Governance (from 'Vurb.ts/introspection')
 
 8-module governance stack for deterministic contract auditing, behavioral fingerprinting, and CI/CD lockfile gating.
 
@@ -1336,9 +1336,9 @@ registry.configurePagination({ pageSize: 50 }); // enable pagination
 - `serializeLockfile(lockfile)` → string — deterministic JSON serialization
 - `parseLockfile(content)` → CapabilityLockfile | null — safe deserialization
 - `checkLockfile(current, stored)` → LockfileCheckResult — structural comparison with diff details
-- `writeLockfile(lockfile, dir?)` → void — writes `mcp-fusion.lock` to disk
+- `writeLockfile(lockfile, dir?)` → void — writes `vurb.lock` to disk
 - `readLockfile(dir?)` → CapabilityLockfile | null — reads lockfile from disk
-- `LOCKFILE_NAME` — `'mcp-fusion.lock'`
+- `LOCKFILE_NAME` — `'vurb.lock'`
 - `CapabilityLockfile` — { version, generatedAt, serverDigest, capabilities: LockfileCapabilities }
 - `LockfileCapabilities` — { tools: LockfileTool[], prompts: LockfilePrompt[] }
 - `LockfileTool` — { name, surface: LockfileToolSurface, behavior: LockfileToolBehavior, tokenEconomics: LockfileTokenEconomics, entitlements: LockfileEntitlements }
@@ -1349,7 +1349,7 @@ registry.configurePagination({ pageSize: 50 }); // enable pagination
 - `attestServerDigest(digest, signer)` → AttestationResult — sign a digest with timestamp and nonce
 - `verifyAttestation(result, signer)` → boolean — verify attestation signature
 - `verifyCapabilityPin(attestation, knownDigest)` → boolean — verify against a pinned digest
-- `buildTrustCapability(attestation)` → FusionTrustCapability — MCP capability payload for trust negotiation
+- `buildTrustCapability(attestation)` → VurbTrustCapability — MCP capability payload for trust negotiation
 - `AttestationError` — thrown on verification failures
 - `ZeroTrustConfig` — { signer, digest, attestation }
 - `AttestationResult` — { digest, signature, timestamp, nonce }
@@ -1383,24 +1383,24 @@ registry.configurePagination({ pageSize: 50 }); // enable pagination
 - `enrichValidationError(error, contract)` → SelfHealingResult — enriches validation errors with contract context for agent self-correction
 - `createToolEnhancer(contracts)` → function — creates a contract-aware error enhancer for the pipeline
 
-### CLI — `fusion lock`
-- `fusion lock [--server <entrypoint>] [--name <serverName>]` — generate or update `mcp-fusion.lock`
-- `fusion lock --check [--server <entrypoint>]` — verify lockfile matches current server (CI gate, exits 0 or 1)
+### CLI — `Vurb.ts lock`
+- `Vurb.ts lock [--server <entrypoint>] [--name <serverName>]` — generate or update `vurb.lock`
+- `Vurb.ts lock --check [--server <entrypoint>]` — verify lockfile matches current server (CI gate, exits 0 or 1)
 - Progress output with timing per step (Composer/Yarn-style status icons)
 - Auto-discovers registry + prompts from server entrypoint via ESM dynamic import
 
-### Testing (from '@vinkius-core/mcp-fusion-testing')
-- `createFusionTester<TContext>(registry, options)` → FusionTester — in-memory MVA lifecycle emulator
-- `FusionTester<TContext>` — .callAction(toolName, actionName, args?, overrideContext?) → Promise<MvaTestResult>
+### Testing (from '@vurb/testing')
+- `createVurbTester<TContext>(registry, options)` → VurbTester — in-memory MVA lifecycle emulator
+- `VurbTester<TContext>` — .callAction(toolName, actionName, args?, overrideContext?) → Promise<MvaTestResult>
 - `TesterOptions<TContext>` — { contextFactory: () => TContext | Promise<TContext> }
 - `MvaTestResult<TData>` — { data: TData, systemRules: readonly string[], uiBlocks: readonly unknown[], isError: boolean, rawResponse: unknown }
 
-The FusionTester runs the REAL execution pipeline in RAM (Zod → Middleware → Handler → Presenter → Egress Firewall). Zero tokens consumed. Zero servers. Deterministic — same input → same output on every CI run. Uses the Symbol Backdoor (MVA_META_SYMBOL) to extract structured MVA layers from ToolResponse without XML parsing.
+The VurbTester runs the REAL execution pipeline in RAM (Zod → Middleware → Handler → Presenter → Egress Firewall). Zero tokens consumed. Zero servers. Deterministic — same input → same output on every CI run. Uses the Symbol Backdoor (MVA_META_SYMBOL) to extract structured MVA layers from ToolResponse without XML parsing.
 
 ```typescript
-import { createFusionTester } from '@vinkius-core/mcp-fusion-testing';
+import { createVurbTester } from '@vurb/testing';
 
-const tester = createFusionTester(registry, {
+const tester = createVurbTester(registry, {
     contextFactory: () => ({ prisma: mockPrisma, tenantId: 't_42', role: 'ADMIN' }),
 });
 
@@ -1436,7 +1436,7 @@ Execute LLM-generated JavaScript in a sealed V8 isolate (via `isolated-vm`). The
 
 **Fluent API Integration:**
 - `.sandboxed(config?)` on FluentToolBuilder — enables sandbox + injects SANDBOX_SYSTEM_INSTRUCTION into description
-- `f.sandbox(config?)` → SandboxEngine — standalone factory via initFusion
+- `f.sandbox(config?)` → SandboxEngine — standalone factory via initVurb
 
 **V8 Engineering Rules:**
 1. One Isolate, new Context per request — Isolate reuse for performance, Context isolation for security
@@ -1466,15 +1466,15 @@ const compute = f.query('analytics.compute')
     });
 
 // Standalone
-import { SandboxEngine } from '@vinkius-core/mcp-fusion';
+import { SandboxEngine } from 'Vurb.ts';
 const engine = new SandboxEngine({ timeout: 5000, memoryLimit: 128 });
 const result = await engine.execute('(data) => data.filter(d => d.risk > 90)', records);
 engine.dispose();
 ```
 
-Subpath export: `@vinkius-core/mcp-fusion/sandbox`
+Subpath export: `Vurb.ts/sandbox`
 
-### AWS Connector (from 'mcp-fusion-aws')
+### AWS Connector (from '@vurb/aws')
 
 Auto-discover AWS Lambda functions and Step Functions via resource tags and expose them as grouped MCP tools. Tag filtering controls what the AI can see.
 
@@ -1522,12 +1522,12 @@ Step Function Execution Types:
 - EXPRESS — synchronous, blocks until completion, returns parsed output
 - STANDARD — async fire-and-forget, returns executionArn + cognitive instruction (`_instruction: "Do NOT assume completion"`)
 
-Peer dependencies: `@vinkius-core/mcp-fusion`, `@aws-sdk/client-lambda` (optional), `@aws-sdk/client-sfn` (optional).
+Peer dependencies: `Vurb.ts`, `@aws-sdk/client-lambda` (optional), `@aws-sdk/client-sfn` (optional).
 
 ```typescript
-import { createAwsConnector, createLambdaAdapter, defineAwsTool } from 'mcp-fusion-aws';
+import { createAwsConnector, createLambdaAdapter, defineAwsTool } from '@vurb/aws';
 import { LambdaClient } from '@aws-sdk/client-lambda';
-import { defineTool, ToolRegistry } from '@vinkius-core/mcp-fusion';
+import { defineTool, ToolRegistry } from 'Vurb.ts';
 
 const connector = await createAwsConnector({
   lambdaClient: await createLambdaAdapter(new LambdaClient({ region: 'us-east-1' })),
@@ -1542,7 +1542,7 @@ for (const tool of connector.tools()) {
 }
 ```
 
-### OAuth — Device Authorization Grant (from '@vinkius-core/mcp-fusion-oauth')
+### OAuth — Device Authorization Grant (from '@vurb/oauth')
 
 OAuth 2.0 Device Authorization Grant (RFC 8628) for MCP servers. Provider agnostic.
 
@@ -1564,7 +1564,7 @@ OAuth 2.0 Device Authorization Grant (RFC 8628) for MCP servers. Provider agnost
 - Types: DeviceAuthenticatorConfig, DeviceCodeRequest, DeviceCodeResponse, TokenRequest, TokenResponse, DeviceFlowError, TokenManagerConfig, StoredToken, TokenSource, AuthToolConfig, AuthContext, RequireAuthOptions
 
 ```typescript
-import { createAuthTool, requireAuth } from '@vinkius-core/mcp-fusion-oauth';
+import { createAuthTool, requireAuth } from '@vurb/oauth';
 
 const auth = createAuthTool({
     clientId: 'your-client-id',
@@ -1576,15 +1576,15 @@ const auth = createAuthTool({
 });
 ```
 
-### Cloudflare Workers Adapter (from '@vinkius-core/mcp-fusion-cloudflare')
+### Cloudflare Workers Adapter (from '@vurb/cloudflare')
 
-Deploy MCP Fusion servers to Cloudflare Workers edge. Stateless JSON-RPC — no SSE sessions, no streaming state. Registry compiles at cold start (Zod reflection, Presenter compilation cached). Warm requests only instantiate McpServer + Transport. Uses the MCP SDK's native `WebStandardStreamableHTTPServerTransport` with `enableJsonResponse: true`.
+Deploy Vurb.ts servers to Cloudflare Workers edge. Stateless JSON-RPC — no SSE sessions, no streaming state. Registry compiles at cold start (Zod reflection, Presenter compilation cached). Warm requests only instantiate McpServer + Transport. Uses the MCP SDK's native `WebStandardStreamableHTTPServerTransport` with `enableJsonResponse: true`.
 
 - `cloudflareWorkersAdapter<TEnv, TContext>(options)` → CloudflareWorkerHandler — creates a Workers `fetch()` handler
   - options: { registry, serverName?, serverVersion?, contextFactory?, attachOptions? }
   - `registry` — pre-compiled ToolRegistry (built at module scope, cached across warm requests)
   - `contextFactory(req, env, ctx)` — creates per-request context from Cloudflare bindings (D1, KV, R2, secrets, ExecutionContext)
-  - `serverName` — MCP server name (default: `'mcp-fusion-edge'`)
+  - `serverName` — MCP server name (default: `'Vurb.ts-edge'`)
   - `serverVersion` — version string (default: `'1.0.0'`)
   - `attachOptions` — forwarded to `registry.attachToServer()` (filter, stateSync, debug, etc.)
 - `CloudflareWorkerHandler<TEnv>` — { fetch(request, env, ctx): Promise<Response> }
@@ -1592,15 +1592,15 @@ Deploy MCP Fusion servers to Cloudflare Workers edge. Stateless JSON-RPC — no 
 - `RegistryLike` — duck-typed interface (any object with `attachToServer()`)
 - `ExecutionContext` — inline Cloudflare Workers types (waitUntil, passThroughOnException)
 
-Peer dependencies: `@vinkius-core/mcp-fusion` (^3.0.0), `@modelcontextprotocol/sdk` (^1.12.0).
+Peer dependencies: `Vurb.ts` (^3.0.0), `@modelcontextprotocol/sdk` (^1.12.0).
 
 ```typescript
-import { initFusion } from '@vinkius-core/mcp-fusion';
-import { cloudflareWorkersAdapter } from '@vinkius-core/mcp-fusion-cloudflare';
+import { initVurb } from 'Vurb.ts';
+import { cloudflareWorkersAdapter } from '@vurb/cloudflare';
 import { z } from 'zod';
 
 interface AppContext { db: D1Database; tenantId: string }
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 const listUsers = f.tool({
   name: 'users.list',
@@ -1624,31 +1624,31 @@ export default cloudflareWorkersAdapter<Env, AppContext>({
 });
 ```
 
-### Vercel Adapter (from '@vinkius-core/mcp-fusion-vercel')
+### Vercel Adapter (from '@vurb/vercel')
 
-Deploy MCP Fusion servers to Vercel Functions (Edge or Node.js). Stateless JSON-RPC — no SSE sessions, no streaming state. Registry compiles at cold start (Zod reflection, Presenter compilation cached). Warm requests only instantiate McpServer + Transport. Uses the MCP SDK's native `WebStandardStreamableHTTPServerTransport` with `enableJsonResponse: true`.
+Deploy Vurb.ts servers to Vercel Functions (Edge or Node.js). Stateless JSON-RPC — no SSE sessions, no streaming state. Registry compiles at cold start (Zod reflection, Presenter compilation cached). Warm requests only instantiate McpServer + Transport. Uses the MCP SDK's native `WebStandardStreamableHTTPServerTransport` with `enableJsonResponse: true`.
 
 - `vercelAdapter<TContext>(options)` → VercelHandler — creates a POST handler for Next.js App Router or standalone Vercel Functions
   - options: { registry, serverName?, serverVersion?, contextFactory?, attachOptions? }
   - `registry` — pre-compiled ToolRegistry (built at module scope, cached across warm requests)
   - `contextFactory(req)` — creates per-request context from the Request object (use `process.env` for environment variables)
-  - `serverName` — MCP server name (default: `'mcp-fusion-vercel'`)
+  - `serverName` — MCP server name (default: `'@vurb/vercel'`)
   - `serverVersion` — version string (default: `'1.0.0'`)
   - `attachOptions` — forwarded to `registry.attachToServer()` (filter, stateSync, debug, etc.)
 - `VercelHandler` — (req: Request) => Promise<Response>
 - `VercelAdapterOptions<TContext>` — full configuration interface
 - `RegistryLike` — duck-typed interface (any object with `attachToServer()`)
 
-Peer dependencies: `@vinkius-core/mcp-fusion` (^3.0.0), `@modelcontextprotocol/sdk` (^1.12.0).
+Peer dependencies: `Vurb.ts` (^3.0.0), `@modelcontextprotocol/sdk` (^1.12.0).
 
 ```typescript
 // app/api/mcp/route.ts
-import { initFusion } from '@vinkius-core/mcp-fusion';
-import { vercelAdapter } from '@vinkius-core/mcp-fusion-vercel';
+import { initVurb } from 'Vurb.ts';
+import { vercelAdapter } from '@vurb/vercel';
 import { z } from 'zod';
 
 interface AppContext { tenantId: string; dbUrl: string }
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 const listUsers = f.tool({
   name: 'users.list',
@@ -1735,7 +1735,7 @@ V8 Isolation: Context is empty — no process, require, fs, net, setTimeout, Buf
 Connection Watchdog: When a client disconnects mid-request, the AbortSignal fires and calls `isolate.dispose()`, killing V8 C++ threads instantly. The engine auto-recovers on the next `execute()` call. Pre-aborted signals skip all V8 allocation (zero overhead). Error code: `ABORTED`.
 
 Fluent API: `f.query('name').sandboxed(config?)` — enables sandbox + HATEOAS auto-prompting on any tool.
-Factory: `f.sandbox(config?)` — creates a SandboxEngine from the fusion instance.
+Factory: `f.sandbox(config?)` — creates a SandboxEngine from the Vurb.ts instance.
 
 ### FSM State Gate — Temporal Anti-Hallucination
 
@@ -1773,11 +1773,79 @@ Serverless: provide `fsmStore` in `attachToServer()` options. The framework load
 `xstate` is an **optional** peer dependency — lazy-loaded. Without it, a built-in manual fallback handles simple linear workflows.
 
 Fluent API: `.bindState(states, transitionEvent?)` on any FluentToolBuilder.
-Factory: `f.fsm(config)` — creates a StateMachineGate from the fusion instance.
+Factory: `f.fsm(config)` — creates a StateMachineGate from the Vurb.ts instance.
 Boot: `initFsmEngine()` — pre-load xstate at startup (optional optimization).
 Reset: `resetXStateCache()` — flush the cached xstate module. Useful in test suites that mock xstate and need a fresh import between tests.
 
-### JWT Verification (`@vinkius-core/mcp-fusion-jwt`)
+### Agent Skills (`@vurb/skills`)
+
+Progressive disclosure of domain-specific instructions for AI agents via MCP. Skills are discovered, loaded, and read on demand — keeping agent context windows lean.
+
+Three-layer progressive disclosure:
+1. **Search** — metadata only (id, name, description). ~50 tokens/skill.
+2. **Load** — full SKILL.md instructions + auxiliary file list. ~500–2000 tokens.
+3. **Read File** — on-demand auxiliary file content (text or base64).
+
+- `SkillRegistry(options?)` — core registry for skill lifecycle management
+  - `options.validate` — validate skills on registration (default: true)
+  - `options.maxFileSize` — max readable file size in bytes (default: 5MB)
+  - `options.searchEngine` — custom `SkillSearchEngine` implementation (default: MiniSearch-based `FullTextSearchEngine`)
+  - `.register(skill)` — register a single skill
+  - `.registerAll(skills)` — atomic batch registration (all-or-nothing)
+  - `.search(query, limit?)` → `SkillSearchResult[]` — full-text search with prefix/fuzzy matching
+  - `.load(id)` → `Skill | null` — load full skill instructions
+  - `.readFile(skillId, filePath)` → `Promise<SkillFileContent>` — read auxiliary file with security checks
+  - `.has(id)` → `boolean` — check skill existence
+  - `.list()` → `string[]` — all registered skill IDs
+  - `.clear()` — remove all registrations
+
+- `autoDiscoverSkills(registry, dirs, options?)` — recursively scan directories for SKILL.md files
+  - `dirs` — single path or array of paths to scan
+  - `options.strict` — throw on validation errors (default: false, skips invalid)
+  - `options.onError` — callback for individual skill errors
+  - Returns `string[]` — IDs of successfully discovered skills
+
+- `createSkillTools(Vurb.ts, registry, options?)` — generate 3 MCP tools for progressive disclosure
+  - `options.prefix` — tool name prefix (default: `'skills'`)
+  - Returns `[search, load, readFile]` — three `GroupedToolBuilder` instances
+  - `skills.search` — `{ query: string }` → `{ skills: SkillSearchResult[], total: number }`
+  - `skills.load` — `{ skill_id: string }` → `{ id, instructions, files, metadata }` or error hint
+  - `skills.read_file` — `{ skill_id, file_path }` → `{ content, path, size, encoding, mimeType }` or sanitized error
+
+- `parseSkillMd(content, path)` — parse SKILL.md into a `Skill` object
+- `extractFrontmatter(content)` — extract YAML frontmatter and body
+- `toSkillFrontmatter(raw)` — convert raw object to typed `SkillFrontmatter` (handles array→string coercion for compatibility field)
+- `validateSkill(skill)` → `ValidationResult` — validate against agentskills.io specification
+- `formatValidationIssues(issues)` → `string` — format validation issues for display
+
+SKILL.md format (agentskills.io specification):
+```
+---
+name: deploy-k8s
+description: Deploy applications to Kubernetes clusters.
+license: MIT
+compatibility: Claude, GPT-4, Gemini
+allowed-tools: Bash(kubectl:*) Bash(helm:*)
+metadata:
+  author: Platform Team
+  version: "2.1"
+---
+# Instructions content follows here
+```
+
+Security in `readFile`:
+- Path normalization (backslashes, `..` rejection)
+- Boundary check (resolved path must stay inside skill directory)
+- Symlink resolution via `fs.realpath()` — prevents symlinks escaping skill directory
+- SKILL.md blocking (case-insensitive) — use `skills.load` instead
+- File size limits (prevents OOM)
+- Error sanitization (absolute server paths never exposed to agents)
+
+SkillSearchEngine interface (pluggable):
+- `.index(skills: SkillMetadata[])` — build search index
+- `.search(query: string, limit: number)` → `SkillSearchResult[]` — execute search
+
+### JWT Verification (`Vurb.ts-jwt`)
 
 Standards-compliant JWT verification for MCP servers. Verifies tokens using `jose` when installed (RS256, ES256, JWKS auto-discovery) or falls back to native Node.js `crypto` for HS256. Zero external dependencies required for HS256.
 
@@ -1802,7 +1870,7 @@ Standards-compliant JWT verification for MCP servers. Verifies tokens using `jos
 
 `jose` is an **optional** peer dependency — lazy-loaded. Without it, only HS256 is supported via native `crypto.createHmac` + constant-time XOR comparison.
 
-### API Key Validation (`@vinkius-core/mcp-fusion-api-key`)
+### API Key Validation (`Vurb.ts-api-key`)
 
 Timing-safe API key validation for MCP servers. Zero external dependencies — uses native Node.js `crypto`.
 
@@ -1824,6 +1892,202 @@ Timing-safe API key validation for MCP servers. Zero external dependencies — u
 - `createApiKeyTool(config)` — pre-built MCP tool with `validate` and `status` actions
 
 All comparisons use constant-time XOR accumulation to prevent timing attacks.
+
+### n8n Connector (from '@vurb/n8n')
+
+Turn n8n webhook workflows into MCP tools. Tag filtering controls what the AI can see. Presenters strip sensitive data before it leaves the process.
+
+- `createN8nConnector(config)` → N8nConnector — auto-discover n8n webhook workflows as MCP tools
+  - `config.url` — n8n instance base URL
+  - `config.apiKey` — n8n REST API key
+  - `config.includeTags` — only expose tagged workflows (default: all)
+  - `config.excludeTags` — hide workflows with these tags
+  - `config.timeout` — webhook call timeout in ms (default: 30000)
+  - `config.pollInterval` — background polling interval for live sync (ms)
+  - `config.onChange` — fires when tool list changes (emit `notifications/tools/list_changed`)
+- `N8nConnector` — .tools() → SynthesizedTool[], .workflows → WebhookConfig[], .client → N8nClient, .refresh() → Promise<boolean>, .stop() → void
+- `defineN8nTool(name, client, config)` → SynthesizedTool — surgical manual tool definition with strict typing
+  - `config.workflowId` — exact workflow ID
+  - `config.webhookPath` — webhook endpoint path
+  - `config.method` — HTTP method (default: POST)
+  - `config.description` — tool description for the LLM
+  - `config.params` — strict parameter schema (JSON descriptors or Zod)
+  - `config.annotations` — MCP annotations (readOnlyHint, destructiveHint)
+  - `config.tags` — tool tags
+
+Semantic Inference: n8n Webhook Notes field becomes the tool description. The LLM reads it and sends correct payloads zero-shot.
+MVA Interception: produces ToolBuilder instances — attach Presenters and middleware before registration.
+Live State Sync: background polling detects workflow changes and fires `notifications/tools/list_changed`.
+
+Peer dependencies: `Vurb.ts`, `zod`.
+
+```typescript
+import { createN8nConnector, defineN8nTool } from '@vurb/n8n';
+import { defineTool, ToolRegistry } from 'Vurb.ts';
+
+const n8n = await createN8nConnector({
+  url: process.env.N8N_URL!,
+  apiKey: process.env.N8N_API_KEY!,
+  includeTags: ['ai-enabled'],
+  pollInterval: 60_000,
+  onChange: () => server.notification({ method: 'notifications/tools/list_changed' }),
+});
+
+const registry = new ToolRegistry();
+for (const tool of n8n.tools()) {
+  registry.register(defineTool(tool.name, tool.config));
+}
+
+// Surgical construction for critical routes
+const refund = defineN8nTool('refund_invoice', n8n.client, {
+  workflowId: 15,
+  webhookPath: '/webhook/refund',
+  description: 'Reverse a Stripe invoice.',
+  params: {
+    invoice_id: 'string',
+    reason: { type: 'string', enum: ['duplicate', 'fraudulent', 'requested_by_customer'] },
+  },
+  annotations: { destructiveHint: true },
+});
+registry.register(defineTool(refund.name, refund.config));
+```
+
+### OpenAPI Generator (from '@vurb/openapi-gen')
+
+Turn any REST/OpenAPI 3.x or Swagger 2.0 spec into a working MCP server — code generation or runtime proxy.
+
+- `parseOpenAPI(input)` → ApiSpec — parse YAML/JSON to AST (auto-detects v2 and v3)
+- `mapEndpoints(spec)` → MappedSpec — apply naming, annotations, deduplication
+- `emitFiles(mapped, config)` → GeneratedFile[] — generate TypeScript files
+- `mergeConfig(partial)` → FullConfig — merge partial config with defaults
+- `loadConfig(path?)` → FullConfig — load from YAML file
+- `compileZod(schema)` → string — compile a SchemaNode to Zod code string
+- `loadOpenAPI(input, config)` → RuntimeTool[] — runtime proxy mode (no codegen step)
+  - `config.baseUrl` — base URL for API calls
+  - `config.headers` — default headers sent with every request
+  - `config.fetchFn` — custom fetch function
+- `buildHandler(action)` → handler — build a single HTTP proxy handler
+- `isSwagger2(obj)` → boolean — detect Swagger 2.0 documents
+- `convertSwagger2ToV3(obj)` → OpenAPI3Spec — convert Swagger 2.0 to OpenAPI 3.0
+
+Generated output structure:
+```
+generated/
+├── models/      ← Zod schemas with .strict() validation
+├── views/       ← Presenters with response shaping
+├── agents/      ← MCP tool definitions with inferred annotations
+├── index.ts     ← ToolRegistry barrel
+└── server.ts    ← Server bootstrap (stdio or SSE)
+```
+
+Annotation Inference: HTTP method → MCP annotation. GET → readOnly, DELETE → destructive, PUT → idempotent.
+
+Swagger 2.0 auto-detected and converted internally — host+basePath+schemes → servers, definitions → components.schemas, body params → requestBody.
+
+CLI: `npx openapi-gen generate -i ./spec.yaml -o ./generated`
+Config file: `openapi-gen.yaml` (auto-detected or --config)
+
+Peer dependencies: `Vurb.ts`, `zod`. Bundled: `yaml`.
+
+```typescript
+// Runtime proxy — no code generation
+import { loadOpenAPI } from '@vurb/openapi-gen';
+import { defineTool, ToolRegistry } from 'Vurb.ts';
+
+const tools = loadOpenAPI(specYaml, {
+    baseUrl: 'https://api.example.com',
+    headers: { Authorization: `Bearer ${process.env.API_TOKEN}` },
+});
+
+const registry = new ToolRegistry();
+for (const tool of tools) {
+    registry.register(defineTool(tool.name, {
+        description: tool.description,
+        actions: Object.fromEntries(
+            tool.actions.map(a => [a.name, {
+                description: a.description,
+                readOnly: a.method === 'GET',
+                handler: async (ctx, args) => a.handler(ctx, args),
+            }])
+        ),
+    }));
+}
+```
+
+### Prisma Generator (from '@vurb/prisma-gen')
+
+A Prisma Generator that produces Vurb.ts ToolBuilders and Presenters with field-level security, tenant isolation, and OOM protection.
+
+Schema annotations:
+- `/// @vurb.hide` — physically excludes field from generated Zod response schema
+- `/// @vurb.describe("...")` — adds `.describe()` to the Zod field
+- `/// @vurb.tenantKey` — injects into every query's `WHERE` clause from `ctx.tenantId`
+
+Generator configuration:
+```prisma
+generator mcp {
+  provider = "Vurb.ts-prisma-gen"
+  output   = "../src/tools/database"
+}
+```
+
+Generated output per model:
+- `{model}Presenter.ts` — Zod `.strict()` schema with `@vurb.hide` fields removed, `createPresenter()` with auto-rules
+- `{model}Tools.ts` — `defineTool()` with CRUD actions: `find_many`, `find_unique`, `create`, `update`, `delete`
+- `index.ts` — barrel export
+
+Security guarantees:
+- `@vurb.hide` fields physically absent from Presenter schema — Zod `.strict()` strips them at RAM level
+- `@vurb.tenantKey` injected into every generated query WHERE clause — cross-tenant access structurally impossible
+- Pagination: `take` capped at 50 via `.max(50).default(20)` — OOM protection
+
+Peer dependencies: `Vurb.ts`, `zod`, `@prisma/generator-helper`.
+
+```prisma
+model User {
+  id           String @id @default(uuid())
+  email        String @unique
+  passwordHash String /// @vurb.hide
+  stripeToken  String /// @vurb.hide
+  creditScore  Int    /// @vurb.describe("Score 0-1000. Above 700 is PREMIUM.")
+  tenantId     String /// @vurb.tenantKey
+}
+```
+
+`npx prisma generate` → typed CRUD tools + Presenters with field-level security.
+
+### Inspector — Real-Time TUI Dashboard (from '@vurb/inspector')
+
+Zero-overhead real-time terminal dashboard for Vurb.ts servers. Connects via Shadow Socket (IPC) — no stdio interference, no port conflicts, no agent disruption.
+
+- `commandTop(options?)` → Promise<void> — launch interactive TUI
+  - `options.pid` — connect to specific server PID
+  - `options.path` — custom IPC socket/pipe path
+- `streamToStderr(options?)` → Promise<void> — headless stderr logger (ECS/K8s/CI)
+- `startSimulator(options?)` → Promise<TelemetryBus> — built-in demo simulator
+  - `options.rps` — simulated requests per second
+
+Dashboard layout:
+- Header Bar — PID, REQ/S, RAM (visual bar), DLP count, queue depth, active concurrency, uptime
+- Tool List — live registry with status (✓/✗/⋯), type (R/O, W, 🔒 sandboxed, ◆FSM), latency
+- X-RAY Inspector — deep inspection of selected tool: Error Autopsy, Late Guillotine (DB raw vs wire savings), Select Reflection, Cognitive Guardrails, DLP Redactions, Cognitive Rules, Call History
+- Traffic Log — real-time color-coded event stream (ROUTE, ZOD, MW, EXEC, SLICE, DLP)
+
+Shadow Socket: Named Pipes on Windows (`\\.\pipe\vurb-{hash}`), Unix Domain Sockets on macOS/Linux (`/tmp/vurb-{hash}.sock`). Deterministic path from SHA-256 of working directory.
+
+Auto-discovery: local match → registry scan → polling (2s). Auto-reconnect on connection drop.
+
+Telemetry events: topology, heartbeat, route, validate, middleware, execute, error, presenter.slice, presenter.rules, dlp.redact, fsm.transition, sandbox.exec, governance.
+
+CLI:
+```bash
+Vurb.ts inspect          # Auto-discover
+Vurb.ts insp --demo      # Built-in simulator
+Vurb.ts insp --out stderr # Headless mode
+Vurb.ts insp --pid 12345  # Specific PID
+```
+
+Peer dependency: `Vurb.ts` ≥ 3.0.0.
 
 ### Domain Models
 - `BaseModel` — abstract base (name, title, description, meta, icons)

@@ -4,7 +4,7 @@ import { createTypedRegistry } from '../../src/client/createTypedRegistry.js';
 import { createTool } from '../../src/core/builder/GroupedToolBuilder.js';
 import { success } from '../../src/core/response.js';
 import { type InferRouter, type TypedToolRegistry } from '../../src/client/InferRouter.js';
-import { type FusionTransport, createFusionClient } from '../../src/client/FusionClient.js';
+import { type VurbTransport, createVurbClient } from '../../src/client/VurbClient.js';
 import { type ToolResponse } from '../../src/core/response.js';
 
 // ============================================================================
@@ -168,7 +168,7 @@ describe('InferRouter type inference', () => {
         expect(_args.workspace_id).toBe('ws_1');
     });
 
-    it('should work end-to-end: createTypedRegistry → InferRouter → FusionClient', async () => {
+    it('should work end-to-end: createTypedRegistry → InferRouter → VurbClient', async () => {
         const projects = createTool<TestContext>('projects')
             .action({
                 name: 'list',
@@ -185,13 +185,13 @@ describe('InferRouter type inference', () => {
         type AppRouter = InferRouter<typeof registry>;
 
         // Create a transport that delegates to the real registry
-        const transport: FusionTransport = {
+        const transport: VurbTransport = {
             async callTool(name, args) {
                 return registry.registry.routeCall({ userId: 'test' }, name, args);
             },
         };
 
-        const client = createFusionClient<AppRouter>(transport);
+        const client = createVurbClient<AppRouter>(transport);
 
         // These calls compile because InferRouter provides correct keys + arg types
         const listResult = await client.execute('projects.list', { limit: 10 });

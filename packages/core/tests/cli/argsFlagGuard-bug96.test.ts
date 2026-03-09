@@ -3,58 +3,58 @@ import { parseArgs } from '../../src/cli/args.js';
 
 describe('Bug #96 — flag-value args guard against consuming flags', () => {
     it('throws when --server is followed by another flag', () => {
-        expect(() => parseArgs(['node', 'fusion', 'dev', '--server', '--dir', './src']))
+        expect(() => parseArgs(['node', 'vurb', 'dev', '--server', '--dir', './src']))
             .toThrow(/missing value/i);
     });
 
     it('throws when --name is followed by another flag', () => {
-        expect(() => parseArgs(['node', 'fusion', 'create', '--name', '--transport']))
+        expect(() => parseArgs(['node', 'vurb', 'create', '--name', '--transport']))
             .toThrow(/missing value/i);
     });
 
     it('throws when --cwd is followed by another flag', () => {
-        expect(() => parseArgs(['node', 'fusion', 'dev', '--cwd', '--check']))
+        expect(() => parseArgs(['node', 'vurb', 'dev', '--cwd', '--check']))
             .toThrow(/missing value/i);
     });
 
     it('throws when --transport is followed by another flag', () => {
-        expect(() => parseArgs(['node', 'fusion', 'create', '--transport', '--vector']))
+        expect(() => parseArgs(['node', 'vurb', 'create', '--transport', '--vector']))
             .toThrow(/missing value/i);
     });
 
     it('throws when --vector is followed by another flag', () => {
-        expect(() => parseArgs(['node', 'fusion', 'create', '--vector', '--testing']))
+        expect(() => parseArgs(['node', 'vurb', 'create', '--vector', '--testing']))
             .toThrow(/missing value/i);
     });
 
     it('throws when --dir is followed by another flag', () => {
-        expect(() => parseArgs(['node', 'fusion', 'dev', '--dir', '--server']))
+        expect(() => parseArgs(['node', 'vurb', 'dev', '--dir', '--server']))
             .toThrow(/missing value/i);
     });
 
     it('throws when --token is followed by another flag', () => {
-        expect(() => parseArgs(['node', 'fusion', 'deploy', '--token', '--server-id']))
+        expect(() => parseArgs(['node', 'vurb', 'deploy', '--token', '--server-id']))
             .toThrow(/missing value/i);
     });
 
     it('throws when --server-id is followed by another flag', () => {
-        expect(() => parseArgs(['node', 'fusion', 'deploy', '--server-id', '--token']))
+        expect(() => parseArgs(['node', 'vurb', 'deploy', '--server-id', '--token']))
             .toThrow(/missing value/i);
     });
 
     it('throws when flag is at end of argv (missing value)', () => {
-        expect(() => parseArgs(['node', 'fusion', 'dev', '--server']))
+        expect(() => parseArgs(['node', 'vurb', 'dev', '--server']))
             .toThrow(/missing value/i);
     });
 
     it('accepts valid flag-value pairs as before', () => {
-        const result = parseArgs(['node', 'fusion', 'dev', '--server', './src/server.ts', '--dir', './src']);
+        const result = parseArgs(['node', 'vurb', 'dev', '--server', './src/server.ts', '--dir', './src']);
         expect(result.server).toBe('./src/server.ts');
         expect(result.dir).toBe('./src');
     });
 
     it('accepts shorthand flags with values', () => {
-        const result = parseArgs(['node', 'fusion', 'dev', '-s', './server.ts', '-d', './dist']);
+        const result = parseArgs(['node', 'vurb', 'dev', '-s', './server.ts', '-d', './dist']);
         expect(result.server).toBe('./server.ts');
         expect(result.dir).toBe('./dist');
     });

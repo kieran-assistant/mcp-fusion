@@ -6,7 +6,7 @@ description: "Cryptographic surface integrity, behavioral lockfiles, and zero-tr
 # Capability Governance
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [What the Protocol Cannot Answer](#the-gap)
@@ -77,7 +77,7 @@ Nine modules, each independently useful, each composable with the others:
 │  ContractDiff    CryptoAttestation    EntitlementScanner  │
 │  TokenEconomics  SemanticProbe        SelfHealing         │
 │                                                          │
-│  CLI: fusion lock / fusion lock --check                  │
+│  CLI: Vurb.ts lock / Vurb.ts lock --check                  │
 └──────────────────────────────────────────────────────────┘
 ```
 
@@ -87,13 +87,13 @@ Every module is a pure function. Side-effectful I/O (disk, network) is clearly s
 ## Try It in 60 Seconds {#quick-start}
 
 ```bash
-npx fusion lock --server ./src/server.ts
+npx Vurb.ts lock --server ./src/server.ts
 ```
 
-This generates `mcp-fusion.lock` — a deterministic, git-diffable artifact that captures every tool's behavioral surface. Schemas, system rules, middleware chains, entitlements, token economics — all of it, in a single committed file.
+This generates `vurb.lock` — a deterministic, git-diffable artifact that captures every tool's behavioral surface. Schemas, system rules, middleware chains, entitlements, token economics — all of it, in a single committed file.
 
 ```bash
-npx fusion lock --check --server ./src/server.ts
+npx Vurb.ts lock --check --server ./src/server.ts
 ```
 
 This gates your CI build. If anyone changes a tool's behavioral surface without updating the lockfile, the build fails. The pull request diff shows exactly what changed:
@@ -121,7 +121,7 @@ The reviewer sees that the system rules changed from static to dynamic — and c
 You don't write contracts. They materialize from what you've already declared — tool builders, Presenters, middleware, system rules. The `compileContracts()` function reads all of that metadata and produces a `ToolContract` for each tool:
 
 ```typescript
-import { compileContracts } from '@vinkius-core/mcp-fusion/introspection';
+import { compileContracts } from 'Vurb.ts/introspection';
 
 const contracts = compileContracts(registry.getBuilders());
 ```
@@ -145,8 +145,8 @@ This is the input to every governance module. The lockfile snapshots it. The dig
 All governance operations emit structured events through the same `DebugObserverFn` pipeline used by the tool execution layer:
 
 ```typescript
-import { createGovernanceObserver } from '@vinkius-core/mcp-fusion/introspection';
-import { createDebugObserver } from '@vinkius-core/mcp-fusion';
+import { createGovernanceObserver } from 'Vurb.ts/introspection';
+import { createDebugObserver } from 'Vurb.ts';
 
 const observer = createGovernanceObserver({
     debug: createDebugObserver(),
@@ -161,8 +161,8 @@ const lockfile = observer.observe(
 ```
 
 ```text
-[mcp-fusion] gov  lockfile.generate ✓ Generate lockfile for payments-api  4.2ms
-[mcp-fusion] gov  attestation.sign  ✓ Sign server digest                 1.1ms
+[Vurb.ts] gov  lockfile.generate ✓ Generate lockfile for payments-api  4.2ms
+[Vurb.ts] gov  attestation.sign  ✓ Sign server digest                 1.1ms
 ```
 
 When observability is not configured, `createNoopObserver()` provides a zero-overhead passthrough.
@@ -172,7 +172,7 @@ When observability is not configured, `createNoopObserver()` provides a zero-ove
 
 Each module has a dedicated page with full code examples:
 
-- [Capability Lockfile](/governance/capability-lockfile) — `mcp-fusion.lock` generation, verification, CI gates
+- [Capability Lockfile](/governance/capability-lockfile) — `vurb.lock` generation, verification, CI gates
 - [Surface Integrity](/governance/surface-integrity) — SHA-256 behavioral fingerprinting
 - [Contract Diffing](/governance/contract-diffing) — semantic delta engine with severity classification
 - [Zero-Trust Attestation](/governance/zero-trust-attestation) — HMAC-SHA256 signing, runtime verification
@@ -180,4 +180,4 @@ Each module has a dedicated page with full code examples:
 - [Token Economics](/governance/token-economics) — cognitive overload profiling
 - [Semantic Probing](/governance/semantic-probe) — LLM-as-a-Judge for behavioral drift
 - [Self-Healing Context](/governance/self-healing) — contract delta injection into validation errors
-- [CLI Reference](/governance/cli) — `fusion lock` command-line interface
+- [CLI Reference](/governance/cli) — `Vurb.ts lock` command-line interface

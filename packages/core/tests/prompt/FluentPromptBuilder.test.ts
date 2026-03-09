@@ -8,7 +8,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { z } from 'zod';
 import { FluentPromptBuilder } from '../../src/prompt/FluentPromptBuilder.js';
-import { initFusion } from '../../src/core/initFusion.js';
+import { initVurb } from '../../src/core/initVurb.js';
 import { PromptMessage } from '../../src/prompt/PromptMessage.js';
 
 // ============================================================================
@@ -194,11 +194,11 @@ describe('FluentPromptBuilder — middleware', () => {
 });
 
 // ============================================================================
-// initFusion() Integration — f.prompt() Fluent Overload
+// initVurb() Integration — f.prompt() Fluent Overload
 // ============================================================================
 
 describe('f.prompt() — fluent overload', () => {
-    const f = initFusion();
+    const f = initVurb();
 
     it('should return FluentPromptBuilder when called with name only', () => {
         const builder = f.prompt('greet');

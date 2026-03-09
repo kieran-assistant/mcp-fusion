@@ -7,11 +7,11 @@ From zero to a running MCP server in under 30 seconds. The CLI scaffolds a produ
 Node.js **18+** required.
 
 ```bash
-npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod
+npm install Vurb.ts @modelcontextprotocol/sdk zod
 ```
 
 ::: tip Already using a project?
-If you're adding MCP Fusion to an existing Node.js project, the install above is all you need — then skip to [Building Tools](/building-tools).
+If you're adding Vurb.ts to an existing Node.js project, the install above is all you need — then skip to [Building Tools](/building-tools).
 :::
 
 ## Scaffold {#scaffold}
@@ -19,7 +19,7 @@ If you're adding MCP Fusion to an existing Node.js project, the install above is
 The CLI creates a complete project with all dependencies pre-installed:
 
 ```bash
-npx fusion create my-server
+npx Vurb.ts create my-server
 ```
 
 The interactive wizard runs:
@@ -35,14 +35,14 @@ The interactive wizard runs:
   ✔ Done
 
   $ cd my-server
-  $ fusion dev
+  $ Vurb.ts dev
   $ npm test
 ```
 
 Skip the wizard with `--yes` for defaults, or pass flags directly. For example, if you want to give Claude Desktop or Cursor secure access to your database, you can automatically generate a **Postgres SQL Agent MCP** through Prisma schemas without risking raw SQL injection vulnerabilities:
 
 ```bash
-npx fusion create my-api --vector prisma --transport sse --yes
+npx Vurb.ts create my-api --vector prisma --transport sse --yes
 ```
 
 > **Pro-Tip**: The `--vector prisma` command is the absolute fastest way to bridge **Prisma to MCP**. It leverages the MVA Presenter architecture to build an **Egress Firewall**, ensuring internal columns (like `password_hash` or `ssn`) are stripped from memory before they ever reach the LLM Context Window.
@@ -52,7 +52,7 @@ npx fusion create my-api --vector prisma --transport sse --yes
 ```text
 my-server/
 ├── src/
-│   ├── fusion.ts          # initFusion<AppContext>()
+│   ├── vurb.ts          # initVurb<AppContext>()
 │   ├── context.ts         # AppContext type + factory
 │   ├── server.ts          # Bootstrap with autoDiscover
 │   ├── tools/
@@ -81,7 +81,7 @@ Every file is real code — not stubs. The server boots, the tests pass, Cursor 
 
 ```bash
 cd my-server
-fusion dev
+Vurb.ts dev
 ```
 
 The server starts on stdio. Connect it to your MCP client:
@@ -161,9 +161,9 @@ Add to your `.vscode/mcp.json`:
 For network-accessible servers (multi-client, remote deployment):
 
 ```bash
-npx fusion create my-api --transport sse
+npx Vurb.ts create my-api --transport sse
 cd my-api
-fusion dev
+Vurb.ts dev
 # Server running on http://localhost:3001/sse
 ```
 
@@ -177,7 +177,7 @@ The generated `server.ts` calls `autoDiscover()` at startup:
 
 ```typescript
 // src/server.ts (scaffolded)
-import { ToolRegistry, autoDiscover } from '@vinkius-core/mcp-fusion';
+import { ToolRegistry, autoDiscover } from 'Vurb.ts';
 
 const registry = f.registry();
 const discovered = await autoDiscover(registry, new URL('./tools', import.meta.url).pathname);
@@ -218,7 +218,7 @@ The recommended pattern is `export default`:
 
 ```typescript
 // src/tools/weather/get.ts
-import { f } from '../../fusion.js';
+import { f } from '../../vurb.js';
 
 export default f.query('weather.get')
   .describe('Get current weather for a city')
@@ -236,7 +236,7 @@ Priority 3 enables exporting multiple tools from a single file:
 
 ```typescript
 // src/tools/billing/crud.ts
-import { f } from '../../fusion.js';
+import { f } from '../../vurb.js';
 
 export const listInvoices = f.query('billing.list_invoices')
   .describe('List all invoices')
@@ -285,7 +285,7 @@ The test harness uses `MVA_META_SYMBOL` to call tools in-memory — no transport
 ```typescript
 // tests/weather.test.ts
 import { describe, it, expect } from 'vitest';
-import { ToolRegistry, autoDiscover } from '@vinkius-core/mcp-fusion';
+import { ToolRegistry, autoDiscover } from 'Vurb.ts';
 
 describe('weather.get', () => {
   it('returns temperature for a city', async () => {
@@ -305,20 +305,20 @@ The `--vector` flag changes what gets scaffolded:
 | Vector | What it adds |
 |---|---|
 | `vanilla` | `autoDiscover()` file-based routing. Zero external deps |
-| `prisma` | `prisma/schema.prisma` + DB tool stubs + `@vinkius-core/mcp-fusion-prisma-gen` generator |
+| `prisma` | `prisma/schema.prisma` + DB tool stubs + `@vurb/prisma-gen` generator |
 | `n8n` | `src/n8n.ts` — `N8nConnector` auto-discovers webhook workflows as MCP tools |
 | `openapi` | `openapi.yaml` + `SETUP.md` — generates Models/Views/Agents from spec |
 | `oauth` | `src/auth.ts` + `src/middleware/auth.ts` — RFC 8628 Device Flow with `requireAuth()` |
 
 ```bash
 # Database-driven MCP server
-npx fusion create inventory-api --vector prisma --transport sse
+npx Vurb.ts create inventory-api --vector prisma --transport sse
 
 # n8n workflow bridge
-npx fusion create ops-bridge --vector n8n
+npx Vurb.ts create ops-bridge --vector n8n
 
 # Authenticated API
-npx fusion create secure-api --vector oauth
+npx Vurb.ts create secure-api --vector oauth
 ```
 
 Each vector adds its dependencies to `package.json` and environment variables to `.env.example` automatically.
@@ -345,7 +345,7 @@ Drops into a Next.js App Router route. Edge Runtime for ~0ms cold starts, or Nod
 
 ```typescript
 // app/api/mcp/route.ts
-import { vercelAdapter } from '@vinkius-core/mcp-fusion-vercel';
+import { vercelAdapter } from '@vurb/vercel';
 
 export const POST = vercelAdapter({ registry, contextFactory });
 export const runtime = 'edge'; // optional — global edge distribution
@@ -357,7 +357,7 @@ Your tools query D1 (SQLite at the edge) and KV with sub-millisecond latency fro
 
 ```typescript
 // src/worker.ts
-import { cloudflareWorkersAdapter } from '@vinkius-core/mcp-fusion-cloudflare';
+import { cloudflareWorkersAdapter } from '@vurb/cloudflare';
 
 export default cloudflareWorkersAdapter({ registry, contextFactory });
 ```

@@ -1,7 +1,7 @@
 # Tool Exposition Strategies
 
 ::: info Prerequisites
-Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -19,9 +19,9 @@ You define three actions — `list`, `create`, `delete` — inside one `projects
 The default. Every action becomes an independent MCP tool with its own name, schema, and annotations:
 
 ```typescript
-import { initFusion } from '@vinkius-core/mcp-fusion';
+import { initVurb } from 'Vurb.ts';
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 const listProjects = f.query('projects.list')
   .withString('workspace_id', 'Workspace ID')

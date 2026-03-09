@@ -1,10 +1,10 @@
 import { describe, it, expect, vi } from 'vitest';
 import {
-    createFusionClient,
-    FusionClientError,
-    type FusionTransport,
+    createVurbClient,
+    VurbClientError,
+    type VurbTransport,
     type ClientMiddleware,
-} from '../../src/client/FusionClient.js';
+} from '../../src/client/VurbClient.js';
 import { success, error, toolError } from '../../src/core/response.js';
 import { type ToolResponse } from '../../src/core/response.js';
 
@@ -12,7 +12,7 @@ import { type ToolResponse } from '../../src/core/response.js';
 // Mock Transport Helper
 // ============================================================================
 
-function createMockTransport(): FusionTransport & {
+function createMockTransport(): VurbTransport & {
     calls: Array<{ name: string; args: Record<string, unknown> }>;
 } {
     const calls: Array<{ name: string; args: Record<string, unknown> }> = [];
@@ -29,7 +29,7 @@ function createMockTransport(): FusionTransport & {
 // Client Middleware Pipeline
 // ============================================================================
 
-describe('FusionClient — Client Middleware', () => {
+describe('VurbClient — Client Middleware', () => {
     it('should execute middleware in registration order', async () => {
         const order: string[] = [];
 
@@ -48,7 +48,7 @@ describe('FusionClient — Client Middleware', () => {
         };
 
         const transport = createMockTransport();
-        const client = createFusionClient(transport, { middleware: [mw1, mw2] });
+        const client = createVurbClient(transport, { middleware: [mw1, mw2] });
 
         await client.execute('tool.action', {});
 
@@ -61,7 +61,7 @@ describe('FusionClient — Client Middleware', () => {
         };
 
         const transport = createMockTransport();
-        const client = createFusionClient(transport, { middleware: [authMiddleware] });
+        const client = createVurbClient(transport, { middleware: [authMiddleware] });
 
         await client.execute('tool.action', { name: 'test' });
 
@@ -78,7 +78,7 @@ describe('FusionClient — Client Middleware', () => {
         };
 
         const transport = createMockTransport();
-        const client = createFusionClient(transport, { middleware: [blockMiddleware] });
+        const client = createVurbClient(transport, { middleware: [blockMiddleware] });
 
         const result = await client.execute('tool.action', {});
 
@@ -88,7 +88,7 @@ describe('FusionClient — Client Middleware', () => {
 
     it('should work with no middleware', async () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport, { middleware: [] });
+        const client = createVurbClient(transport, { middleware: [] });
 
         await client.execute('tool.action', {});
 
@@ -101,7 +101,7 @@ describe('FusionClient — Client Middleware', () => {
         };
 
         const transport = createMockTransport();
-        const client = createFusionClient(transport, { middleware: [brokenMw] });
+        const client = createVurbClient(transport, { middleware: [brokenMw] });
 
         await expect(client.execute('tool.action', {})).rejects.toThrow('Middleware kaboom');
         expect(transport.calls).toHaveLength(0);
@@ -116,7 +116,7 @@ describe('FusionClient — Client Middleware', () => {
         };
 
         const transport = createMockTransport();
-        const client = createFusionClient(transport, { middleware: [mw] });
+        const client = createVurbClient(transport, { middleware: [mw] });
 
         await client.execute('a.one', {});
         await client.execute('b.two', {});
@@ -132,9 +132,9 @@ describe('FusionClient — Client Middleware', () => {
 // throwOnError + Structured Error Parsing
 // ============================================================================
 
-describe('FusionClient — throwOnError', () => {
-    it('should throw FusionClientError for error responses', async () => {
-        const transport: FusionTransport = {
+describe('VurbClient — throwOnError', () => {
+    it('should throw VurbClientError for error responses', async () => {
+        const transport: VurbTransport = {
             async callTool() {
                 return toolError('NOT_FOUND', {
                     message: 'Invoice inv_123 not found.',
@@ -144,14 +144,14 @@ describe('FusionClient — throwOnError', () => {
             },
         };
 
-        const client = createFusionClient(transport, { throwOnError: true });
+        const client = createVurbClient(transport, { throwOnError: true });
 
         try {
             await client.execute('billing.get', { id: 'inv_123' });
             expect.fail('Should have thrown');
         } catch (err) {
-            expect(err).toBeInstanceOf(FusionClientError);
-            const e = err as FusionClientError;
+            expect(err).toBeInstanceOf(VurbClientError);
+            const e = err as VurbClientError;
             expect(e.code).toBe('NOT_FOUND');
             expect(e.message).toBe('Invoice inv_123 not found.');
             expect(e.recovery).toBe('Call billing.list first.');
@@ -162,13 +162,13 @@ describe('FusionClient — throwOnError', () => {
     });
 
     it('should NOT throw for success responses', async () => {
-        const transport: FusionTransport = {
+        const transport: VurbTransport = {
             async callTool() {
                 return success('All good');
             },
         };
 
-        const client = createFusionClient(transport, { throwOnError: true });
+        const client = createVurbClient(transport, { throwOnError: true });
         const result = await client.execute('tool.action', {});
 
         expect(result.isError).toBeUndefined();
@@ -176,39 +176,39 @@ describe('FusionClient — throwOnError', () => {
     });
 
     it('should parse basic error() responses without code', async () => {
-        const transport: FusionTransport = {
+        const transport: VurbTransport = {
             async callTool() {
                 return error('Generic error');
             },
         };
 
-        const client = createFusionClient(transport, { throwOnError: true });
+        const client = createVurbClient(transport, { throwOnError: true });
 
         try {
             await client.execute('tool.action', {});
             expect.fail('Should have thrown');
         } catch (err) {
-            expect(err).toBeInstanceOf(FusionClientError);
-            const e = err as FusionClientError;
+            expect(err).toBeInstanceOf(VurbClientError);
+            const e = err as VurbClientError;
             expect(e.message).toBe('Generic error');
         }
     });
 
     it('should NOT throw when throwOnError is false', async () => {
-        const transport: FusionTransport = {
+        const transport: VurbTransport = {
             async callTool() {
                 return toolError('FAIL', { message: 'Error' });
             },
         };
 
-        const client = createFusionClient(transport); // default: throwOnError=false
+        const client = createVurbClient(transport); // default: throwOnError=false
         const result = await client.execute('tool.action', {});
 
         expect(result.isError).toBe(true); // returned, not thrown
     });
 
-    it('should throw plain FusionClientError for non-XML error text', async () => {
-        const transport: FusionTransport = {
+    it('should throw plain VurbClientError for non-XML error text', async () => {
+        const transport: VurbTransport = {
             async callTool() {
                 return {
                     content: [{ type: 'text' as const, text: 'Something went wrong' }],
@@ -217,21 +217,21 @@ describe('FusionClient — throwOnError', () => {
             },
         };
 
-        const client = createFusionClient(transport, { throwOnError: true });
+        const client = createVurbClient(transport, { throwOnError: true });
 
         try {
             await client.execute('tool.action', {});
             expect.fail('Should have thrown');
         } catch (err) {
-            expect(err).toBeInstanceOf(FusionClientError);
-            const e = err as FusionClientError;
+            expect(err).toBeInstanceOf(VurbClientError);
+            const e = err as VurbClientError;
             expect(e.message).toBe('Something went wrong');
             expect(e.code).toBe('UNKNOWN');
         }
     });
 
     it('should correctly unescape XML entities in parsed error fields', async () => {
-        const transport: FusionTransport = {
+        const transport: VurbTransport = {
             async callTool() {
                 return toolError('VALIDATION_ERROR', {
                     message: 'Value must be < 100 & > 0',
@@ -241,13 +241,13 @@ describe('FusionClient — throwOnError', () => {
             },
         };
 
-        const client = createFusionClient(transport, { throwOnError: true });
+        const client = createVurbClient(transport, { throwOnError: true });
 
         try {
             await client.execute('tool.action', {});
             expect.fail('Should have thrown');
         } catch (err) {
-            const e = err as FusionClientError;
+            const e = err as VurbClientError;
             expect(e.message).toBe('Value must be < 100 & > 0');
             expect(e.recovery).toBe('Use a value between 1 & 99');
         }
@@ -258,11 +258,11 @@ describe('FusionClient — throwOnError', () => {
 // executeBatch
 // ============================================================================
 
-describe('FusionClient — executeBatch', () => {
+describe('VurbClient — executeBatch', () => {
     it('should execute multiple calls in parallel', async () => {
         const startTimes: number[] = [];
 
-        const transport: FusionTransport = {
+        const transport: VurbTransport = {
             async callTool(name) {
                 startTimes.push(Date.now());
                 await new Promise(r => setTimeout(r, 50));
@@ -270,7 +270,7 @@ describe('FusionClient — executeBatch', () => {
             },
         };
 
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         const results = await client.executeBatch([
             { action: 'a.one', args: {} },
@@ -289,7 +289,7 @@ describe('FusionClient — executeBatch', () => {
     it('should execute sequentially when sequential: true', async () => {
         const timestamps: number[] = [];
 
-        const transport: FusionTransport = {
+        const transport: VurbTransport = {
             async callTool(name) {
                 timestamps.push(Date.now());
                 await new Promise(r => setTimeout(r, 30));
@@ -297,7 +297,7 @@ describe('FusionClient — executeBatch', () => {
             },
         };
 
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         const results = await client.executeBatch(
             [
@@ -315,21 +315,21 @@ describe('FusionClient — executeBatch', () => {
     });
 
     it('should apply throwOnError in batch mode', async () => {
-        const transport: FusionTransport = {
+        const transport: VurbTransport = {
             async callTool(name) {
                 if (name === 'b') return toolError('FAIL', { message: 'Boom' });
                 return success('ok');
             },
         };
 
-        const client = createFusionClient(transport, { throwOnError: true });
+        const client = createVurbClient(transport, { throwOnError: true });
 
         await expect(
             client.executeBatch([
                 { action: 'a.one', args: {} },
                 { action: 'b.two', args: {} },
             ]),
-        ).rejects.toThrow(FusionClientError);
+        ).rejects.toThrow(VurbClientError);
     });
 
     it('should apply client middleware in batch mode', async () => {
@@ -341,7 +341,7 @@ describe('FusionClient — executeBatch', () => {
         };
 
         const transport = createMockTransport();
-        const client = createFusionClient(transport, { middleware: [countMw] });
+        const client = createVurbClient(transport, { middleware: [countMw] });
 
         await client.executeBatch([
             { action: 'a.one', args: {} },
@@ -354,7 +354,7 @@ describe('FusionClient — executeBatch', () => {
 
     it('should return empty array for empty batch', async () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         const results = await client.executeBatch([]);
         expect(results).toEqual([]);
@@ -366,17 +366,17 @@ describe('FusionClient — executeBatch', () => {
 // Backward Compatibility
 // ============================================================================
 
-describe('FusionClient — Backward Compatibility', () => {
+describe('VurbClient — Backward Compatibility', () => {
     it('should work without options (backward-compatible signature)', () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
         expect(typeof client.execute).toBe('function');
         expect(typeof client.executeBatch).toBe('function');
     });
 
     it('should split dotted action path exactly like before', async () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         await client.execute('projects.create', { name: 'V2' } as any);
 
@@ -386,7 +386,7 @@ describe('FusionClient — Backward Compatibility', () => {
 
     it('should handle simple (non-dotted) action names', async () => {
         const transport = createMockTransport();
-        const client = createFusionClient(transport);
+        const client = createVurbClient(transport);
 
         await client.execute('ping', {} as any);
 

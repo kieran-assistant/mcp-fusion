@@ -10,7 +10,7 @@
  *
  * @example
  * ```typescript
- * import { PromptMessage } from '@vinkius-core/mcp-fusion';
+ * import { PromptMessage } from 'vurb';
  *
  * return {
  *     messages: [
@@ -132,7 +132,7 @@ export const PromptMessage = {
      *
      * @example
      * ```typescript
-     * import { definePrompt, PromptMessage } from '@vinkius-core/mcp-fusion';
+     * import { definePrompt, PromptMessage } from 'vurb';
      * import { InvoicePresenter } from './presenters';
      *
      * const AuditPrompt = definePrompt<AppContext>('audit', {

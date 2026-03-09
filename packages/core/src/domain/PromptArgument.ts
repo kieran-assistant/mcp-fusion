@@ -5,7 +5,7 @@ import { BaseModel } from './BaseModel.js';
  *
  * @example
  * ```typescript
- * import { PromptArgument } from '@vinkius-core/mcp-fusion';
+ * import { PromptArgument } from 'vurb';
  *
  * const arg = new PromptArgument('text');
  * arg.required = true;

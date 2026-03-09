@@ -1,7 +1,3 @@
----
-outline: deep
----
-
 # Zero-Trust Sandbox Engine
 
 The Sandbox Engine lets an LLM send JavaScript logic to your MCP server instead of forcing you to send data to the model. The provided code runs inside a sealed V8 isolate — powered by [`isolated-vm`](https://github.com/laverdet/isolated-vm) — with **zero access** to Node.js APIs.
@@ -18,7 +14,7 @@ Every MCP server faces the same tension when an LLM needs to compute over large 
 | `eval()` LLM-generated code | Remote code execution — the worst vulnerability class in server security |
 | Pre-build every possible filter | Infinite surface area, can't anticipate every LLM reasoning path |
 
-MCP Fusion eliminates all three with **Computation Delegation**: the LLM sends a function, the framework executes it in a sealed V8 isolate, and returns only the result.
+Vurb.ts eliminates all three with **Computation Delegation**: the LLM sends a function, the framework executes it in a sealed V8 isolate, and returns only the result.
 
 ## Architecture
 
@@ -62,7 +58,7 @@ npm install isolated-vm
 The simplest integration. One method call enables sandboxing on any tool and auto-injects HATEOAS instructions into the tool description, teaching the LLM how to format its code:
 
 ```typescript
-import { f } from './fusion.js';
+import { f } from './vurb.js';
 
 export default f.query('data.compute')
     .describe('Run a computation on server-side data')
@@ -95,7 +91,7 @@ When `.sandboxed()` is called, the framework appends a system instruction to the
 For advanced use cases where you need direct control over the engine lifecycle:
 
 ```typescript
-import { SandboxEngine } from '@vinkius-core/mcp-fusion';
+import { SandboxEngine } from 'Vurb.ts';
 
 const engine = new SandboxEngine({
     timeout: 5000,        // Kill after 5 seconds
@@ -123,7 +119,7 @@ try {
 
 ### Factory Method — `f.sandbox()`
 
-Create engines from the `initFusion()` instance:
+Create engines from the `initVurb()` instance:
 
 ```typescript
 const sandbox = f.sandbox({ timeout: 3000, memoryLimit: 64 });
@@ -179,7 +175,7 @@ This means:
 
 The bridge between Node.js and the V8 isolate uses native C++ objects (`ExternalCopy`, `Script`, `Context`) that are **not managed by Node's garbage collector**. If a script times out or throws, and the code path skips cleanup, the native memory stays allocated until the process dies.
 
-MCP Fusion enforces cleanup via `try/finally` on **every** code path:
+Vurb.ts enforces cleanup via `try/finally` on **every** code path:
 
 ```typescript
 let inputCopy, context, script;
@@ -234,14 +230,14 @@ The Context is created empty. No references to the host environment are injected
 | Proxy-based traps | ✔ Contained | Proxy works but can only access isolate-scoped objects |
 | `arguments.callee` | ✔ Blocked | Strict mode throws `TypeError` |
 | Error stack leakage | ✔ Clean | V8 stack traces contain only isolate-internal references |
-| CVE-2022-39266 (CachedData) | ✔ Not applicable | MCP Fusion never uses `CachedDataOptions` |
+| CVE-2022-39266 (CachedData) | ✔ Not applicable | Vurb.ts never uses `CachedDataOptions` |
 
 ## SandboxGuard
 
 Before code reaches the V8 isolate, `validateSandboxCode()` performs a fast structural check:
 
 ```typescript
-import { validateSandboxCode } from '@vinkius-core/mcp-fusion';
+import { validateSandboxCode } from 'Vurb.ts';
 
 const guard = validateSandboxCode('(data) => data.filter(d => d.risk > 90)');
 // { ok: true }

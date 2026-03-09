@@ -26,7 +26,7 @@ export interface PromptRegistryLike {
  * Supports common export patterns:
  * - `export const registry = new ToolRegistry()`
  * - `export default { registry }`
- * - `export const fusion = initFusion()`
+ * - `export const vurb = initVurb()`
  *
  * @internal exported for testing
  */
@@ -66,17 +66,17 @@ export async function resolveRegistry(serverPath: string): Promise<{ registry: R
         const pr = extractPrompts(mod as Record<string, unknown>);
         return {
             registry: mod.registry as RegistryLike,
-            name: mod.serverName ?? 'mcp-fusion-server',
+            name: mod.serverName ?? 'vurb-server',
             ...(pr ? { promptRegistry: pr } : {}),
         };
     }
 
-    // Strategy 2: Named `fusion` export (initFusion pattern)
-    if (mod.fusion && mod.fusion.registry && typeof mod.fusion.registry.getBuilders === 'function') {
-        const pr = extractPrompts(mod.fusion as Record<string, unknown>);
+    // Strategy 2: Named `vurb` export (initVurb pattern)
+    if (mod.vurb && mod.vurb.registry && typeof mod.vurb.registry.getBuilders === 'function') {
+        const pr = extractPrompts(mod.vurb as Record<string, unknown>);
         return {
-            registry: mod.fusion.registry as RegistryLike,
-            name: mod.fusion.name ?? 'mcp-fusion-server',
+            registry: mod.vurb.registry as RegistryLike,
+            name: mod.vurb.name ?? 'vurb-server',
             ...(pr ? { promptRegistry: pr } : {}),
         };
     }
@@ -89,12 +89,12 @@ export async function resolveRegistry(serverPath: string): Promise<{ registry: R
             const pr = extractPrompts(def as Record<string, unknown>);
             return {
                 registry: def.registry as RegistryLike,
-                name: (def.serverName as string) ?? 'mcp-fusion-server',
+                name: (def.serverName as string) ?? 'vurb-server',
                 ...(pr ? { promptRegistry: pr } : {}),
             };
         }
         if (typeof def.getBuilders === 'function') {
-            return { registry: def as RegistryLike, name: 'mcp-fusion-server' };
+            return { registry: def as RegistryLike, name: 'vurb-server' };
         }
     }
 
@@ -102,7 +102,7 @@ export async function resolveRegistry(serverPath: string): Promise<{ registry: R
         `Could not resolve a ToolRegistry from "${serverPath}".\n` +
         `Expected one of:\n` +
         `  export const registry = new ToolRegistry()  // named 'registry' with getBuilders()\n` +
-        `  export const fusion = initFusion()           // named 'fusion' with .registry\n` +
+        `  export const vurb = initVurb()           // named 'vurb' with .registry\n` +
         `  export default { registry }                  // default export with .registry`,
     );
 }

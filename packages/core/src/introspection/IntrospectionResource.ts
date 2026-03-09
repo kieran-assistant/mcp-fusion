@@ -23,10 +23,10 @@ import { compileManifest, cloneManifest } from './ManifestCompiler.js';
 // ── Types ────────────────────────────────────────────────
 
 /** Default URI for the introspection resource */
-const DEFAULT_URI = 'fusion://manifest.json';
+const DEFAULT_URI = 'vurb://manifest.json';
 
 /** Default resource name */
-const RESOURCE_NAME = 'MCP Fusion Manifest';
+const RESOURCE_NAME = 'Vurb Manifest';
 
 /** Default resource description */
 const RESOURCE_DESCRIPTION =

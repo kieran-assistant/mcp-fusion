@@ -20,7 +20,7 @@ import { type ToolBuilder } from '../core/types.js';
 import { type ProgressSink, type ProgressEvent } from '../core/execution/ProgressHelper.js';
 import { resolveServer } from './ServerResolver.js';
 import { type DebugObserverFn } from '../observability/DebugObserver.js';
-import { type FusionTracer } from '../observability/Tracing.js';
+import { type VurbTracer } from '../observability/Tracing.js';
 import { StateSyncLayer } from '../state-sync/StateSyncLayer.js';
 import { type StateSyncConfig, type SyncPolicy } from '../state-sync/types.js';
 import { type IntrospectionConfig } from '../introspection/types.js';
@@ -100,7 +100,7 @@ export interface AttachOptions<TContext> {
     /**
      * Enable State Sync to prevent LLM Temporal Blindness and Causal State Drift.
      *
-     * When configured, Fusion automatically:
+     * When configured, Vurb automatically:
      * 1. Appends `[Cache-Control: X]` to tool descriptions during `tools/list`
      * 2. Prepends `[System: Cache invalidated...]` after successful mutations in `tools/call`
      *
@@ -143,7 +143,7 @@ export interface AttachOptions<TContext> {
      *     contextFactory: createContext,
      *     introspection: {
      *         enabled: process.env.NODE_ENV !== 'production',
-     *         uri: 'fusion://manifest.json',
+     *         uri: 'vurb://manifest.json',
      *         filter: (manifest, ctx) => {
      *             if (ctx.user.role !== 'admin') {
      *                 delete manifest.capabilities.tools['admin.delete_user'];
@@ -164,7 +164,7 @@ export interface AttachOptions<TContext> {
      * When set, the tracer is automatically propagated to every tool
      * builder, and registry-level routing spans are also created.
      *
-     * **Context propagation limitation**: Since MCP Fusion does not depend
+     * **Context propagation limitation**: Since Vurb does not depend
      * on `@opentelemetry/api`, it cannot call `context.with(trace.setSpan(...))`.
      * Auto-instrumented downstream calls (Prisma, HTTP, Redis) inside tool
      * handlers will appear as **siblings**, not children, of the MCP span.
@@ -176,13 +176,13 @@ export interface AttachOptions<TContext> {
      *
      * registry.attachToServer(server, {
      *     contextFactory: createContext,
-     *     tracing: trace.getTracer('mcp-fusion'),
+     *     tracing: trace.getTracer('vurb'),
      * });
      * ```
      *
-     * @see {@link FusionTracer} for the tracer interface contract
+     * @see {@link VurbTracer} for the tracer interface contract
      */
-    tracing?: FusionTracer;
+    tracing?: VurbTracer;
 
     /**
      * Telemetry sink for the Inspector TUI.
@@ -196,7 +196,7 @@ export interface AttachOptions<TContext> {
 
     /**
      * Server name used in the introspection manifest.
-     * @defaultValue `'mcp-fusion-server'`
+     * @defaultValue `'vurb-server'`
      */
     serverName?: string;
 
@@ -288,8 +288,8 @@ export interface AttachOptions<TContext> {
      *     contextFactory: createContext,
      *     zeroTrust: {
      *         signer: 'hmac',
-     *         secret: process.env.FUSION_SIGNING_SECRET,
-     *         expectedDigest: process.env.FUSION_EXPECTED_DIGEST,
+     *         secret: process.env.VURB_SIGNING_SECRET,
+     *         expectedDigest: process.env.VURB_EXPECTED_DIGEST,
      *         failOnMismatch: process.env.NODE_ENV === 'production',
      *     },
      * });
@@ -392,7 +392,7 @@ export interface RegistryDelegate<TContext> {
     /** Propagate a debug observer to all registered builders (duck-typed) */
     enableDebug?(observer: DebugObserverFn): void;
     /** Propagate a tracer to all registered builders (duck-typed) */
-    enableTracing?(tracer: FusionTracer): void;
+    enableTracing?(tracer: VurbTracer): void;
     /** Propagate a telemetry sink to all registered builders (duck-typed) */
     enableTelemetry?(sink: TelemetrySink): void;
     /** Get an iterable of all registered builders (for introspection and exposition) */
@@ -432,7 +432,7 @@ interface HandlerContext<TContext> {
 function propagateObservability<TContext>(
     registry: RegistryDelegate<TContext>,
     debug?: DebugObserverFn,
-    tracing?: FusionTracer,
+    tracing?: VurbTracer,
     telemetry?: TelemetrySink,
 ): void {
     if (debug && registry.enableDebug) {
@@ -445,6 +445,34 @@ function propagateObservability<TContext>(
         registry.enableTelemetry(telemetry);
     }
 }
+// ── Missing Context Guard ────────────────────────────────
+
+/**
+ * Proxy sentinel used when `contextFactory` is not provided.
+ *
+ * Instead of `undefined` (which causes cryptic `TypeError: Cannot read
+ * properties of undefined`), this proxy throws a clear, actionable error
+ * the moment a handler accesses any property on `ctx`.
+ *
+ * For `void` contexts where handlers never touch `ctx`, the proxy is
+ * never triggered — zero false positives.
+ *
+ * @internal — exported for reuse by `startServer.ts` edge handler.
+ */
+export const _missingContextProxy: unknown = new Proxy(Object.freeze({}), {
+    get(_target, prop) {
+        // Allow symbol access (e.g. Symbol.toPrimitive, Symbol.toStringTag) and
+        // JSON.stringify probing ('toJSON') to avoid breaking framework internals.
+        if (typeof prop === 'symbol') return undefined;
+        throw new Error(
+            `[vurb] Attempted to access "ctx.${String(prop)}" but no contextFactory was provided. ` +
+            `Add contextFactory to your attachToServer() options:\n\n` +
+            `  registry.attachToServer(server, {\n` +
+            `      contextFactory: (extra) => createAppContext(extra),\n` +
+            `  });\n`,
+        );
+    },
+});
 
 // ── Handler Factories ────────────────────────────────────
 
@@ -509,7 +537,7 @@ function createToolCallHandler<TContext>(hCtx: HandlerContext<TContext>) {
         const { name, arguments: args = {} } = request.params;
         const ctx = hCtx.contextFactory
             ? await hCtx.contextFactory(extra)
-            : (undefined as TContext);
+            : _missingContextProxy as TContext;
 
         const progressSink = createProgressSink(extra);
         const signal = extractSignal(extra);
@@ -687,7 +715,7 @@ function registerPromptHandlers<TContext>(
         const { name, arguments: args = {} } = request.params;
         const ctx = contextFactory
             ? await contextFactory(extra)
-            : (undefined as TContext);
+            : _missingContextProxy as TContext;
         const signal = extractSignal(extra);
 
         const enrichedCtx = injectLoopbackDispatcher(ctx, registry, signal);
@@ -706,9 +734,16 @@ function injectLoopbackDispatcher<TContext>(
     signal?: AbortSignal,
 ): TContext & LoopbackContext {
     // Protect the original context from mutation — use prototype-based proxy
-    const wrapped = (ctx != null && typeof ctx === 'object'
-        ? Object.create(ctx as object)
-        : Object.assign({}, ctx ?? {})) as Record<string, unknown>;
+    // for object contexts (safe — no property copy). For non-object contexts
+    // (primitives or null), start with an empty wrapper.
+    let wrapped: Record<string, unknown>;
+    if (ctx != null && typeof ctx === 'object') {
+        wrapped = Object.create(ctx as object) as Record<string, unknown>;
+    } else {
+        // ctx is null, undefined, or a primitive — start fresh.
+        // No prototype pollution risk here: no properties to copy.
+        wrapped = {};
+    }
     wrapped['invokeTool'] = async (
         toolName: string,
         toolArgs: Record<string, unknown> = {},
@@ -788,7 +823,7 @@ export async function attachToServer<TContext>(
         registerIntrospectionResource(
             resolved,
             introspection,
-            serverName ?? 'mcp-fusion-server',
+            serverName ?? 'vurb-server',
             { values: () => registry.getBuilders() },
             contextFactory,
         );
@@ -804,7 +839,7 @@ export async function attachToServer<TContext>(
         if (zeroTrust.expectedDigest && serverDigest.digest !== zeroTrust.expectedDigest) {
             if (zeroTrust.failOnMismatch ?? true) {
                 throw new AttestationError(
-                    `[MCP Fusion] Zero-Trust attestation failed: computed digest ${serverDigest.digest} does not match expected ${zeroTrust.expectedDigest}`,
+                    `[Vurb] Zero-Trust attestation failed: computed digest ${serverDigest.digest} does not match expected ${zeroTrust.expectedDigest}`,
                     {
                         valid: false,
                         computedDigest: serverDigest.digest,

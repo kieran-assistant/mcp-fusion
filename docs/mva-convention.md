@@ -1,7 +1,7 @@
 # MVA Convention
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 The MVA Convention maps each architectural layer — Model, View, Agent — to a file-system layout. Two generators produce this layout automatically: the OpenAPI generator creates three directories, the Prisma generator creates a flat structure.
@@ -66,7 +66,7 @@ Presenters pair a Zod schema with perception logic — rules, UI blocks, afforda
 
 ```typescript
 // views/pet.presenter.ts — OpenAPI generator
-import { createPresenter, ui } from '@vinkius-core/mcp-fusion';
+import { createPresenter, ui } from 'Vurb.ts';
 import { PetResponseSchema } from '../models/pet.schema.js';
 
 export const PetPresenter = createPresenter('Pet')
@@ -81,7 +81,7 @@ The Prisma generator uses the fluent builder instead:
 
 ```typescript
 // userPresenter.ts — Prisma generator
-import { createPresenter } from '@vinkius-core/mcp-fusion';
+import { createPresenter } from 'Vurb.ts';
 
 export const UserPresenter = createPresenter('User')
   .schema(UserResponseSchema)
@@ -96,11 +96,11 @@ Tools import their Presenter, declare input, and attach a handler. The handler r
 
 ```typescript
 // agents/pet.tool.ts
-import { initFusion } from '@vinkius-core/mcp-fusion';
+import { initVurb } from 'Vurb.ts';
 import { z } from 'zod';
 import { PetPresenter } from '../views/pet.presenter.js';
 
-const f = initFusion<ApiContext>();
+const f = initVurb<ApiContext>();
 
 export const getPet = f.query('pet.get_by_id')
   .describe('Get a pet by ID')
@@ -125,7 +125,7 @@ Models import nothing. Views import Models. Agents import Views. Tests import th
 
 ## Test Structure {#tests}
 
-Recommended convention for `@vinkius-core/mcp-fusion-testing`. Neither generator creates test files.
+Recommended convention for `@vurb/testing`. Neither generator creates test files.
 
 ```text
 tests/
@@ -133,7 +133,7 @@ tests/
 ├── guards/         ← Middleware & OOM guard tests
 ├── rules/          ← System rules verification
 ├── blocks/         ← UI blocks & truncation tests
-└── setup.ts        ← Shared FusionTester instance
+└── setup.ts        ← Shared VurbTester instance
 ```
 
 Use `.firewall.test.ts`, `.guard.test.ts`, `.rules.test.ts`, and `.blocks.test.ts` suffixes to match each concern.

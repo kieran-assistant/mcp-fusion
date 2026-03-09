@@ -14,11 +14,11 @@
 Auto-discover AWS Lambda functions and Step Functions via resource tags, then expose them as grouped MCP tools. Tag filtering controls what the AI can see, and the MVA pipeline (Presenters, middleware, egress firewall) applies before results leave your process.
 
 ```typescript
-import { createAwsConnector } from '@vinkius-core/mcp-fusion-aws';
+import { createAwsConnector } from '@vurb/aws';
 import { LambdaClient } from '@aws-sdk/client-lambda';
 import { SFNClient } from '@aws-sdk/client-sfn';
-import { createLambdaAdapter, createSfnAdapter } from '@vinkius-core/mcp-fusion-aws';
-import { defineTool, ToolRegistry } from '@vinkius-core/mcp-fusion';
+import { createLambdaAdapter, createSfnAdapter } from '@vurb/aws';
+import { defineTool, ToolRegistry } from 'Vurb.ts';
 
 const connector = await createAwsConnector({
   lambdaClient: await createLambdaAdapter(new LambdaClient({ region: 'us-east-1' })),
@@ -38,10 +38,10 @@ for (const tool of connector.tools()) {
 ## Install {#install}
 
 ```bash
-npm install @vinkius-core/mcp-fusion-aws
+npm install @vurb/aws
 ```
 
-Peer dependencies: `@vinkius-core/mcp-fusion`, `@aws-sdk/client-lambda` (optional), `@aws-sdk/client-sfn` (optional).
+Peer dependencies: `Vurb.ts`, `@aws-sdk/client-lambda` (optional), `@aws-sdk/client-sfn` (optional).
 
 ## Resource Tagging Convention {#tagging}
 
@@ -156,7 +156,7 @@ for (const tool of connector.tools()) {
 For critical routes where auto-discovery is too permissive, use `defineAwsTool()` with strict control:
 
 ```typescript
-import { defineAwsTool } from '@vinkius-core/mcp-fusion-aws';
+import { defineAwsTool } from '@vurb/aws';
 
 // Lambda
 const deploy = defineAwsTool('deploy_staging', client, {
@@ -201,8 +201,8 @@ The fingerprint includes tool names, descriptions, and action annotations — an
 ```typescript
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { defineTool, ToolRegistry, createServerAttachment } from '@vinkius-core/mcp-fusion';
-import { createAwsConnector, createLambdaAdapter, createSfnAdapter, defineAwsTool } from '@vinkius-core/mcp-fusion-aws';
+import { defineTool, ToolRegistry, createServerAttachment } from 'Vurb.ts';
+import { createAwsConnector, createLambdaAdapter, createSfnAdapter, defineAwsTool } from '@vurb/aws';
 import { LambdaClient } from '@aws-sdk/client-lambda';
 import { SFNClient } from '@aws-sdk/client-sfn';
 

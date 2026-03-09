@@ -1,7 +1,7 @@
 # The MVA Pattern
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Why MVC Fails for Agents](#why-mvc-fails)
@@ -31,7 +31,7 @@ Domain Data   →   Presenter    →   LLM/AI
                    Affordances)
 ```
 
-The Presenter is **domain-level, not tool-level.** Define `InvoicePresenter` once — every tool that returns invoices uses the same Presenter. The agent always perceives invoices identically. Tools can be hand-written with the Fluent API, or auto-generated from an OpenAPI spec ([@vinkius-core/mcp-fusion-openapi-gen](/openapi-gen)) or a Prisma schema ([@vinkius-core/mcp-fusion-prisma-gen](/prisma-gen)) — the Presenter layer works identically regardless of how the Model layer is authored.
+The Presenter is **domain-level, not tool-level.** Define `InvoicePresenter` once — every tool that returns invoices uses the same Presenter. The agent always perceives invoices identically. Tools can be hand-written with the Fluent API, or auto-generated from an OpenAPI spec ([@vurb/openapi-gen](/openapi-gen)) or a Prisma schema ([@vurb/prisma-gen](/prisma-gen)) — the Presenter layer works identically regardless of how the Model layer is authored.
 
 ## The Presenter {#presenter-responsibilities}
 
@@ -42,7 +42,7 @@ Three APIs produce the same result: `createPresenter('Name').schema(s).rules(r)`
 The Zod schema is a security boundary. Only declared fields pass through:
 
 ```typescript
-import { createPresenter, t } from '@vinkius-core/mcp-fusion';
+import { createPresenter, t } from 'Vurb.ts';
 
 export const InvoicePresenter = createPresenter('Invoice')
   .schema({
@@ -93,7 +93,7 @@ const InvoicePresenter = createPresenter('Invoice')
 Presenters generate charts and visualizations the agent renders directly:
 
 ```typescript
-import { definePresenter, ui } from '@vinkius-core/mcp-fusion';
+import { definePresenter, ui } from 'Vurb.ts';
 
 export const InvoicePresenter = definePresenter({
   name: 'Invoice',
@@ -145,7 +145,7 @@ Without this, 10,000 rows dump into the context window. With it, the agent recei
 `.suggest()` with the `suggest()` helper tells the agent what it can do next based on state:
 
 ```typescript
-import { createPresenter, suggest } from '@vinkius-core/mcp-fusion';
+import { createPresenter, suggest } from 'Vurb.ts';
 
 const InvoicePresenter = createPresenter('Invoice')
   .schema(invoiceSchema)
@@ -184,9 +184,9 @@ const InvoicePresenter = createPresenter('Invoice')
 The `.returns()` method connects a Presenter to a tool. The handler returns raw data; the Presenter does everything else:
 
 ```typescript
-import { initFusion } from '@vinkius-core/mcp-fusion';
+import { initVurb } from 'Vurb.ts';
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 const getInvoice = f.query('billing.get_invoice')
   .describe('Get an invoice by ID')

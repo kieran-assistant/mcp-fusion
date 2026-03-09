@@ -1,6 +1,6 @@
 # Multi-Tenancy
 
-MCP Fusion solves data, capability, and perception isolation using middleware (tenant resolution), tags (capability visibility), and Presenters (perception control) — no special module required.
+Vurb.ts solves data, capability, and perception isolation using middleware (tenant resolution), tags (capability visibility), and Presenters (perception control) — no special module required.
 
 
 ## Data Isolation: Tenant Resolution {#tenant-resolution}
@@ -143,7 +143,7 @@ Rules are perception guidance, not access control. If a field must _never_ reach
 
 ## Putting It Together {#complete-architecture}
 
-A multi-tenant MCP Fusion server uses three layers, each addressing a different isolation concern. Here's how they compose across the full request lifecycle:
+A multi-tenant Vurb.ts server uses three layers, each addressing a different isolation concern. Here's how they compose across the full request lifecycle:
 
 ```text
 Request arrives with JWT

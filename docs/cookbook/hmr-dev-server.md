@@ -1,7 +1,7 @@
 # HMR Dev Server
 
 ::: info Prerequisites
-Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -19,7 +19,7 @@ The HMR (Hot Module Replacement) dev server is the **killer feature** for MCP de
 The fastest way to start:
 
 ```bash
-fusion dev
+Vurb.ts dev
 ```
 
 The CLI auto-detects your server entrypoint by probing common paths: `src/server.ts`, `src/index.ts`, `server.ts`, `index.ts` (and `.js` variants).
@@ -27,7 +27,7 @@ The CLI auto-detects your server entrypoint by probing common paths: `src/server
 For explicit control:
 
 ```bash
-fusion dev --server ./src/server.ts --dir ./src/tools
+Vurb.ts dev --server ./src/server.ts --dir ./src/tools
 ```
 
 Options:
@@ -44,7 +44,7 @@ Add to `package.json` for convenience:
 ```json
 {
   "scripts": {
-    "dev": "fusion dev"
+    "dev": "Vurb.ts dev"
   }
 }
 ```
@@ -54,7 +54,7 @@ Add to `package.json` for convenience:
 For more control, use `createDevServer()` directly:
 
 ```typescript
-import { createDevServer, autoDiscover, ToolRegistry } from '@vinkius-core/mcp-fusion';
+import { createDevServer, autoDiscover, ToolRegistry } from 'Vurb.ts';
 
 const registry = new ToolRegistry<AppContext>();
 
@@ -88,7 +88,7 @@ When `server` is provided, the dev server sends `notifications/tools/list_change
 ## How It Works {#how}
 
 ```text
-1. fusion dev
+1. Vurb.ts dev
     ↓
 2. Auto-detect src/server.ts (or --server flag)
     ↓

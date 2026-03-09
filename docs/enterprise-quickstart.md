@@ -1,6 +1,6 @@
 # Enterprise Quickstart
 
-A production-grade MCP server with JWT authentication, tenant isolation, field-level data protection, audit logging, and cognitive affordances. Uses [@vinkius-core/mcp-fusion-oauth](/oauth) for OAuth Device Flow (RFC 8628). About 5 minutes of work.
+A production-grade MCP server with JWT authentication, tenant isolation, field-level data protection, audit logging, and cognitive affordances. Uses [@vurb/oauth](/oauth) for OAuth Device Flow (RFC 8628). About 5 minutes of work.
 
 By the end, unauthenticated requests are rejected before any handler runs. A `viewer`-role agent receives user records _without_ email addresses. An `admin`-role agent sees everything — same tool, same handler, different perception.
 
@@ -19,28 +19,28 @@ Each stage has one job. If any stage throws, everything after it is skipped — 
 ## Step 1 — Scaffold with Lightspeed {#step-1-scaffold}
 
 ```bash
-npx fusion create secure-api --vector oauth --transport sse --yes
+npx Vurb.ts create secure-api --vector oauth --transport sse --yes
 cd secure-api
 ```
 
 The CLI scaffolds a complete project with OAuth middleware, SSE transport, `autoDiscover()`, Vitest, and pre-configured IDE connections — all dependencies installed. You're ready to code in seconds.
 
 ::: tip Manual setup?
-If you prefer manual setup: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — then follow the [Traditional Quickstart](/quickstart).
+If you prefer manual setup: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — then follow the [Traditional Quickstart](/quickstart).
 :::
 
 ## Step 2 — Define Your Context Type {#step-2-context-type}
 
 ```typescript
-// src/fusion.ts
-import { initFusion } from '@vinkius-core/mcp-fusion';
+// src/vurb.ts
+import { initVurb } from 'Vurb.ts';
 
 interface AppContext {
   db: PrismaClient;
   user: { id: string; role: 'admin' | 'viewer'; tenantId: string };
 }
 
-export const f = initFusion<AppContext>();
+export const f = initVurb<AppContext>();
 ```
 
 The `f` object provides typed factory methods — `f.query()`, `f.mutation()`, `f.action()`, `f.presenter()`, `f.middleware()`, `f.registry()` — that all inherit `AppContext`. TypeScript knows `ctx.user.tenantId` is a `string` in every handler.
@@ -73,11 +73,11 @@ For multiple sequential stages — authentication, then rate limiting, then feat
 For enterprise environments with an OAuth provider, use the [OAuth Device Flow](/oauth) module:
 
 ```bash
-npm install @vinkius-core/mcp-fusion-oauth
+npm install @vurb/oauth
 ```
 
 ```typescript
-import { createAuthTool, requireAuth } from '@vinkius-core/mcp-fusion-oauth';
+import { createAuthTool, requireAuth } from '@vurb/oauth';
 
 const auth = createAuthTool<AppContext>({
     clientId: process.env.OAUTH_CLIENT_ID!,
@@ -98,7 +98,7 @@ Instead of excluding what shouldn't be in the response, declare what _should_. T
 
 ```typescript
 // src/presenters/user.presenter.ts
-import { createPresenter, t, suggest } from '@vinkius-core/mcp-fusion';
+import { createPresenter, t, suggest } from 'Vurb.ts';
 
 export const UserPresenter = createPresenter('User')
   .schema({
@@ -129,7 +129,7 @@ The database row has 10+ fields. The agent sees 5. When a developer adds a new c
 
 ```typescript
 // src/tools/users/list.ts
-import { f } from '../../fusion.js';
+import { f } from '../../vurb.js';
 import { authMiddleware } from '../../middleware/auth.js';
 import { UserPresenter } from '../../presenters/user.presenter.js';
 
@@ -155,7 +155,7 @@ The handler has one job — query the database with tenant scope. Authentication
 
 ```typescript
 // src/tools/users/delete.ts
-import { f } from '../../fusion.js';
+import { f } from '../../vurb.js';
 import { authMiddleware } from '../../middleware/auth.js';
 
 export default f.mutation('users.delete')
@@ -182,10 +182,10 @@ export default f.mutation('users.delete')
 ## Step 6 — Run {#step-6-run}
 
 ```bash
-fusion dev
+Vurb.ts dev
 ```
 
-`fusion dev` starts with `autoDiscover()`, SSE transport, observability, and **HMR** — edit any tool, middleware, or Presenter and the server reloads instantly. No manual restarts during development. See [HMR Dev Server](/cookbook/hmr-dev-server) for configuration details.
+`Vurb.ts dev` starts with `autoDiscover()`, SSE transport, observability, and **HMR** — edit any tool, middleware, or Presenter and the server reloads instantly. No manual restarts during development. See [HMR Dev Server](/cookbook/hmr-dev-server) for configuration details.
 
 Connect it to your MCP client:
 
@@ -252,12 +252,12 @@ Both adapters use `enableJsonResponse: true` — pure JSON-RPC request/response 
 The Vercel adapter turns your MCP server into a standard Next.js route handler. Edge Runtime for ~0ms cold starts and global distribution, or Node.js Runtime for full API access and heavier computation.
 
 ```bash
-npm install @vinkius-core/mcp-fusion-vercel
+npm install @vurb/vercel
 ```
 
 ```typescript
 // app/api/mcp/route.ts
-import { vercelAdapter } from '@vinkius-core/mcp-fusion-vercel';
+import { vercelAdapter } from '@vurb/vercel';
 
 export const POST = vercelAdapter<AppContext>({
   registry,
@@ -281,12 +281,12 @@ See [Vercel Adapter](/vercel-adapter) for Edge vs Node.js runtime comparison, Ve
 The Cloudflare adapter exposes the `env` parameter — your gateway to D1 (SQLite at the edge), KV (global key-value), R2 (object storage), Queues, and secrets. Your tools query D1 with sub-millisecond latency from 300+ edge locations.
 
 ```bash
-npm install @vinkius-core/mcp-fusion-cloudflare
+npm install @vurb/cloudflare
 ```
 
 ```typescript
 // src/worker.ts
-import { cloudflareWorkersAdapter } from '@vinkius-core/mcp-fusion-cloudflare';
+import { cloudflareWorkersAdapter } from '@vurb/cloudflare';
 
 export interface Env { DB: D1Database; CACHE: KVNamespace; API_SECRET: string }
 

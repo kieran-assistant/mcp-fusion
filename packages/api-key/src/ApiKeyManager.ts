@@ -10,7 +10,7 @@
  *
  * @example
  * ```ts
- * import { ApiKeyManager } from '@vinkius-core/mcp-fusion-api-key';
+ * import { ApiKeyManager } from '@vurb/api-key';
  *
  * // Static keys
  * const manager = new ApiKeyManager({

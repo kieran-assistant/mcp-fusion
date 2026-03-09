@@ -158,6 +158,22 @@ function compileFlat<TContext>(
             tools.push(tool);
 
             // ── O(1) Dispatch Map Entry ──────────────────────
+            // Detect flat name collisions — two builders
+            // producing the same flat name would silently overwrite
+            // the routing entry, making the first tool inaccessible.
+            if (routingMap.has(flatName)) {
+                const existing = routingMap.get(flatName)!;
+                const msg =
+                    `[Vurb] Flat tool name collision: "${flatName}" is produced by both ` +
+                    `"${existing.builder.getName()}" (action "${existing.actionKey}") and ` +
+                    `"${toolName}" (action "${action.key}"). ` +
+                    `Rename one of the tools or use a different action separator.`;
+                if (onWarn) {
+                    onWarn(msg);
+                } else {
+                    throw new Error(msg);
+                }
+            }
             routingMap.set(flatName, {
                 builder,
                 actionKey: action.key,
@@ -239,7 +255,7 @@ function buildAtomicSchema<TContext>(
             // Bug #131: Route through onWarn callback instead of console.warn
             if (key in properties && onWarn) {
                 onWarn(
-                    `[MCP Fusion] Action schema field '${key}' overwrites common schema field with the same name. ` +
+                    `[Vurb] Action schema field '${key}' overwrites common schema field with the same name. ` +
                     `Use omitCommonFields to exclude the common field, or rename the action field.`,
                 );
             }

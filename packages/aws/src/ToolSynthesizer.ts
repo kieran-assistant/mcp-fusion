@@ -9,7 +9,7 @@ import type { AwsClient } from './AwsClient.js';
  * Synthesized tool definition ready for `defineTool()`.
  *
  * This is the intermediate format between discovery and registration.
- * The `config` object matches `ToolConfig` from `@vinkius-core/mcp-fusion`.
+ * The `config` object matches `ToolConfig` from `vurb`.
  */
 export interface SynthesizedToolConfig {
     /** Tool name (snake_case) */

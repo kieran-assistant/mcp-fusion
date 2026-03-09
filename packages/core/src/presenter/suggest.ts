@@ -6,7 +6,7 @@
  *
  * @example
  * ```typescript
- * import { suggest } from '@vinkius-core/mcp-fusion';
+ * import { suggest } from 'vurb';
  *
  * .suggest((invoice) => [
  *     suggest('invoices.get', 'View invoice details'),

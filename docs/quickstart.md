@@ -3,24 +3,24 @@
 Manual setup for when you need full control over every file.
 
 ::: tip Looking for the fast path?
-[Quickstart — Lightspeed](/quickstart-lightspeed) scaffolds a complete project with one command: `npx fusion create my-server`
+[Quickstart — Lightspeed](/quickstart-lightspeed) scaffolds a complete project with one command: `npx Vurb.ts create my-server`
 :::
 
 ## Install {#install}
 
 ```bash
-npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod
+npm install Vurb.ts @modelcontextprotocol/sdk zod
 ```
 
-## Create a Fusion Instance {#init}
+## Create a Vurb.ts Instance {#init}
 
 ```typescript
-import { initFusion } from '@vinkius-core/mcp-fusion';
+import { initVurb } from 'Vurb.ts';
 
-const f = initFusion();
+const f = initVurb();
 ```
 
-`initFusion()` without a generic creates a `void` context — no auth, no shared state. Add `initFusion<AppContext>()` later when you need dependency injection.
+`initVurb()` without a generic creates a `void` context — no auth, no shared state. Add `initVurb<AppContext>()` later when you need dependency injection.
 
 ## Define a Tool {#first-tool}
 
@@ -38,7 +38,7 @@ const getWeather = f.query('weather.get')
 ## Register and Start {#server}
 
 ```typescript
-import { ToolRegistry } from '@vinkius-core/mcp-fusion';
+import { ToolRegistry } from 'Vurb.ts';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 
@@ -65,11 +65,11 @@ main().catch(console.error);
 ## Complete File {#complete}
 
 ```typescript
-import { initFusion, ToolRegistry } from '@vinkius-core/mcp-fusion';
+import { initVurb, ToolRegistry } from 'Vurb.ts';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 
-const f = initFusion();
+const f = initVurb();
 
 const getWeather = f.query('weather.get')
   .describe('Get current weather for a city')
@@ -104,7 +104,7 @@ Connect to any MCP client:
 
 ### Cursor
 
-Add `.cursor/mcp.json` to your project root (or use [`npx fusion create`](/quickstart-lightspeed) which generates it automatically):
+Add `.cursor/mcp.json` to your project root (or use [`npx Vurb.ts create`](/quickstart-lightspeed) which generates it automatically):
 
 ```json
 {
@@ -153,7 +153,7 @@ The registry you built above works with any transport — Stdio, SSE, HTTP, or s
 One function turns your registry into a Next.js route handler. Zod reflection and schema compilation happen once at cold start; warm invocations route and execute in microseconds:
 
 ```typescript
-import { vercelAdapter } from '@vinkius-core/mcp-fusion-vercel';
+import { vercelAdapter } from '@vurb/vercel';
 export const POST = vercelAdapter({ registry, contextFactory });
 ```
 
@@ -162,7 +162,7 @@ export const POST = vercelAdapter({ registry, contextFactory });
 The same registry runs on 300+ edge locations with direct access to D1, KV, and R2 via Cloudflare's `env` bindings:
 
 ```typescript
-import { cloudflareWorkersAdapter } from '@vinkius-core/mcp-fusion-cloudflare';
+import { cloudflareWorkersAdapter } from '@vurb/cloudflare';
 export default cloudflareWorkersAdapter({ registry, contextFactory });
 ```
 

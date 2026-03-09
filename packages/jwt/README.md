@@ -1,27 +1,27 @@
 <p align="center">
-  <h1 align="center">@vinkius-core/mcp-fusion-jwt</h1>
+  <h1 align="center">@vurb/jwt</h1>
   <p align="center">
-    <strong>JWT Verification Middleware</strong> — Standards-compliant token validation for MCP Fusion servers
+    <strong>JWT Verification Middleware</strong> — Standards-compliant token validation for Vurb.ts servers
   </p>
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@vinkius-core/mcp-fusion-jwt"><img src="https://img.shields.io/npm/v/@vinkius-core/mcp-fusion-jwt?color=blue" alt="npm" /></a>
-  <a href="https://github.com/vinkius-labs/mcp-fusion/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-green" alt="License" /></a>
+  <a href="https://www.npmjs.com/package/@vurb/jwt"><img src="https://img.shields.io/npm/v/@vurb/jwt?color=blue" alt="npm" /></a>
+  <a href="https://github.com/vinkius-labs/vurb.ts/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-green" alt="License" /></a>
   <img src="https://img.shields.io/badge/node-%3E%3D18-brightgreen" alt="Node" />
 </p>
 
 ---
 
-> JWT verification middleware for MCP servers built with MCP Fusion. Timing-safe validation with `jose`, JWKS auto-discovery, and self-healing error responses.
+> JWT verification middleware for MCP servers built with Vurb.ts. Timing-safe validation with `jose`, JWKS auto-discovery, and self-healing error responses.
 
 ## Quick Start
 
 ```typescript
-import { initFusion } from '@vinkius-core/mcp-fusion';
-import { jwtGuard } from '@vinkius-core/mcp-fusion-jwt';
+import { initVurb } from 'Vurb.ts';
+import { jwtGuard } from '@vurb/jwt';
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 const withJwt = jwtGuard({
     secret: process.env.JWT_SECRET!,
@@ -59,21 +59,21 @@ const withJwt = jwtGuard({
 ## Installation
 
 ```bash
-npm install @vinkius-core/mcp-fusion-jwt jose
+npm install @vurb/jwt jose
 ```
 
 ### Peer Dependencies
 
 | Package | Version |
 |---------|---------|
-| `@vinkius-core/mcp-fusion` | `^2.0.0` |
+| `Vurb.ts` | `^2.0.0` |
 | `jose` | `^5.0.0` (optional) |
 
 ## Requirements
 
 - **Node.js** ≥ 18.0.0
-- **MCP Fusion** ≥ 2.0.0 (peer dependency)
+- **Vurb.ts** ≥ 2.0.0 (peer dependency)
 
 ## License
 
-[Apache-2.0](https://github.com/vinkius-labs/mcp-fusion/blob/main/LICENSE)
+[Apache-2.0](https://github.com/vinkius-labs/vurb.ts/blob/main/LICENSE)

@@ -6,7 +6,7 @@ description: "Semantic delta engine with BREAKING / RISKY / SAFE / COSMETIC seve
 # Contract Diffing
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Severity Classification](#severity)
@@ -38,7 +38,7 @@ This matters because your CI pipeline can make decisions based on severity. BREA
 ## Using the Diff Engine {#usage}
 
 ```typescript
-import { diffContracts, formatDiffReport } from '@vinkius-core/mcp-fusion/introspection';
+import { diffContracts, formatDiffReport } from 'Vurb.ts/introspection';
 
 const result = diffContracts(previousContract, currentContract);
 
@@ -186,7 +186,7 @@ const result = diffContracts(before, after);
 The diff engine can format deltas as XML for injection into LLM correction prompts. This is how [Self-Healing Context](/governance/self-healing) works — when the LLM sends wrong arguments because the contract changed, the error response includes the specific changes:
 
 ```typescript
-import { formatDeltasAsXml } from '@vinkius-core/mcp-fusion/introspection';
+import { formatDeltasAsXml } from 'Vurb.ts/introspection';
 
 const xml = formatDeltasAsXml(result.deltas);
 ```
@@ -211,8 +211,8 @@ const xml = formatDeltasAsXml(result.deltas);
 Combine diffing with the lockfile check for a complete governance gate:
 
 ```typescript
-import { readLockfile, checkLockfile } from '@vinkius-core/mcp-fusion/introspection';
-import { diffContracts, formatDiffReport } from '@vinkius-core/mcp-fusion/introspection';
+import { readLockfile, checkLockfile } from 'Vurb.ts/introspection';
+import { diffContracts, formatDiffReport } from 'Vurb.ts/introspection';
 
 const lockfile = await readLockfile(process.cwd());
 const result = checkLockfile(lockfile!, contracts);

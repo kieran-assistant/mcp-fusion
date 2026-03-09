@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * MCP Fusion CLI — `fusion`
+ * Vurb CLI
  *
  * Slim entry point: parses args, dispatches to command modules.
  * All logic lives in focused modules under `./commands/`.
@@ -15,11 +15,11 @@ import { commandCreate } from './commands/create.js';
 import { commandRemote } from './commands/remote.js';
 import { commandDeploy } from './commands/deploy.js';
 
-// ─── Re-exports (backward compat — tests import from fusion.js) ──
+// ─── Re-exports (backward compat — tests import from vurb.js) ──
 
 export { parseArgs } from './args.js';
 export type { CliArgs } from './args.js';
-export { MCP_FUSION_VERSION, HELP, ansi } from './constants.js';
+export { VURB_VERSION, HELP, ansi } from './constants.js';
 export type { StepStatus, ProgressStep, ProgressReporter } from './progress.js';
 export { ProgressTracker, createDefaultReporter } from './progress.js';
 export type { RegistryLike, PromptRegistryLike } from './registry.js';
@@ -62,12 +62,12 @@ async function main(): Promise<void> {
         case 'dbg': {
             const inspectArgv = process.argv.slice(3);
             try {
-                const { runInspector } = await import('@vinkius-core/mcp-fusion-inspector');
+                const { runInspector } = await import('@vurb/inspector');
                 await runInspector(inspectArgv);
             } catch (importErr) {
                 console.error(
                     `\x1b[31m\u2717\x1b[0m The inspector TUI requires the optional package:\n\n` +
-                    `  npm install @vinkius-core/mcp-fusion-inspector\n`,
+                    `  npm install @vurb/inspector\n`,
                 );
                 process.exit(1);
             }
@@ -86,7 +86,7 @@ function detectCLI(): boolean {
     const base = process.argv[1].replace(/\\/g, '/').split('/').pop() ?? '';
     // Strip extension (.js, .cjs, .mjs, .cmd, .ps1, .exe, etc.)
     const name = base.replace(/\.[a-z0-9]+$/i, '');
-    return name === 'fusion';
+    return name === 'vurb';
 }
 if (detectCLI()) {
     main().catch((err: Error) => {

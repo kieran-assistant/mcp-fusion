@@ -8,7 +8,7 @@ import { type Role } from './Role.js';
  *
  * @example
  * ```typescript
- * import { createAnnotations, Role } from '@vinkius-core/mcp-fusion';
+ * import { createAnnotations, Role } from 'vurb';
  *
  * const annotations = createAnnotations({
  *     audience: [Role.ASSISTANT],

@@ -8,8 +8,8 @@
 // Config (package.json, tsconfig, etc.)
 export { packageJson, tsconfig, gitignore, envExample } from './config.js';
 
-// Core source (fusion.ts, context.ts, server.ts)
-export { fusionTs, contextTs, serverTs } from './core.js';
+// Core source (vurb.ts, context.ts, server.ts)
+export { vurbTs, contextTs, serverTs } from './core.js';
 
 // Tools
 export { healthToolTs, echoToolTs } from './tools.js';

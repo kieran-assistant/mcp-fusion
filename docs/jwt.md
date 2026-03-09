@@ -1,6 +1,6 @@
 ---
 title: JWT Verification — Standards-Compliant Token Validation
-description: Drop-in JWT verification middleware for MCP servers built with mcp-fusion. HS256 native fallback, jose integration for RS256/ES256/JWKS, claims validation, and self-healing errors.
+description: Drop-in JWT verification middleware for MCP servers built with Vurb.ts. HS256 native fallback, jose integration for RS256/ES256/JWKS, claims validation, and self-healing errors.
 ---
 
 # JWT Verification
@@ -8,10 +8,10 @@ description: Drop-in JWT verification middleware for MCP servers built with mcp-
 Standards-compliant JWT verification for MCP servers. Verifies tokens using [jose](https://github.com/panva/jose) when installed, or falls back to native Node.js `crypto` for HS256. Supports JWKS auto-discovery, RS256, ES256, and full claims validation (`exp`, `nbf`, `iss`, `aud`, `requiredClaims`).
 
 ```bash
-npm install @vinkius-core/mcp-fusion-jwt
+npm install @vurb/jwt
 ```
 
-Peer dependencies: `@vinkius-core/mcp-fusion ^2.0.0`, `jose ^5.0.0` (optional)
+Peer dependencies: `Vurb.ts ^2.0.0`, `jose ^5.0.0` (optional)
 
 ## Architecture
 
@@ -33,8 +33,8 @@ Request → Token Extraction → Signature Verification → Claims Validation �
 ## Protect Tools with Middleware
 
 ```typescript
-import { requireJwt } from '@vinkius-core/mcp-fusion-jwt';
-import { createTool, success } from '@vinkius-core/mcp-fusion';
+import { requireJwt } from '@vurb/jwt';
+import { createTool, success } from 'Vurb.ts';
 
 const projects = createTool<AppContext>('projects')
     .use(requireJwt({
@@ -57,7 +57,7 @@ When no valid JWT is found, `requireJwt()` returns a structured `toolError('JWT_
 ## Create the JWT Auth Tool
 
 ```typescript
-import { createJwtAuthTool } from '@vinkius-core/mcp-fusion-jwt';
+import { createJwtAuthTool } from '@vurb/jwt';
 
 const jwtTool = createJwtAuthTool<AppContext>({
     secret: process.env.JWT_SECRET!,
@@ -76,10 +76,10 @@ The JWT auth tool exposes 2 actions:
 
 ## Standalone Usage
 
-`JwtVerifier` works independently of mcp-fusion:
+`JwtVerifier` works independently of Vurb.ts:
 
 ```typescript
-import { JwtVerifier } from '@vinkius-core/mcp-fusion-jwt';
+import { JwtVerifier } from '@vurb/jwt';
 
 // With symmetric secret (HS256)
 const verifier = new JwtVerifier({ secret: 'my-secret' });
@@ -160,7 +160,7 @@ const verifier = new JwtVerifier({
 ## Static Utilities
 
 ```typescript
-import { JwtVerifier } from '@vinkius-core/mcp-fusion-jwt';
+import { JwtVerifier } from '@vurb/jwt';
 
 // Decode without verification (for logging/debugging)
 const payload = JwtVerifier.decode(token);
@@ -183,7 +183,7 @@ const expired = JwtVerifier.isExpired(token, 60);
 
 ### `requireJwt(options)`
 
-Returns a mcp-fusion middleware function.
+Returns a Vurb.ts middleware function.
 
 **Options:**
 

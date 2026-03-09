@@ -1,24 +1,24 @@
 /**
- * Core Templates — fusion.ts, context.ts, server.ts
+ * Core Templates — vurb.ts, context.ts, server.ts
  *
  * The architectural spine of every scaffolded project.
  * @module
  */
 import type { ProjectConfig } from '../types.js';
 
-/** Generate `src/fusion.ts` — The one-file context center */
-export function fusionTs(): string {
+/** Generate `src/vurb.ts` — The one-file context center */
+export function vurbTs(): string {
     return `/**
- * Fusion Instance — Context Initialization
+ * Vurb Instance — Context Initialization
  *
  * Define your context type ONCE. Every f.query(), f.mutation(),
  * f.presenter(), f.prompt(), and f.middleware() call inherits
  * AppContext — zero generic repetition anywhere in the codebase.
  */
-import { initFusion } from '@vinkius-core/mcp-fusion';
+import { initVurb } from 'vurb';
 import type { AppContext } from './context.js';
 
-export const f = initFusion<AppContext>();
+export const f = initVurb<AppContext>();
 `;
 }
 
@@ -60,15 +60,15 @@ export function serverTs(config: ProjectConfig): string {
     if (config.transport === 'stdio') {
         // Simplified: one-liner bootstrap via startServer()
         return `/**
- * Server Bootstrap — MCP Fusion
+ * Server Bootstrap — Vurb
  *
  * Tools are auto-discovered from src/tools/.
  * Drop a file, it becomes a tool.
  */
 import { fileURLToPath } from 'node:url';
-import { autoDiscover, PromptRegistry, startServer } from '@vinkius-core/mcp-fusion';
+import { autoDiscover, PromptRegistry, startServer } from 'vurb';
 import { createContext } from './context.js';
-import { f } from './fusion.js';
+import { f } from './vurb.js';
 import { GreetPrompt } from './prompts/greet.js';
 
 // ── Registry ─────────────────────────────────────────────
@@ -89,20 +89,20 @@ await startServer({
 `;
     }
 
-    // SSE transport — manual setup required (startServer is stdio-only)
+    // Streamable HTTP transport — manual setup required (startServer is stdio-only)
     return `/**
- * Server Bootstrap — MCP Fusion with SSE Transport
+ * Server Bootstrap — Vurb with Streamable HTTP Transport
  *
  * Tools are auto-discovered from src/tools/.
  * Drop a file, it becomes a tool.
  */
 import { fileURLToPath } from 'node:url';
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { createServer } from 'node:http';
-import { autoDiscover, PromptRegistry } from '@vinkius-core/mcp-fusion';
+import { autoDiscover, PromptRegistry } from 'vurb';
 import { createContext } from './context.js';
-import { f } from './fusion.js';
+import { f } from './vurb.js';
 import { GreetPrompt } from './prompts/greet.js';
 
 // ── Registry ─────────────────────────────────────────────
@@ -114,9 +114,8 @@ await autoDiscover(registry, fileURLToPath(new URL('./tools', import.meta.url)))
 prompts.register(GreetPrompt);
 
 // ── Server ───────────────────────────────────────────────
-const server = new Server(
+const server = new McpServer(
     { name: '${config.name}', version: '0.1.0' },
-    { capabilities: { tools: {}, prompts: {} } },
 );
 
 registry.attachToServer(server, {
@@ -126,35 +125,72 @@ registry.attachToServer(server, {
 
 // ── Transport ────────────────────────────────────────────
 const PORT = Number(process.env['PORT'] ?? 3001);
-const transports = new Map<string, SSEServerTransport>();
+const sessions = new Map<string, StreamableHTTPServerTransport>();
 
 const httpServer = createServer(async (req, res) => {
     try {
-        if (req.method === 'GET' && req.url === '/sse') {
-            const sseTransport = new SSEServerTransport('/mcp/messages', res);
-            transports.set(sseTransport.sessionId, sseTransport);
-            res.on('close', () => transports.delete(sseTransport.sessionId));
-            await server.connect(sseTransport);
-        } else if (req.method === 'POST' && req.url?.startsWith('/mcp/messages')) {
-            const url = new URL(req.url, \`http://localhost:\${PORT}\`);
-            const sessionId = url.searchParams.get('sessionId') ?? '';
-            const transport = transports.get(sessionId);
-            if (transport) {
-                await transport.handlePostMessage(req, res);
+        const url = new URL(req.url ?? '/', \`http://localhost:\${PORT}\`);
+
+        if (url.pathname !== '/mcp') {
+            res.writeHead(404).end();
+            return;
+        }
+
+        if (req.method === 'POST') {
+            // Parse JSON body
+            const chunks: Buffer[] = [];
+            for await (const chunk of req) chunks.push(chunk as Buffer);
+            const body = JSON.parse(Buffer.concat(chunks).toString());
+
+            const sessionId = req.headers['mcp-session-id'] as string | undefined;
+
+            // Existing session — route to its transport
+            if (sessionId && sessions.has(sessionId)) {
+                const transport = sessions.get(sessionId)!;
+                await transport.handleRequest(req, res, body);
+                return;
+            }
+
+            // New session — create transport
+            const transport = new StreamableHTTPServerTransport({
+                sessionIdGenerator: () => crypto.randomUUID(),
+                onsessioninitialized: (id) => {
+                    sessions.set(id, transport);
+                },
+            });
+            transport.onclose = () => {
+                const id = [...sessions.entries()].find(([, t]) => t === transport)?.[0];
+                if (id) sessions.delete(id);
+            };
+            await server.connect(transport);
+            await transport.handleRequest(req, res, body);
+        } else if (req.method === 'GET') {
+            const sessionId = req.headers['mcp-session-id'] as string | undefined;
+            if (sessionId && sessions.has(sessionId)) {
+                const transport = sessions.get(sessionId)!;
+                await transport.handleRequest(req, res);
             } else {
-                res.writeHead(400).end('Unknown session');
+                res.writeHead(400).end('Missing or invalid session');
+            }
+        } else if (req.method === 'DELETE') {
+            const sessionId = req.headers['mcp-session-id'] as string | undefined;
+            if (sessionId && sessions.has(sessionId)) {
+                const transport = sessions.get(sessionId)!;
+                await transport.handleRequest(req, res);
+            } else {
+                res.writeHead(400).end('Missing or invalid session');
             }
         } else {
-            res.writeHead(404).end();
+            res.writeHead(405).end();
         }
     } catch (err) {
-        console.error('[MCP Fusion] Unhandled error in HTTP handler:', err);
+        console.error('[Vurb] Unhandled error in HTTP handler:', err);
         if (!res.headersSent) res.writeHead(500).end();
     }
 });
 
 httpServer.listen(PORT, () => {
-    console.error(\`⚡ MCP Fusion SSE server on http://localhost:\${PORT}/sse\`);
+    console.error(\`⚡ Vurb server on http://localhost:\${PORT}/mcp\`);
 });
 `;
 }

@@ -1,7 +1,7 @@
 /**
- * MCP Fusion — Vercel Adapter
+ * Vurb — Vercel Adapter
  *
- * Deploys an MCP Fusion ToolRegistry to Vercel Functions (Edge or Node.js)
+ * Deploys an Vurb ToolRegistry to Vercel Functions (Edge or Node.js)
  * with zero configuration. Uses the MCP SDK's native WinterCG
  * transport (`WebStandardStreamableHTTPServerTransport`).
  *
@@ -37,7 +37,7 @@ import {
 // ============================================================================
 
 /**
- * Duck-typed interface for MCP Fusion's ToolRegistry.
+ * Duck-typed interface for Vurb's ToolRegistry.
  *
  * Accepts any object with `attachToServer()` — decoupled from the
  * concrete class to avoid importing the core package at type level.
@@ -52,7 +52,7 @@ export interface RegistryLike {
 /**
  * Configuration for the Vercel adapter.
  *
- * @typeParam TContext - Application context type for Fusion handlers
+ * @typeParam TContext - Application context type for Vurb handlers
  */
 export interface VercelAdapterOptions<TContext> {
     /**
@@ -64,7 +64,7 @@ export interface VercelAdapterOptions<TContext> {
      */
     readonly registry: RegistryLike;
 
-    /** MCP server name (visible in capabilities). Default: `'mcp-fusion-vercel'` */
+    /** MCP server name (visible in capabilities). Default: `'vurb-vercel'` */
     readonly serverName?: string;
 
     /** MCP server version string. Default: `'1.0.0'` */
@@ -114,7 +114,7 @@ export type VercelHandler = (req: Request) => Promise<Response>;
 // ============================================================================
 
 /**
- * Create a Vercel adapter for MCP Fusion.
+ * Create a Vercel adapter for Vurb.
  *
  * Returns a `POST` handler function compatible with Next.js App Router
  * route handlers and standalone Vercel Functions. Each request creates
@@ -125,8 +125,8 @@ export type VercelHandler = (req: Request) => Promise<Response>;
  *
  * ```typescript
  * // app/api/mcp/route.ts
- * import { ToolRegistry } from '@vinkius-core/mcp-fusion';
- * import { vercelAdapter } from '@vinkius-core/mcp-fusion-vercel';
+ * import { ToolRegistry } from 'vurb';
+ * import { vercelAdapter } from '@vurb/vercel';
  * import { billing, projects } from './tools.js';
  *
  * // COLD START: Zod reflection + compilation (once)
@@ -150,20 +150,20 @@ export type VercelHandler = (req: Request) => Promise<Response>;
  *
  * ```typescript
  * // api/mcp.ts
- * import { vercelAdapter } from '@vinkius-core/mcp-fusion-vercel';
+ * import { vercelAdapter } from '@vurb/vercel';
  *
  * const handler = vercelAdapter({ registry });
  * export default handler;
  * ```
  *
- * @typeParam TContext - Application context type for Fusion handlers
+ * @typeParam TContext - Application context type for Vurb handlers
  */
 export function vercelAdapter<TContext = void>(
     options: VercelAdapterOptions<TContext>,
 ): VercelHandler {
     const {
         registry,
-        serverName = 'mcp-fusion-vercel',
+        serverName = 'vurb-vercel',
         serverVersion = '1.0.0',
         contextFactory,
         attachOptions = {},

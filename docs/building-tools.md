@@ -1,7 +1,7 @@
 # Building Tools
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -21,19 +21,19 @@ Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-f
 
 Most MCP servers force you to define tools via giant, nested JSON schemas or tangled Zod objects. A 10-line query requires 40 lines of boilerplate — hand-written schemas, manual parameter validation, explicit `success()` wrapping, and disconnected error handling. The result is code that nobody enjoys reading or maintaining.
 
-MCP Fusion's **Fluent API** eliminates all of that. You declare what your tool does, what it needs, and how it behaves — through semantic verbs, chainable builder methods, and a terminal `.handle()`. The framework handles schema generation, validation, response wrapping, and type inference automatically, enforcing **Deterministic AI Tool Execution** under the hood. 
+Vurb.ts's **Fluent API** eliminates all of that. You declare what your tool does, what it needs, and how it behaves — through semantic verbs, chainable builder methods, and a terminal `.handle()`. The framework handles schema generation, validation, response wrapping, and type inference automatically, enforcing **Deterministic AI Tool Execution** under the hood. 
 
 If your goal is building **Zero-Hallucination Agent Workflows**, this is how you do it. The tools you build work with every MCP client — Cursor, Claude Desktop, Claude Code, Windsurf, Cline, VS Code with Copilot — and deploy unchanged to [Vercel](/vercel-adapter) or [Cloudflare Workers](/cloudflare-adapter).
 
 ```typescript
-import { initFusion } from '@vinkius-core/mcp-fusion';
+import { initVurb } from 'Vurb.ts';
 
 interface AppContext {
   db: DatabaseClient;
   tenantId: string;
 }
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 export const listTasks = f.query('tasks.list')
   .describe('Lists all tasks for the current user')
@@ -51,11 +51,11 @@ Everything — `input.status`, `ctx.db`, `ctx.tenantId` — is fully typed, zero
 
 ## Context Setup {#context}
 
-Before building tools, define the **application context** — the shared state every handler receives. Pass a generic to `initFusion()` and store the result in a shared file:
+Before building tools, define the **application context** — the shared state every handler receives. Pass a generic to `initVurb()` and store the result in a shared file:
 
 ```typescript
-// src/fusion.ts
-import { initFusion } from '@vinkius-core/mcp-fusion';
+// src/vurb.ts
+import { initVurb } from 'Vurb.ts';
 
 interface AppContext {
   db: DatabaseClient;
@@ -63,7 +63,7 @@ interface AppContext {
   userId: string;
 }
 
-export const f = initFusion<AppContext>();
+export const f = initVurb<AppContext>();
 ```
 
 > [!TIP]
@@ -231,7 +231,7 @@ registry.attachToServer(server, {
 The `.returns()` method attaches an MVA [Presenter](/presenter) that controls exactly what the agent sees:
 
 ```typescript
-import { createPresenter, t } from '@vinkius-core/mcp-fusion';
+import { createPresenter, t } from 'Vurb.ts';
 
 const ProjectPresenter = createPresenter('Project')
   .schema({
@@ -353,7 +353,7 @@ See the [Runtime Guards guide](/runtime-guards) for the full configuration refer
 Long-running operations report progress via generator handlers. Each `yield progress()` becomes an MCP `notifications/progress` event:
 
 ```typescript
-import { progress } from '@vinkius-core/mcp-fusion';
+import { progress } from 'Vurb.ts';
 
 export const deploy = f.mutation('infra.deploy')
   .describe('Deploy infrastructure to the target environment')
@@ -380,7 +380,7 @@ See the [Streaming Progress cookbook](/cookbook/streaming) for real-world exampl
 Once your tools are built, registration is straightforward:
 
 ```typescript
-import { ToolRegistry } from '@vinkius-core/mcp-fusion';
+import { ToolRegistry } from 'Vurb.ts';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 
@@ -405,7 +405,7 @@ await server.connect(transport);
 > Use `autoDiscover()` for file-based routing — drop tool files in a directory and they're registered automatically. See [Routing & Groups](/routing) for the full guide.
 
 > [!TIP]
-> Test your tools with [@vinkius-core/mcp-fusion-testing](/testing) — assert tool responses, measure blast radius of changes, and snapshot test Presenter output. See [Testing](/testing) for the full harness.
+> Test your tools with [@vurb/testing](/testing) — assert tool responses, measure blast radius of changes, and snapshot test Presenter output. See [Testing](/testing) for the full harness.
 
 ## Deploy Your Tools {#deploy}
 
@@ -416,7 +416,7 @@ Every tool you built above is transport-agnostic. The Fluent API compiles tool m
 Export the registry as a Next.js POST handler. Edge Runtime compiles tools once at cold start; subsequent requests execute the pipeline without re-reflection:
 
 ```typescript
-import { vercelAdapter } from '@vinkius-core/mcp-fusion-vercel';
+import { vercelAdapter } from '@vurb/vercel';
 export const POST = vercelAdapter({ registry, contextFactory });
 ```
 
@@ -425,7 +425,7 @@ export const POST = vercelAdapter({ registry, contextFactory });
 The adapter receives `(req, env, executionCtx)`, giving your tool handlers access to D1 for edge-native SQL, KV for sub-millisecond reads, and `waitUntil()` for background telemetry:
 
 ```typescript
-import { cloudflareWorkersAdapter } from '@vinkius-core/mcp-fusion-cloudflare';
+import { cloudflareWorkersAdapter } from '@vurb/cloudflare';
 export default cloudflareWorkersAdapter({ registry, contextFactory });
 ```
 

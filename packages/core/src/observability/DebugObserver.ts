@@ -1,5 +1,5 @@
 /**
- * DebugObserver — Zero-Overhead Observability for MCP Fusion
+ * DebugObserver — Zero-Overhead Observability for Vurb
  *
  * Provides structured, typed debug events emitted at each stage of
  * the execution pipeline. When disabled (the default), there is
@@ -13,7 +13,7 @@
  *
  * @example
  * ```typescript
- * import { createDebugObserver } from '@vinkius-core/mcp-fusion';
+ * import { createDebugObserver } from 'vurb';
  *
  * // Default: pretty console.debug output
  * const debug = createDebugObserver();
@@ -199,9 +199,9 @@ export type DebugObserverFn = (event: DebugEvent) => void;
  * The default handler produces compact, readable output:
  *
  * ```
- * [mcp-fusion] route     projects/list
- * [mcp-fusion] validate  projects/list ✓ 0.3ms
- * [mcp-fusion] execute   projects/list ✓ 12ms
+ * [vurb] route     projects/list
+ * [vurb] validate  projects/list ✓ 0.3ms
+ * [vurb] execute   projects/list ✓ 12ms
  * ```
  *
  * @param handler - Optional custom event handler. If omitted, uses `console.debug`.
@@ -222,7 +222,7 @@ export function createDebugObserver(handler?: DebugObserverFn): DebugObserverFn 
     if (handler) return handler;
 
     return (event: DebugEvent): void => {
-        const prefix = '[mcp-fusion]';
+        const prefix = '[vurb]';
 
         // GovernanceEvent has no tool/action — handle separately
         if (event.type === 'governance') {

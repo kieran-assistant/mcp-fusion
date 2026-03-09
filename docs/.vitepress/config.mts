@@ -242,6 +242,7 @@ export default defineConfig({
           { text: 'Sandbox Engine', link: '/sandbox' },
           { text: 'DLP Redaction — GDPR', link: '/dlp-redaction' },
           { text: 'FSM State Gate', link: '/fsm-state-gate' },
+          { text: 'Agent Skills', link: '/skills' },
           { text: 'Advanced Configuration', link: '/advanced-configuration' },
         ]
       },

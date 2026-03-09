@@ -29,7 +29,7 @@ import { createPresenter, ui } from '../../src/presenter/index.js';
 import { definePrompt } from '../../src/prompt/index.js';
 import { PromptRegistry } from '../../src/prompt/PromptRegistry.js';
 import type { DebugEvent } from '../../src/observability/DebugObserver.js';
-import type { FusionTracer, FusionSpan, FusionAttributeValue } from '../../src/observability/Tracing.js';
+import type { VurbTracer, VurbSpan, VurbAttributeValue } from '../../src/observability/Tracing.js';
 import type { StateSyncConfig } from '../../src/state-sync/index.js';
 
 // ============================================================================
@@ -79,16 +79,16 @@ function createMockServer() {
 
 interface MockSpanData {
     name: string;
-    attributes: Map<string, FusionAttributeValue>;
-    events: Array<{ name: string; attributes?: Record<string, FusionAttributeValue> }>;
+    attributes: Map<string, VurbAttributeValue>;
+    events: Array<{ name: string; attributes?: Record<string, VurbAttributeValue> }>;
     status: { code: number; message?: string } | null;
     exceptions: Array<Error | string>;
     ended: boolean;
 }
 
-function createMockTracer(): { tracer: FusionTracer; spans: MockSpanData[] } {
+function createMockTracer(): { tracer: VurbTracer; spans: MockSpanData[] } {
     const spans: MockSpanData[] = [];
-    const tracer: FusionTracer = {
+    const tracer: VurbTracer = {
         startSpan(name, options) {
             const data: MockSpanData = {
                 name,
@@ -98,7 +98,7 @@ function createMockTracer(): { tracer: FusionTracer; spans: MockSpanData[] } {
                 exceptions: [],
                 ended: false,
             };
-            const span: FusionSpan = {
+            const span: VurbSpan = {
                 setAttribute(key, value) { data.attributes.set(key, value); },
                 setStatus(status) { data.status = status; },
                 addEvent(eventName, attrs) { data.events.push({ name: eventName, attributes: attrs }); },

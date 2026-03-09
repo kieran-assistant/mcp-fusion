@@ -7,8 +7,8 @@
  * - PromptMessage.system() + PromptMessage.user()
  * - MCP prompts/list + prompts/get
  */
-import { f } from '../fusion.js';
-import { PromptMessage } from '@vinkius-core/mcp-fusion';
+import { f } from '../vurb.js';
+import { PromptMessage } from 'vurb';
 
 export const GreetPrompt = f.prompt('greet', {
     description: 'Generate a personalized greeting for a user',

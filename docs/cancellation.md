@@ -1,7 +1,7 @@
 # Cancellation
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -14,21 +14,21 @@ Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-f
 
 When the user clicks "Stop" or the connection drops mid-stream, the in-flight handler should stop immediately — not continue burning CPU, holding database locks, or sending HTTP requests into the void.
 
-MCP Fusion propagates `AbortSignal` through middleware, handlers, and generators. The framework checks `signal.aborted` before each pipeline stage. If the request was already cancelled, the handler never executes.
+Vurb.ts propagates `AbortSignal` through middleware, handlers, and generators. The framework checks `signal.aborted` before each pipeline stage. If the request was already cancelled, the handler never executes.
 
 ## Extracting the Signal {#signal}
 
 Capture the `AbortSignal` from the MCP SDK's `RequestHandlerExtra` via `contextFactory`:
 
 ```typescript
-import { initFusion } from '@vinkius-core/mcp-fusion';
+import { initVurb } from 'Vurb.ts';
 
 interface AppContext {
   db: PrismaClient;
   signal?: AbortSignal;
 }
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 registry.attachToServer(server, {
   contextFactory: (extra) => {
@@ -80,7 +80,7 @@ for (const file of files) {
 Generators get cancellation for free. `drainGenerator()` checks `signal.aborted` before each `yield`. If fired mid-stream, the generator is aborted via `gen.return()`, triggering `finally {}` cleanup:
 
 ```typescript
-import { progress } from '@vinkius-core/mcp-fusion';
+import { progress } from 'Vurb.ts';
 
 const analyzeRepo = f.query('repo.analyze')
   .describe('Analyze a repository')

@@ -28,42 +28,42 @@ function model(name: string, fields: DMMFField[]): DMMFModel {
 
 describe('AnnotationParser', () => {
 
-    // ── @fusion.hide ─────────────────────────────────────
+    // ── @vurb.hide ─────────────────────────────────────
 
-    describe('@fusion.hide', () => {
-        it('should detect @fusion.hide on a single-line doc', () => {
+    describe('@vurb.hide', () => {
+        it('should detect @vurb.hide on a single-line doc', () => {
             const m = model('User', [
-                field({ name: 'passwordHash', documentation: '@fusion.hide' }),
+                field({ name: 'passwordHash', documentation: '@vurb.hide' }),
             ]);
             expect(parseAnnotations(m).fields.get('passwordHash')?.hidden).toBe(true);
         });
 
-        it('should detect @fusion.hide in multi-line DMMF concatenation', () => {
+        it('should detect @vurb.hide in multi-line DMMF concatenation', () => {
             // DMMF joins triple-slash comments with \n
             const m = model('User', [
-                field({ name: 'passwordHash', documentation: "User's hashed password.\n@fusion.hide" }),
+                field({ name: 'passwordHash', documentation: "User's hashed password.\n@vurb.hide" }),
             ]);
             expect(parseAnnotations(m).fields.get('passwordHash')?.hidden).toBe(true);
         });
 
-        it('should detect @fusion.hide in middle of multi-line doc', () => {
+        it('should detect @vurb.hide in middle of multi-line doc', () => {
             const m = model('User', [
-                field({ name: 'token', documentation: "Internal token.\n@fusion.hide\nDo not expose." }),
+                field({ name: 'token', documentation: "Internal token.\n@vurb.hide\nDo not expose." }),
             ]);
             expect(parseAnnotations(m).fields.get('token')?.hidden).toBe(true);
         });
 
         it('should NOT false-positive on similar strings', () => {
             const m = model('User', [
-                field({ name: 'note', documentation: 'This describes @fusion.hideaway pattern' }),
+                field({ name: 'note', documentation: 'This describes @vurb.hideaway pattern' }),
             ]);
-            // @fusion.hide is a substring of @fusion.hideaway — includes() will match
-            // This is acceptable: if the developer writes @fusion.hideaway, the field IS hidden.
+            // @vurb.hide is a substring of @vurb.hideaway — includes() will match
+            // This is acceptable: if the developer writes @vurb.hideaway, the field IS hidden.
             // The annotation is a prefix match. This test documents the behavior.
             expect(parseAnnotations(m).fields.get('note')?.hidden).toBe(true);
         });
 
-        it('should NOT mark fields without @fusion.hide', () => {
+        it('should NOT mark fields without @vurb.hide', () => {
             const m = model('User', [
                 field({ name: 'email' }),
                 field({ name: 'name', documentation: 'User full name' }),
@@ -74,38 +74,38 @@ describe('AnnotationParser', () => {
         });
     });
 
-    // ── @fusion.describe ─────────────────────────────────
+    // ── @vurb.describe ─────────────────────────────────
 
-    describe('@fusion.describe', () => {
+    describe('@vurb.describe', () => {
         it('should extract description from single-line doc', () => {
             const m = model('User', [
-                field({ name: 'creditScore', documentation: '@fusion.describe("Score from 0 to 1000")' }),
+                field({ name: 'creditScore', documentation: '@vurb.describe("Score from 0 to 1000")' }),
             ]);
             expect(parseAnnotations(m).fields.get('creditScore')?.description).toBe('Score from 0 to 1000');
         });
 
         it('should extract description from multi-line doc', () => {
             const m = model('User', [
-                field({ name: 'creditScore', documentation: 'Financial metric.\n@fusion.describe("Above 700 is PREMIUM")' }),
+                field({ name: 'creditScore', documentation: 'Financial metric.\n@vurb.describe("Above 700 is PREMIUM")' }),
             ]);
             expect(parseAnnotations(m).fields.get('creditScore')?.description).toBe('Above 700 is PREMIUM');
         });
 
         it('should handle description with special characters', () => {
             const m = model('User', [
-                field({ name: 'score', documentation: '@fusion.describe("Score: 0-1000. Use >= 700 for premium tier.")' }),
+                field({ name: 'score', documentation: '@vurb.describe("Score: 0-1000. Use >= 700 for premium tier.")' }),
             ]);
             expect(parseAnnotations(m).fields.get('score')?.description).toBe('Score: 0-1000. Use >= 700 for premium tier.');
         });
 
         it('should handle description with numbers and symbols', () => {
             const m = model('Product', [
-                field({ name: 'price', documentation: '@fusion.describe("Price in USD ($). Min: $0.01, Max: $999,999.99")' }),
+                field({ name: 'price', documentation: '@vurb.describe("Price in USD ($). Min: $0.01, Max: $999,999.99")' }),
             ]);
             expect(parseAnnotations(m).fields.get('price')?.description).toBe('Price in USD ($). Min: $0.01, Max: $999,999.99');
         });
 
-        it('should return undefined when no @fusion.describe', () => {
+        it('should return undefined when no @vurb.describe', () => {
             const m = model('User', [
                 field({ name: 'email', documentation: 'User email address' }),
             ]);
@@ -120,12 +120,12 @@ describe('AnnotationParser', () => {
         });
     });
 
-    // ── @fusion.tenantKey ────────────────────────────────
+    // ── @vurb.tenantKey ────────────────────────────────
 
-    describe('@fusion.tenantKey', () => {
+    describe('@vurb.tenantKey', () => {
         it('should detect tenantKey from single-line doc', () => {
             const m = model('User', [
-                field({ name: 'tenantId', documentation: '@fusion.tenantKey' }),
+                field({ name: 'tenantId', documentation: '@vurb.tenantKey' }),
             ]);
             const result = parseAnnotations(m);
             expect(result.fields.get('tenantId')?.tenantKey).toBe(true);
@@ -134,7 +134,7 @@ describe('AnnotationParser', () => {
 
         it('should detect tenantKey from multi-line doc', () => {
             const m = model('User', [
-                field({ name: 'orgId', documentation: 'Organization ID.\n@fusion.tenantKey' }),
+                field({ name: 'orgId', documentation: 'Organization ID.\n@vurb.tenantKey' }),
             ]);
             const result = parseAnnotations(m);
             expect(result.tenantKeyField).toBe('orgId');
@@ -142,7 +142,7 @@ describe('AnnotationParser', () => {
 
         it('should handle non-standard tenantKey field names', () => {
             const m = model('Invoice', [
-                field({ name: 'companyId', documentation: '@fusion.tenantKey' }),
+                field({ name: 'companyId', documentation: '@vurb.tenantKey' }),
             ]);
             expect(parseAnnotations(m).tenantKeyField).toBe('companyId');
         });
@@ -157,8 +157,8 @@ describe('AnnotationParser', () => {
 
         it('should use the last tenantKey if multiple are declared (edge case)', () => {
             const m = model('User', [
-                field({ name: 'tenantId', documentation: '@fusion.tenantKey' }),
-                field({ name: 'orgId', documentation: '@fusion.tenantKey' }),
+                field({ name: 'tenantId', documentation: '@vurb.tenantKey' }),
+                field({ name: 'orgId', documentation: '@vurb.tenantKey' }),
             ]);
             // Last one wins — this documents the behavior for edge cases
             expect(parseAnnotations(m).tenantKeyField).toBe('orgId');
@@ -168,18 +168,18 @@ describe('AnnotationParser', () => {
     // ── Multiple Annotations Per Field ───────────────────
 
     describe('Multiple annotations per field', () => {
-        it('should parse @fusion.hide + @fusion.describe on same field', () => {
+        it('should parse @vurb.hide + @vurb.describe on same field', () => {
             const m = model('User', [
-                field({ name: 'ssn', documentation: '@fusion.hide\n@fusion.describe("Social Security Number")' }),
+                field({ name: 'ssn', documentation: '@vurb.hide\n@vurb.describe("Social Security Number")' }),
             ]);
             const ann = parseAnnotations(m).fields.get('ssn')!;
             expect(ann.hidden).toBe(true);
             expect(ann.description).toBe('Social Security Number');
         });
 
-        it('should parse @fusion.tenantKey + @fusion.describe on same field', () => {
+        it('should parse @vurb.tenantKey + @vurb.describe on same field', () => {
             const m = model('User', [
-                field({ name: 'companyId', documentation: '@fusion.tenantKey\n@fusion.describe("Parent company")' }),
+                field({ name: 'companyId', documentation: '@vurb.tenantKey\n@vurb.describe("Parent company")' }),
             ]);
             const result = parseAnnotations(m);
             expect(result.tenantKeyField).toBe('companyId');
@@ -194,11 +194,11 @@ describe('AnnotationParser', () => {
             const m = model('User', [
                 field({ name: 'id', isId: true, hasDefaultValue: true }),
                 field({ name: 'email', isUnique: true }),
-                field({ name: 'passwordHash', documentation: '@fusion.hide' }),
-                field({ name: 'stripeToken', documentation: 'Stripe customer token.\n@fusion.hide' }),
+                field({ name: 'passwordHash', documentation: '@vurb.hide' }),
+                field({ name: 'stripeToken', documentation: 'Stripe customer token.\n@vurb.hide' }),
                 field({ name: 'role', hasDefaultValue: true }),
-                field({ name: 'creditScore', type: 'Int', documentation: '@fusion.describe("Financial score 0-1000")' }),
-                field({ name: 'tenantId', documentation: '@fusion.tenantKey' }),
+                field({ name: 'creditScore', type: 'Int', documentation: '@vurb.describe("Financial score 0-1000")' }),
+                field({ name: 'tenantId', documentation: '@vurb.tenantKey' }),
                 field({ name: 'createdAt', type: 'DateTime', hasDefaultValue: true }),
                 // Relation — parser doesn't filter, that's the emitter's job
                 field({ name: 'posts', kind: 'object', type: 'Post', isList: true, isRequired: false }),

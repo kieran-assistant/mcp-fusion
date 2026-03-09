@@ -23,14 +23,14 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 
 // ============================================================================
 // Types
 // ============================================================================
 
 export interface TokenManagerConfig {
-    /** Directory name inside user's home (e.g., '.myapp'). Default: '.mcp-fusion' */
+    /** Directory name inside user's home (e.g., '.myapp'). Default: '.vurb' */
     readonly configDir?: string;
     /** Token filename. Default: 'token.json' */
     readonly tokenFile?: string;
@@ -51,7 +51,7 @@ export type TokenSource = 'environment' | 'file' | null;
 // Constants
 // ============================================================================
 
-const DEFAULT_CONFIG_DIR = '.mcp-fusion';
+const DEFAULT_CONFIG_DIR = '.vurb';
 const DEFAULT_TOKEN_FILE = 'token.json';
 const DEFAULT_PENDING_FILE = 'pending-auth.json';
 const DIR_MODE = 0o700;
@@ -68,6 +68,10 @@ const FILE_MODE = 0o600;
  * On Windows, `mode` is silently ignored by Node.js — we fall back to
  * `icacls` to remove inherited ACEs and grant access only to the current user.
  *
+ * Security: uses `execFileSync` with array arguments instead of `execSync`
+ * with template literals to prevent command injection via crafted paths.
+ * The USERNAME is resolved from `process.env` instead of shell expansion.
+ *
  * This is a best-effort operation: if `icacls` fails (e.g., non-NTFS
  * volume or insufficient privileges), we log nothing and continue.
  */
@@ -75,10 +79,14 @@ function restrictPermissions(targetPath: string): void {
     if (process.platform !== 'win32') return;
     try {
         const normalized = path.resolve(targetPath);
-        execSync(
-            `icacls "${normalized}" /inheritance:r /grant:r "%USERNAME%:F"`,
-            { stdio: 'ignore', windowsHide: true },
-        );
+        const username = process.env['USERNAME'] ?? process.env['USER'] ?? '';
+        if (!username) return; // Cannot determine user — skip silently
+        execFileSync('icacls', [
+            normalized,
+            '/inheritance:r',
+            '/grant:r',
+            `${username}:F`,
+        ], { stdio: 'ignore', windowsHide: true });
     } catch {
         // Best-effort — do not throw on ACL failure
     }

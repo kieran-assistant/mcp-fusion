@@ -1,7 +1,7 @@
 /**
  * CancellationPropagation.test.ts
  *
- * Tests for AbortSignal propagation through the MCP Fusion pipeline.
+ * Tests for AbortSignal propagation through the Vurb pipeline.
  *
  * Validates:
  *   - Signal extraction from MCP SDK extra object

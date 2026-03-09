@@ -1,12 +1,12 @@
 ---
 title: "Capability Lockfile"
-description: "Generate, verify, and integrate mcp-fusion.lock into CI/CD. A deterministic, git-diffable snapshot of the behavioral surface."
+description: "Generate, verify, and integrate vurb.lock into CI/CD. A deterministic, git-diffable snapshot of the behavioral surface."
 ---
 
 # Capability Lockfile
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Generating the Lockfile](#generating)
@@ -20,12 +20,12 @@ Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-f
 
 The MCP protocol provides `tools/list` — the current surface. It provides `notifications/tools/list_changed` — something changed. Neither provides a durable artifact, a comparison mechanism, or behavioral-level change detection. This black box makes it impossible to guarantee **CISO Compliance** or prevent **Phantom Capabilities** (tools that silently hijack other imports) from slipping into production.
 
-`mcp-fusion.lock` fills all three gaps. It is a deterministic, canonical JSON file that captures the complete behavioral surface of your MCP server — tool contracts, prompt definitions, cognitive guardrails, entitlements, and token economics. The behavioral equivalent of `package-lock.json`, except instead of pinning dependency versions, it pins what your server can do.
+`vurb.lock` fills all three gaps. It is a deterministic, canonical JSON file that captures the complete behavioral surface of your MCP server — tool contracts, prompt definitions, cognitive guardrails, entitlements, and token economics. The behavioral equivalent of `package-lock.json`, except instead of pinning dependency versions, it pins what your server can do.
 
 ```text
-Developer builds server → fusion lock → mcp-fusion.lock → git commit
+Developer builds server → Vurb.ts lock → vurb.lock → git commit
 
-CI runs build → fusion lock --check → compares live surface to committed lockfile (SOC2 Immutable Evidence)
+CI runs build → Vurb.ts lock --check → compares live surface to committed lockfile (SOC2 Immutable Evidence)
 
 If stale → CI fails → reviewer inspects the git diff before merge
 ```
@@ -36,7 +36,7 @@ If stale → CI fails → reviewer inspects the git diff before merge
 From the command line:
 
 ```bash
-npx fusion lock --server ./src/server.ts
+npx Vurb.ts lock --server ./src/server.ts
 ```
 
 Or programmatically:
@@ -45,7 +45,7 @@ Or programmatically:
 import {
   generateLockfile,
   writeLockfile,
-} from '@vinkius-core/mcp-fusion/introspection';
+} from 'Vurb.ts/introspection';
 
 const contracts = compileContracts(registry.getBuilders());
 
@@ -67,7 +67,7 @@ Each tool entry has four sections — surface, behavior, token economics, and en
 {
   "lockfileVersion": 1,
   "serverName": "payments-api",
-  "fusionVersion": "2.8.1",
+  "vurbVersion": "2.8.1",
   "generatedAt": "2026-02-26T12:00:00.000Z",
   "integrityDigest": "sha256:a1b2c3...",
   "capabilities": {
@@ -139,7 +139,7 @@ The lockfile is **canonical** — given the same inputs, it produces the same by
 This means `git diff` works correctly: identical surfaces produce identical files, and every line change is semantically meaningful. There is no noise from key reordering or timestamp jitter (the `generatedAt` timestamp is excluded from integrity computation).
 
 ```typescript
-import { serializeLockfile } from '@vinkius-core/mcp-fusion/introspection';
+import { serializeLockfile } from 'Vurb.ts/introspection';
 
 const json = serializeLockfile(lockfile);
 // Deterministic JSON — sorted keys, trailing newline
@@ -151,11 +151,11 @@ const json = serializeLockfile(lockfile);
 The primary CI integration is `checkLockfile()`:
 
 ```typescript
-import { readLockfile, checkLockfile } from '@vinkius-core/mcp-fusion/introspection';
+import { readLockfile, checkLockfile } from 'Vurb.ts/introspection';
 
 const lockfile = await readLockfile(process.cwd());
 if (!lockfile) {
-  console.error('No lockfile found. Run `fusion lock` first.');
+  console.error('No lockfile found. Run `Vurb.ts lock` first.');
   process.exit(1);
 }
 
@@ -247,7 +247,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '22' }
       - run: npm ci
-      - run: npx fusion lock --check --server ./src/server.ts
+      - run: npx Vurb.ts lock --check --server ./src/server.ts
 ```
 
 ### GitLab CI
@@ -257,7 +257,7 @@ governance:lockfile:
   stage: test
   script:
     - npm ci
-    - npx fusion lock --check --server ./src/server.ts
+    - npx Vurb.ts lock --check --server ./src/server.ts
   rules:
     - if: $CI_MERGE_REQUEST_ID
 ```
@@ -268,7 +268,7 @@ governance:lockfile:
 `parseLockfile()` validates the structure and version before returning:
 
 ```typescript
-import { parseLockfile } from '@vinkius-core/mcp-fusion/introspection';
+import { parseLockfile } from 'Vurb.ts/introspection';
 
 const lockfile = parseLockfile(rawJson);
 if (!lockfile) {
@@ -281,6 +281,6 @@ It checks that `lockfileVersion` equals the current version (`1`), that all requ
 
 ## Best Practices {#best-practices}
 
-Commit the lockfile — like `package-lock.json`, it belongs in version control. Run `fusion lock` after changing tool builders, Presenters, prompt definitions, middleware, or system rules. Run `fusion lock --check` in every CI pipeline. Train your team to review lockfile diffs in pull requests — especially changes to `systemRulesFingerprint`, `destructiveActions`, `entitlements`, and prompt `arguments`.
+Commit the lockfile — like `package-lock.json`, it belongs in version control. Run `Vurb.ts lock` after changing tool builders, Presenters, prompt definitions, middleware, or system rules. Run `Vurb.ts lock --check` in every CI pipeline. Train your team to review lockfile diffs in pull requests — especially changes to `systemRulesFingerprint`, `destructiveActions`, `entitlements`, and prompt `arguments`.
 
 For cryptographic tamper detection beyond the lockfile, pair with [Zero-Trust Attestation](/governance/zero-trust-attestation) to sign the digest at build time and verify it at startup.

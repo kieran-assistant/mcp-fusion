@@ -1,32 +1,32 @@
 # Developer Experience Guide
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
-`initFusion()` for type inference, JSON descriptors instead of Zod imports, `autoDiscover()` for file-based routing, `createDevServer()` for hot reload, and Standard Schema support for any validator.
+`initVurb()` for type inference, JSON descriptors instead of Zod imports, `autoDiscover()` for file-based routing, `createDevServer()` for hot reload, and Standard Schema support for any validator.
 
-## `initFusion()` — Define Context Once {#init-fusion}
+## `initVurb()` — Define Context Once {#init-Vurb.ts}
 
 Define your context type once. Every `f.query()`, `f.mutation()`, `f.action()`, `f.presenter()`, `f.middleware()`, `f.prompt()` inherits it.
 
 ```typescript
-// src/fusion.ts
-import { initFusion } from '@vinkius-core/mcp-fusion';
+// src/vurb.ts
+import { initVurb } from 'Vurb.ts';
 
 interface AppContext {
   db: PrismaClient;
   user: { id: string; role: string };
 }
 
-export const f = initFusion<AppContext>();
+export const f = initVurb<AppContext>();
 ```
 
 Every tool file becomes generic-free:
 
 ```typescript
 // src/tools/billing.ts
-import { f } from '../fusion';
+import { f } from '../vurb';
 
 export const getInvoice = f.query('billing.get_invoice')
   .describe('Retrieve an invoice by ID')
@@ -88,7 +88,7 @@ JSON descriptors don't support transforms, custom refinements, or deeply nested 
 Scans a directory and registers all exported builders automatically.
 
 ```typescript
-import { autoDiscover } from '@vinkius-core/mcp-fusion';
+import { autoDiscover } from 'Vurb.ts';
 
 const registry = f.registry();
 await autoDiscover(registry, './src/tools');
@@ -122,7 +122,7 @@ await autoDiscover(registry, './src/tools', {
 File changes hot-reload tools without dropping the MCP connection. No restart, no reconnect.
 
 ```typescript
-import { createDevServer, autoDiscover } from '@vinkius-core/mcp-fusion/dev';
+import { createDevServer, autoDiscover } from 'Vurb.ts/dev';
 
 const devServer = createDevServer({
   dir: './src/tools',
@@ -159,7 +159,7 @@ Any validator implementing [Standard Schema v1](https://github.com/standard-sche
 
 ```typescript
 import * as v from 'valibot';
-import { toStandardValidator } from '@vinkius-core/mcp-fusion/schema';
+import { toStandardValidator } from 'Vurb.ts/schema';
 
 const schema = v.object({ name: v.string(), age: v.number() });
 const validator = toStandardValidator(schema);
@@ -169,7 +169,7 @@ const result = validator.validate({ name: 'Alice', age: 30 });
 `autoValidator()` detects the schema type automatically — Standard Schema v1 first (checks `~standard`), then Zod-like (checks `.safeParse()`):
 
 ```typescript
-import { autoValidator } from '@vinkius-core/mcp-fusion/schema';
+import { autoValidator } from 'Vurb.ts/schema';
 const validator = autoValidator(anySchema); // Valibot, Zod, ArkType — all work
 ```
 
@@ -180,16 +180,16 @@ const validator = autoValidator(anySchema); // Valibot, Zod, ArkType — all wor
 Each subpath is independently tree-shakeable:
 
 ```typescript
-import { initFusion, defineTool }    from '@vinkius-core/mcp-fusion';           // full framework
-import { createFusionClient }        from '@vinkius-core/mcp-fusion/client';     // ~2kb
-import { ui }                        from '@vinkius-core/mcp-fusion/ui';         // ~1kb
-import { definePresenter }           from '@vinkius-core/mcp-fusion/presenter';  // ~4kb
-import { definePrompt, PromptMessage } from '@vinkius-core/mcp-fusion/prompt';   // ~3kb
-import { autoValidator }             from '@vinkius-core/mcp-fusion/schema';     // ~2kb
-import { createDebugObserver }       from '@vinkius-core/mcp-fusion/observability';
-import { autoDiscover, createDevServer } from '@vinkius-core/mcp-fusion/dev';
-import { StateSyncLayer }            from '@vinkius-core/mcp-fusion/state-sync';
-import { createFusionTester }        from '@vinkius-core/mcp-fusion/testing';
+import { initVurb, defineTool }    from 'Vurb.ts';           // full framework
+import { createVurbClient }        from 'Vurb.ts/client';     // ~2kb
+import { ui }                        from 'Vurb.ts/ui';         // ~1kb
+import { definePresenter }           from 'Vurb.ts/presenter';  // ~4kb
+import { definePrompt, PromptMessage } from 'Vurb.ts/prompt';   // ~3kb
+import { autoValidator }             from 'Vurb.ts/schema';     // ~2kb
+import { createDebugObserver }       from 'Vurb.ts/observability';
+import { autoDiscover, createDevServer } from 'Vurb.ts/dev';
+import { StateSyncLayer }            from 'Vurb.ts/state-sync';
+import { createVurbTester }        from 'Vurb.ts/testing';
 ```
 
 ## Prompt Args — Same No-Zod Power {#prompt-args}

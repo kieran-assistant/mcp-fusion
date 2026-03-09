@@ -101,20 +101,16 @@ describe('ExpositionCompiler — Sad Path', () => {
         expect(result.tools[0].name).toBe('x---y');
     });
 
-    it('should silently overwrite when two builders produce colliding flat names', () => {
-        // Junior mistake: two builders "a" with action "b" and another "a" with action "b"
-        // This can't happen via ToolRegistry (throws on duplicate name), but can
-        // happen if someone calls compileExposition directly with duplicate builders.
+    it('should throw when two builders produce colliding flat names', () => {
+        //  collisions are now detected and throw an error
+        // instead of silently overwriting the routing entry.
         const builder1 = new GroupedToolBuilder<void>('tasks')
             .action({ name: 'list', handler: async () => success('first') });
         const builder2 = new GroupedToolBuilder<void>('tasks')
             .action({ name: 'list', handler: async () => success('second') });
 
-        const result = compileExposition([builder1, builder2], 'flat', '_');
-
-        // Both produce "tasks_list" — last one wins in the routing map
-        expect(result.tools).toHaveLength(2); // Both tools are emitted
-        expect(result.routingMap.get('tasks_list')!.builder).toBe(builder2);
+        expect(() => compileExposition([builder1, builder2], 'flat', '_'))
+            .toThrow(/collision/i);
     });
 
     it('should handle empty builders iterable', () => {

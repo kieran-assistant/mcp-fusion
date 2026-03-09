@@ -1,5 +1,5 @@
 /**
- * Result\<T\> — Railway-Oriented Programming for MCP Fusion
+ * Result\<T\> — Railway-Oriented Programming for Vurb
  *
  * A lightweight, zero-overhead discriminated union for expressing
  * success/failure pipelines without exception throwing.
@@ -9,7 +9,7 @@
  *
  * @example
  * ```typescript
- * import { succeed, fail, error, type Result } from '@vinkius-core/mcp-fusion';
+ * import { succeed, fail, error, type Result } from 'vurb';
  *
  * function parseId(input: string): Result<number> {
  *     const id = parseInt(input, 10);

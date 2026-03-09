@@ -9,22 +9,22 @@ import { CORE_VERSION, TESTING_VERSION, MCP_SDK_VERSION, ZOD_VERSION } from './c
 export function packageJson(config: ProjectConfig): string {
     const deps: Record<string, string> = {
         '@modelcontextprotocol/sdk': MCP_SDK_VERSION,
-        '@vinkius-core/mcp-fusion': CORE_VERSION,
+        'vurb': CORE_VERSION,
         'zod': ZOD_VERSION,
     };
 
     if (config.vector === 'prisma') {
         deps['@prisma/client'] = '^6.0.0';
-        deps['@vinkius-core/mcp-fusion-prisma-gen'] = '^1.0.0';
+        deps['@vurb/prisma-gen'] = '^1.0.0';
     }
     if (config.vector === 'n8n') {
-        deps['@vinkius-core/mcp-fusion-n8n'] = '^1.0.0';
+        deps['@vurb/n8n'] = '^1.0.0';
     }
     if (config.vector === 'openapi') {
-        deps['@vinkius-core/mcp-fusion-openapi-gen'] = '^1.0.0';
+        deps['@vurb/openapi-gen'] = '^1.0.0';
     }
     if (config.vector === 'oauth') {
-        deps['@vinkius-core/mcp-fusion-oauth'] = '^1.0.0';
+        deps['@vurb/oauth'] = '^1.0.0';
     }
 
     const devDeps: Record<string, string> = {
@@ -38,12 +38,12 @@ export function packageJson(config: ProjectConfig): string {
     }
     if (config.testing) {
         devDeps['vitest'] = '^3.0.5';
-        devDeps['@vinkius-core/mcp-fusion-testing'] = TESTING_VERSION;
+        devDeps['@vurb/testing'] = TESTING_VERSION;
     }
 
     const scripts: Record<string, string> = {
-        'dev': 'fusion dev',
-        'start': 'fusion dev',
+        'dev': 'vurb dev',
+        'start': 'vurb dev',
         'build': 'tsc',
         'typecheck': 'tsc --noEmit',
     };
@@ -111,7 +111,7 @@ coverage/
 
 /** Generate `.env.example` with vector-specific vars */
 export function envExample(config: ProjectConfig): string {
-    let env = `# ── MCP Fusion Server Environment ─────────────────────
+    let env = `# ── Vurb Server Environment ─────────────────────
 # Copy this to .env and fill in your values.
 
 # Server
@@ -141,7 +141,7 @@ OAUTH_TOKEN_ENDPOINT=https://api.example.com/oauth/device/token
     }
     if (config.transport === 'sse') {
         env += `
-# SSE Transport
+# Streamable HTTP Transport
 PORT=3001
 `;
     }

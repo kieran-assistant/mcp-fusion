@@ -1,5 +1,5 @@
 /**
- * CLI `fusion` — Integration Tests
+ * CLI `vurb` — Integration Tests
  *
  * Tests the full CLI pipeline:
  *   - `parseArgs` — argument parsing
@@ -16,10 +16,10 @@ import { tmpdir } from 'node:os';
 import { z } from 'zod';
 import {
     parseArgs,
-    MCP_FUSION_VERSION,
+    VURB_VERSION,
     HELP,
-} from '../../src/cli/fusion.js';
-import type { CliArgs } from '../../src/cli/fusion.js';
+} from '../../src/cli/vurb.js';
+import type { CliArgs } from '../../src/cli/vurb.js';
 import { createTool } from '../../src/core/builder/index.js';
 import { ToolRegistry } from '../../src/core/registry/ToolRegistry.js';
 import { compileContracts } from '../../src/introspection/ToolContract.js';
@@ -40,58 +40,58 @@ import type { ToolContract } from '../../src/introspection/ToolContract.js';
 
 describe('parseArgs', () => {
     it('parses the lock command', () => {
-        const args = parseArgs(['node', 'fusion', 'lock']);
+        const args = parseArgs(['node', 'vurb', 'lock']);
         expect(args.command).toBe('lock');
         expect(args.check).toBe(false);
         expect(args.help).toBe(false);
     });
 
     it('parses --check flag', () => {
-        const args = parseArgs(['node', 'fusion', 'lock', '--check']);
+        const args = parseArgs(['node', 'vurb', 'lock', '--check']);
         expect(args.command).toBe('lock');
         expect(args.check).toBe(true);
     });
 
     it('parses --server / -s', () => {
-        const args = parseArgs(['node', 'fusion', 'lock', '--server', './src/server.ts']);
+        const args = parseArgs(['node', 'vurb', 'lock', '--server', './src/server.ts']);
         expect(args.server).toBe('./src/server.ts');
 
-        const args2 = parseArgs(['node', 'fusion', 'lock', '-s', './src/server.ts']);
+        const args2 = parseArgs(['node', 'vurb', 'lock', '-s', './src/server.ts']);
         expect(args2.server).toBe('./src/server.ts');
     });
 
     it('parses --name / -n', () => {
-        const args = parseArgs(['node', 'fusion', 'lock', '--name', 'my-server']);
+        const args = parseArgs(['node', 'vurb', 'lock', '--name', 'my-server']);
         expect(args.name).toBe('my-server');
 
-        const args2 = parseArgs(['node', 'fusion', 'lock', '-n', 'my-server']);
+        const args2 = parseArgs(['node', 'vurb', 'lock', '-n', 'my-server']);
         expect(args2.name).toBe('my-server');
     });
 
     it('parses --cwd', () => {
-        const args = parseArgs(['node', 'fusion', 'lock', '--cwd', '/tmp/project']);
+        const args = parseArgs(['node', 'vurb', 'lock', '--cwd', '/tmp/project']);
         expect(args.cwd).toBe('/tmp/project');
     });
 
     it('parses --help / -h', () => {
-        expect(parseArgs(['node', 'fusion', '-h']).help).toBe(true);
-        expect(parseArgs(['node', 'fusion', '--help']).help).toBe(true);
+        expect(parseArgs(['node', 'vurb', '-h']).help).toBe(true);
+        expect(parseArgs(['node', 'vurb', '--help']).help).toBe(true);
     });
 
     it('defaults cwd to process.cwd()', () => {
-        const args = parseArgs(['node', 'fusion', 'lock']);
+        const args = parseArgs(['node', 'vurb', 'lock']);
         expect(args.cwd).toBe(process.cwd());
     });
 
     it('handles no arguments', () => {
-        const args = parseArgs(['node', 'fusion']);
+        const args = parseArgs(['node', 'vurb']);
         expect(args.command).toBe('');
         expect(args.help).toBe(false);
     });
 
     it('handles all flags combined', () => {
         const args = parseArgs([
-            'node', 'fusion', 'lock',
+            'node', 'vurb', 'lock',
             '--check',
             '-s', './server.ts',
             '-n', 'demo',
@@ -107,37 +107,37 @@ describe('parseArgs', () => {
     // ── Dev command parsing ──
 
     it('parses the dev command', () => {
-        const args = parseArgs(['node', 'fusion', 'dev']);
+        const args = parseArgs(['node', 'vurb', 'dev']);
         expect(args.command).toBe('dev');
     });
 
     it('parses dev with --server', () => {
-        const args = parseArgs(['node', 'fusion', 'dev', '--server', './src/server.ts']);
+        const args = parseArgs(['node', 'vurb', 'dev', '--server', './src/server.ts']);
         expect(args.command).toBe('dev');
         expect(args.server).toBe('./src/server.ts');
     });
 
     it('parses dev with -s shorthand', () => {
-        const args = parseArgs(['node', 'fusion', 'dev', '-s', './src/server.ts']);
+        const args = parseArgs(['node', 'vurb', 'dev', '-s', './src/server.ts']);
         expect(args.command).toBe('dev');
         expect(args.server).toBe('./src/server.ts');
     });
 
     it('parses dev with --dir', () => {
-        const args = parseArgs(['node', 'fusion', 'dev', '--dir', './src/tools']);
+        const args = parseArgs(['node', 'vurb', 'dev', '--dir', './src/tools']);
         expect(args.command).toBe('dev');
         expect(args.dir).toBe('./src/tools');
     });
 
     it('parses dev with -d shorthand', () => {
-        const args = parseArgs(['node', 'fusion', 'dev', '-d', './src/tools']);
+        const args = parseArgs(['node', 'vurb', 'dev', '-d', './src/tools']);
         expect(args.command).toBe('dev');
         expect(args.dir).toBe('./src/tools');
     });
 
     it('parses dev with all flags combined', () => {
         const args = parseArgs([
-            'node', 'fusion', 'dev',
+            'node', 'vurb', 'dev',
             '-s', './src/server.ts',
             '-d', './src/tools',
         ]);
@@ -147,7 +147,7 @@ describe('parseArgs', () => {
     });
 
     it('defaults dir to undefined when not provided', () => {
-        const args = parseArgs(['node', 'fusion', 'dev']);
+        const args = parseArgs(['node', 'vurb', 'dev']);
         expect(args.dir).toBeUndefined();
     });
 });
@@ -157,13 +157,13 @@ describe('parseArgs', () => {
 // ============================================================================
 
 describe('CLI constants', () => {
-    it('MCP_FUSION_VERSION is a semver string', () => {
-        expect(MCP_FUSION_VERSION).toMatch(/^\d+\.\d+\.\d+$/);
+    it('VURB_VERSION is a semver string', () => {
+        expect(VURB_VERSION).toMatch(/^\d+\.\d+\.\d+$/);
     });
 
     it('HELP contains usage instructions', () => {
-        expect(HELP).toContain('fusion lock');
-        expect(HELP).toContain('fusion dev');
+        expect(HELP).toContain('vurb lock');
+        expect(HELP).toContain('vurb dev');
         expect(HELP).toContain('--server');
         expect(HELP).toContain('--check');
         expect(HELP).toContain('--name');
@@ -181,7 +181,7 @@ describe('CLI end-to-end lockfile flow', () => {
     let tmpDir: string;
 
     beforeEach(() => {
-        tmpDir = join(tmpdir(), `fusion-cli-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+        tmpDir = join(tmpdir(), `vurb-cli-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
         mkdirSync(tmpDir, { recursive: true });
     });
 
@@ -262,11 +262,11 @@ describe('CLI end-to-end lockfile flow', () => {
     it('generates lockfile from real registry contracts', async () => {
         const registry = buildRealRegistry();
         const contracts = await compileContracts([...registry.getBuilders()]);
-        const lockfile = await generateLockfile('test-server', contracts, MCP_FUSION_VERSION);
+        const lockfile = await generateLockfile('test-server', contracts, VURB_VERSION);
 
         expect(lockfile.lockfileVersion).toBe(1);
         expect(lockfile.serverName).toBe('test-server');
-        expect(lockfile.fusionVersion).toBe(MCP_FUSION_VERSION);
+        expect(lockfile.vurbVersion).toBe(VURB_VERSION);
         expect(lockfile.integrityDigest).toMatch(/^sha256:[a-f0-9]{64}$/);
 
         // Tool entries
@@ -286,7 +286,7 @@ describe('CLI end-to-end lockfile flow', () => {
     it('serializes lockfile to canonical JSON', async () => {
         const registry = buildRealRegistry();
         const contracts = await compileContracts([...registry.getBuilders()]);
-        const lockfile = await generateLockfile('test-server', contracts, MCP_FUSION_VERSION);
+        const lockfile = await generateLockfile('test-server', contracts, VURB_VERSION);
 
         const json = serializeLockfile(lockfile);
 
@@ -307,7 +307,7 @@ describe('CLI end-to-end lockfile flow', () => {
     it('writes and reads lockfile from disk', async () => {
         const registry = buildRealRegistry();
         const contracts = await compileContracts([...registry.getBuilders()]);
-        const lockfile = await generateLockfile('test-server', contracts, MCP_FUSION_VERSION);
+        const lockfile = await generateLockfile('test-server', contracts, VURB_VERSION);
 
         // Write
         await writeLockfile(lockfile, tmpDir);
@@ -324,7 +324,7 @@ describe('CLI end-to-end lockfile flow', () => {
     it('checkLockfile passes when surface matches', async () => {
         const registry = buildRealRegistry();
         const contracts = await compileContracts([...registry.getBuilders()]);
-        const lockfile = await generateLockfile('test-server', contracts, MCP_FUSION_VERSION);
+        const lockfile = await generateLockfile('test-server', contracts, VURB_VERSION);
 
         // Write to disk
         await writeLockfile(lockfile, tmpDir);
@@ -342,7 +342,7 @@ describe('CLI end-to-end lockfile flow', () => {
     it('checkLockfile fails when a tool is added', async () => {
         const registry = buildRealRegistry();
         const contracts = await compileContracts([...registry.getBuilders()]);
-        const lockfile = await generateLockfile('test-server', contracts, MCP_FUSION_VERSION);
+        const lockfile = await generateLockfile('test-server', contracts, VURB_VERSION);
 
         await writeLockfile(lockfile, tmpDir);
 
@@ -369,7 +369,7 @@ describe('CLI end-to-end lockfile flow', () => {
     it('checkLockfile fails when a tool is removed', async () => {
         const registry = buildRealRegistry();
         const contracts = await compileContracts([...registry.getBuilders()]);
-        const lockfile = await generateLockfile('test-server', contracts, MCP_FUSION_VERSION);
+        const lockfile = await generateLockfile('test-server', contracts, VURB_VERSION);
 
         await writeLockfile(lockfile, tmpDir);
 
@@ -386,7 +386,7 @@ describe('CLI end-to-end lockfile flow', () => {
     it('checkLockfile fails when behavioral surface changes', async () => {
         const registry = buildRealRegistry();
         const contracts = await compileContracts([...registry.getBuilders()]);
-        const lockfile = await generateLockfile('test-server', contracts, MCP_FUSION_VERSION);
+        const lockfile = await generateLockfile('test-server', contracts, VURB_VERSION);
 
         await writeLockfile(lockfile, tmpDir);
 
@@ -451,7 +451,7 @@ describe('CLI end-to-end lockfile flow', () => {
         expect(Object.keys(contracts).length).toBe(2);
 
         // Step 2 — generateLockfile
-        const lockfile = await generateLockfile('roundtrip-test', contracts, MCP_FUSION_VERSION);
+        const lockfile = await generateLockfile('roundtrip-test', contracts, VURB_VERSION);
         expect(lockfile.lockfileVersion).toBe(1);
 
         // Step 3 — serializeLockfile
@@ -486,8 +486,8 @@ describe('CLI end-to-end lockfile flow', () => {
         const registry = buildRealRegistry();
         const contracts = await compileContracts([...registry.getBuilders()]);
 
-        const lockfile1 = await generateLockfile('det-test', contracts, MCP_FUSION_VERSION);
-        const lockfile2 = await generateLockfile('det-test', contracts, MCP_FUSION_VERSION);
+        const lockfile1 = await generateLockfile('det-test', contracts, VURB_VERSION);
+        const lockfile2 = await generateLockfile('det-test', contracts, VURB_VERSION);
 
         // Integrity digests are always identical
         expect(lockfile1.integrityDigest).toBe(lockfile2.integrityDigest);
@@ -502,7 +502,7 @@ describe('CLI end-to-end lockfile flow', () => {
     it('lockfile records correct action metadata', async () => {
         const registry = buildRealRegistry();
         const contracts = await compileContracts([...registry.getBuilders()]);
-        const lockfile = await generateLockfile('metadata-test', contracts, MCP_FUSION_VERSION);
+        const lockfile = await generateLockfile('metadata-test', contracts, VURB_VERSION);
 
         const users = lockfile.capabilities.tools['users']!;
 
@@ -534,7 +534,7 @@ describe('CLI end-to-end lockfile flow', () => {
     it('serialized lockfile keys are alphabetically sorted', async () => {
         const registry = buildRealRegistry();
         const contracts = await compileContracts([...registry.getBuilders()]);
-        const lockfile = await generateLockfile('sort-test', contracts, MCP_FUSION_VERSION);
+        const lockfile = await generateLockfile('sort-test', contracts, VURB_VERSION);
         const json = serializeLockfile(lockfile);
         const parsed = JSON.parse(json);
 
@@ -558,7 +558,7 @@ describe('CLI edge cases', () => {
     it('empty registry produces valid lockfile', async () => {
         const registry = new ToolRegistry();
         const contracts = await compileContracts([...registry.getBuilders()]);
-        const lockfile = await generateLockfile('empty', contracts, MCP_FUSION_VERSION);
+        const lockfile = await generateLockfile('empty', contracts, VURB_VERSION);
 
         expect(Object.keys(lockfile.capabilities.tools)).toHaveLength(0);
         expect(lockfile.integrityDigest).toMatch(/^sha256:/);
@@ -589,7 +589,7 @@ describe('CLI edge cases', () => {
             }));
 
         const contracts = await compileContracts([...registry.getBuilders()]);
-        const lockfile = await generateLockfile('single', contracts, MCP_FUSION_VERSION);
+        const lockfile = await generateLockfile('single', contracts, VURB_VERSION);
         const json = serializeLockfile(lockfile);
         const parsed = parseLockfile(json)!;
         const result = await checkLockfile(parsed, contracts);
@@ -609,7 +609,7 @@ describe('CLI edge cases', () => {
 
         registry.register(tool);
         const contracts = await compileContracts([...registry.getBuilders()]);
-        const lockfile = await generateLockfile('sort', contracts, MCP_FUSION_VERSION);
+        const lockfile = await generateLockfile('sort', contracts, VURB_VERSION);
 
         expect(lockfile.capabilities.tools['multi']!.surface.actions)
             .toEqual(['alpha', 'middle', 'zebra']);

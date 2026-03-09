@@ -127,7 +127,7 @@ export class StateSyncLayer {
                 for (const pattern of invalidations) {
                     const notification: ResourceNotification = {
                         method: 'notifications/resources/updated',
-                        params: { uri: `fusion://stale/${pattern}` },
+                        params: { uri: `vurb://stale/${pattern}` },
                     };
                     try {
                         const maybePromise = this._notificationSink(notification);
@@ -150,7 +150,7 @@ export class StateSyncLayer {
      * Return a cached decorated tool, or compute and cache it.
      *
      * Cache invalidation: tool definitions are immutable after registration
-     * in Fusion's ToolRegistry (builders produce new objects each time,
+     * in Vurb's ToolRegistry (builders produce new objects each time,
      * but the content is stable). For safety, we use the tool name as
      * the cache key — if the same tool name produces different descriptions
      * across calls (which shouldn't happen), the first decoration wins.

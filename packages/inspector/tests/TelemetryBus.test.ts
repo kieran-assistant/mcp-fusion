@@ -28,11 +28,11 @@ import {
     createTelemetryBus,
     getTelemetryPath,
     discoverSockets,
-} from '@vinkius-core/mcp-fusion';
+} from 'vurb';
 import type {
     TelemetryEvent,
     TelemetryBusInstance,
-} from '@vinkius-core/mcp-fusion';
+} from 'vurb';
 
 // Helper: collect events from IPC
 function connectAndCollect(
@@ -111,8 +111,8 @@ let testCounter = 0;
 function uniqueTestPath(): string {
     const id = `test-${process.pid}-${Date.now()}-${testCounter++}`;
     return platform() === 'win32'
-        ? `\\\\.\\pipe\\mcp-fusion-${id}`
-        : `/tmp/mcp-fusion-${id}.sock`;
+        ? `\\\\.\\pipe\\vurb-${id}`
+        : `/tmp/vurb-${id}.sock`;
 }
 
 // ============================================================================
@@ -205,8 +205,8 @@ describe('TelemetryBus — Lifecycle', () => {
 
     it('should use custom path when provided', async () => {
         const customPath = platform() === 'win32'
-            ? `\\\\.\\pipe\\mcp-fusion-test-custom-${Date.now()}`
-            : `/tmp/mcp-fusion-test-custom-${Date.now()}.sock`;
+            ? `\\\\.\\pipe\\vurb-test-custom-${Date.now()}`
+            : `/tmp/vurb-test-custom-${Date.now()}.sock`;
 
         bus = await createTelemetryBus({ path: customPath });
         expect(bus.path).toBe(customPath);

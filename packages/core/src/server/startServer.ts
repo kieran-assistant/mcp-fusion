@@ -1,5 +1,5 @@
 /**
- * startServer — One-Liner Bootstrap for MCP Fusion Servers
+ * startServer — One-Liner Bootstrap for Vurb Servers
  *
  * Abstracts the entire server startup boilerplate into a single call:
  *   1. Creates the MCP Server instance
@@ -12,7 +12,7 @@
  */
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { attachToServer, type AttachOptions } from './ServerAttachment.js';
+import { attachToServer, type AttachOptions, _missingContextProxy } from './ServerAttachment.js';
 import { createTelemetryBus, type TelemetryBusInstance } from '../observability/TelemetryBus.js';
 import type { PromptRegistry } from '../prompt/PromptRegistry.js';
 import type { ProgressSink } from '../core/execution/ProgressHelper.js';
@@ -77,14 +77,14 @@ export interface StartServerResult {
 // ============================================================================
 
 /**
- * Start an MCP Fusion server with a single call.
+ * Start an Vurb server with a single call.
  *
  * Handles all bootstrap boilerplate: Server creation, registry attachment,
  * telemetry bus, and stdio transport connection.
  *
  * @example
  * ```typescript
- * import { startServer, autoDiscover } from '@vinkius-core/mcp-fusion';
+ * import { startServer, autoDiscover } from 'vurb';
  *
  * const registry = f.registry();
  * await autoDiscover(registry, new URL('./tools', import.meta.url));
@@ -140,7 +140,7 @@ export async function startServer<TContext>(
             try {
                 const ctx = contextFactory
                     ? await contextFactory(undefined)
-                    : (undefined as TContext);
+                    : _missingContextProxy as TContext;
                 return await registry.routeCall(ctx, toolName, args);
             } catch (e: unknown) {
                 // Error class cannot survive C++ structured clone.

@@ -1,7 +1,7 @@
 # Production Server
 
 ::: info Prerequisites
-Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -13,14 +13,14 @@ Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-
 
 ## Introduction {#introduction}
 
-MCP Fusion tools are transport-agnostic — the same `ToolRegistry` runs on Stdio (local development), HTTP/SSE (persistent servers), and serverless edge runtimes. For edge deployment, the [Vercel Adapter](/vercel-adapter) turns your registry into a Next.js App Router route with Edge Runtime support (~0ms cold starts), while the [Cloudflare Workers Adapter](/cloudflare-adapter) gives your tool handlers direct access to D1, KV, and R2 from 300+ edge locations. For AWS infrastructure, the [@vinkius-core/mcp-fusion-aws](/aws-connector) connector integrates with Lambda and Step Functions. All adapters cache registry compilation at cold start and handle warm requests as stateless JSON-RPC — no SSE sessions, no streaming state, no infrastructure to manage.
+Vurb.ts tools are transport-agnostic — the same `ToolRegistry` runs on Stdio (local development), HTTP/SSE (persistent servers), and serverless edge runtimes. For edge deployment, the [Vercel Adapter](/vercel-adapter) turns your registry into a Next.js App Router route with Edge Runtime support (~0ms cold starts), while the [Cloudflare Workers Adapter](/cloudflare-adapter) gives your tool handlers direct access to D1, KV, and R2 from 300+ edge locations. For AWS infrastructure, the [@vurb/aws](/aws-connector) connector integrates with Lambda and Step Functions. All adapters cache registry compilation at cold start and handle warm requests as stateless JSON-RPC — no SSE sessions, no streaming state, no infrastructure to manage.
 
 ## Stdio Transport {#stdio}
 
 The simplest deployment. The MCP client spawns your server as a child process:
 
 ```typescript
-import { ToolRegistry } from '@vinkius-core/mcp-fusion';
+import { ToolRegistry } from 'Vurb.ts';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 
@@ -96,7 +96,7 @@ app.listen(3000);
 See the full [Cloudflare Adapter](/cloudflare-adapter) guide. Quick start:
 
 ```typescript
-import { ToolRegistry } from '@vinkius-core/mcp-fusion';
+import { ToolRegistry } from 'Vurb.ts';
 import { McpAgent } from 'agents/mcp';
 
 const registry = new ToolRegistry();
@@ -121,7 +121,7 @@ See the full [Vercel Adapter](/vercel-adapter) guide. Quick start:
 
 ```typescript
 import { createMcpHandler } from '@vercel/mcp-adapter';
-import { ToolRegistry } from '@vinkius-core/mcp-fusion';
+import { ToolRegistry } from 'Vurb.ts';
 
 const registry = new ToolRegistry();
 registry.registerAll(...tools);

@@ -11,7 +11,7 @@
  *
  * @example
  * ```typescript
- * import { PromptRegistry, definePrompt } from '@vinkius-core/mcp-fusion';
+ * import { PromptRegistry, definePrompt } from 'vurb';
  *
  * const promptRegistry = new PromptRegistry<AppContext>();
  * promptRegistry.register(AuditPrompt);

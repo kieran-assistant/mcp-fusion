@@ -7,7 +7,7 @@
  *
  * @example
  * ```typescript
- * import { defineTool, success } from '@vinkius-core/mcp-fusion';
+ * import { defineTool, success } from 'vurb';
  *
  * export const projects = defineTool('projects', {
  *     description: 'Manage workspace projects',

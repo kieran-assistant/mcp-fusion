@@ -1,7 +1,7 @@
 /**
  * Auth Tool Factory — Pre-built Device Flow Authentication Tool
  *
- * Creates a complete mcp-fusion tool with login, complete, status, and logout actions.
+ * Creates a complete vurb tool with login, complete, status, and logout actions.
  * Consumers only need to provide their client_id and endpoint URLs.
  *
  * @example
@@ -21,7 +21,7 @@
  * ```
  */
 
-import { createTool, success, error as fusionError, type ToolResponse } from '@vinkius-core/mcp-fusion';
+import { createTool, success, error as vurbError, type ToolResponse } from 'vurb';
 import { DeviceAuthenticator } from './DeviceAuthenticator.js';
 import type { DeviceCodeResponse, TokenResponse } from './DeviceAuthenticator.js';
 import { TokenManager } from './TokenManager.js';

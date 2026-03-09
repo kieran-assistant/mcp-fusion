@@ -38,7 +38,7 @@ describe('createDebugObserver — factory', () => {
         observer({ type: 'route', tool: 'test', action: 'ping', timestamp: Date.now() });
 
         expect(spy).toHaveBeenCalledOnce();
-        expect(spy.mock.calls[0]![0]).toContain('[mcp-fusion]');
+        expect(spy.mock.calls[0]![0]).toContain('[vurb]');
         expect(spy.mock.calls[0]![0]).toContain('test/ping');
         spy.mockRestore();
     });

@@ -1,7 +1,7 @@
 # Agentic Affordances
 
 ::: info Prerequisites
-Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -16,7 +16,7 @@ Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-
 
 In a traditional MCP server, after receiving a response the AI must scan the entire `tools/list` to figure out what to do next. With 50+ tools, it often picks the wrong one or hallucinates a tool name that doesn't exist.
 
-MCP Fusion introduces **Agentic Affordances** — a HATEOAS-style mechanism where each response carries suggested next actions based on the *current data state*. The AI no longer guesses. It follows the shortest path.
+Vurb.ts introduces **Agentic Affordances** — a HATEOAS-style mechanism where each response carries suggested next actions based on the *current data state*. The AI no longer guesses. It follows the shortest path.
 
 ## The Problem — Blind Navigation {#problem}
 
@@ -35,7 +35,7 @@ The AI wastes tokens scanning tool lists and may hallucinate non-existent tool n
 The `suggest()` helper creates HATEOAS-style hints inside a Presenter's `.suggest()` method. Each hint carries a tool name and a human-readable reason:
 
 ```typescript
-import { createPresenter, t, suggest } from '@vinkius-core/mcp-fusion';
+import { createPresenter, t, suggest } from 'Vurb.ts';
 
 const InvoicePresenter = createPresenter('Invoice')
   .schema({
@@ -109,9 +109,9 @@ const UserPresenter = createPresenter('User')
 Connect your Presenter to a tool with `.returns()`. The handler just returns raw data — the Presenter handles validation, rules, UI blocks, and affordances automatically:
 
 ```typescript
-import { initFusion } from '@vinkius-core/mcp-fusion';
+import { initVurb } from 'Vurb.ts';
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 export const getInvoice = f.query('billing.get_invoice')
   .describe('Get an invoice by ID')

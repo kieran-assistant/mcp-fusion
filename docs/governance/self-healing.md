@@ -6,7 +6,7 @@ description: "Automatic contract delta injection into validation errors, enablin
 # Self-Healing Context
 
 ::: info Prerequisites
-Install MCP Fusion before following this guide: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Enriching Validation Errors](#enrich)
@@ -30,8 +30,8 @@ When no contract changes exist, self-healing adds zero overhead. `createToolEnha
 import {
   enrichValidationError,
   type SelfHealingConfig,
-} from '@vinkius-core/mcp-fusion/introspection';
-import { diffContracts } from '@vinkius-core/mcp-fusion/introspection';
+} from 'Vurb.ts/introspection';
+import { diffContracts } from 'Vurb.ts/introspection';
 
 // Compute deltas at startup (once)
 const deltas = new Map<string, ContractDiffResult>();
@@ -66,7 +66,7 @@ Contract deltas are computed once at server startup by diffing current contracts
 `createToolEnhancer()` is the primary integration point. It returns a pre-scoped function optimized for a specific tool:
 
 ```typescript
-import { createToolEnhancer } from '@vinkius-core/mcp-fusion/introspection';
+import { createToolEnhancer } from 'Vurb.ts/introspection';
 
 const enhance = createToolEnhancer('invoices', config);
 
@@ -148,9 +148,9 @@ const config: SelfHealingConfig = {
 The typical integration reads the lockfile (last known-good contracts), compiles current contracts, diffs each tool, and creates per-tool enhancers:
 
 ```typescript
-import { diffContracts } from '@vinkius-core/mcp-fusion/introspection';
-import { createToolEnhancer } from '@vinkius-core/mcp-fusion/introspection';
-import { readLockfile, compileContracts } from '@vinkius-core/mcp-fusion/introspection';
+import { diffContracts } from 'Vurb.ts/introspection';
+import { createToolEnhancer } from 'Vurb.ts/introspection';
+import { readLockfile, compileContracts } from 'Vurb.ts/introspection';
 
 const lockfile = await readLockfile(cwd);
 const currentContracts = compileContracts(builders);

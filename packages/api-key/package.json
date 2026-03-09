@@ -1,7 +1,7 @@
 {
-  "name": "@vinkius-core/mcp-fusion-api-key",
+  "name": "@vurb/api-key",
   "version": "3.1.31",
-  "description": "API key validation middleware for MCP servers built with mcp-fusion. Timing-safe comparison, SHA-256 hashing, async validators, and self-healing error responses.",
+  "description": "API key validation middleware for MCP servers built with vurb. Timing-safe comparison, SHA-256 hashing, async validators, and self-healing error responses.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,23 +18,23 @@
   },
   "keywords": [
     "mcp",
-    "mcp-fusion",
+    "vurb",
     "api-key",
     "authentication",
     "middleware",
     "ai",
     "llm"
   ],
-  "author": "Vinkius Labs",
+  "author": "Renato Marinho",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vinkius-labs/mcp-fusion.git",
+    "url": "git+https://github.com/vinkius-labs/vurb.ts.git",
     "directory": "packages/api-key"
   },
   "bugs": {
-    "url": "https://github.com/vinkius-labs/mcp-fusion/issues"
+    "url": "https://github.com/vinkius-labs/vurb.ts/issues"
   },
-  "homepage": "https://mcp-fusion.vinkius.com/",
+  "homepage": "https://vurb.vinkius.com/",
   "files": [
     "dist",
     "README.md"
@@ -46,10 +46,10 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@vinkius-core/mcp-fusion": "^2.0.0"
+    "vurb": "^3.0.0"
   },
   "devDependencies": {
-    "@vinkius-core/mcp-fusion": ">=2.14.0"
+    "vurb": ">=3.0.0"
   },
   "license": "Apache-2.0"
 }

@@ -1,5 +1,5 @@
 /**
- * `fusion lock` — generate or verify capability lockfile.
+ * `vurb lock` — generate or verify capability lockfile.
  * @module
  */
 import { compileContracts } from '../../introspection/ToolContract.js';
@@ -15,7 +15,7 @@ import {
 import type { CliArgs } from '../args.js';
 import type { ProgressReporter } from '../progress.js';
 import { ProgressTracker } from '../progress.js';
-import { MCP_FUSION_VERSION } from '../constants.js';
+import { VURB_VERSION } from '../constants.js';
 import { resolveRegistry } from '../registry.js';
 import { inferServerEntry } from '../utils.js';
 
@@ -27,7 +27,7 @@ export async function commandLock(args: CliArgs, reporter?: ProgressReporter): P
         const detected = inferServerEntry(args.cwd);
         if (!detected) {
             console.error('Error: Could not auto-detect server entrypoint.\n');
-            console.error('Usage: fusion lock --server ./src/server.ts');
+            console.error('Usage: vurb lock --server ./src/server.ts');
             process.exit(1);
         }
         args.server = detected;
@@ -61,7 +61,7 @@ export async function commandLock(args: CliArgs, reporter?: ProgressReporter): P
         progress.start('read', 'Reading existing lockfile');
         const existing = await readLockfile(args.cwd);
         if (!existing) {
-            progress.fail('read', 'Reading existing lockfile', `${LOCKFILE_NAME} not found — run: fusion lock`);
+            progress.fail('read', 'Reading existing lockfile', `${LOCKFILE_NAME} not found — run: vurb lock`);
             process.exit(1);
         }
         progress.done('read', 'Reading existing lockfile');
@@ -86,7 +86,7 @@ export async function commandLock(args: CliArgs, reporter?: ProgressReporter): P
     } else {
         // ── Generate Mode ──
         progress.start('generate', 'Computing behavioral digests');
-        const lockfile = await generateLockfile(displayName, contracts, MCP_FUSION_VERSION, options);
+        const lockfile = await generateLockfile(displayName, contracts, VURB_VERSION, options);
         progress.done('generate', 'Computing behavioral digests');
 
         progress.start('write', `Writing ${LOCKFILE_NAME}`);

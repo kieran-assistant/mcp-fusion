@@ -1,13 +1,13 @@
 /**
- * Server Bootstrap — MCP Fusion
+ * Server Bootstrap — Vurb
  *
  * Tools are auto-discovered from src/tools/.
  * Drop a file, it becomes a tool.
  */
 import { fileURLToPath } from 'node:url';
-import { autoDiscover, PromptRegistry, startServer } from '@vinkius-core/mcp-fusion';
+import { autoDiscover, PromptRegistry, startServer } from 'vurb';
 import { createContext } from './context.js';
-import { f } from './fusion.js';
+import { f } from './vurb.js';
 import { GreetPrompt } from './prompts/greet.js';
 
 // ── Registry ─────────────────────────────────────────────

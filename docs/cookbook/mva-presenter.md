@@ -1,7 +1,7 @@
 # MVA Presenter
 
 ::: info Prerequisites
-Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-fusion @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx fusion create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -18,7 +18,7 @@ Install MCP Fusion before following this recipe: `npm install @vinkius-core/mcp-
 
 In a traditional MCP server, the handler fetches data and returns `JSON.stringify(rows)`. The AI receives raw database objects with internal fields, zero context about what the values mean, and no guidance about what to do next. The result: the AI displays `amount_cents: 45000` as "$45,000" instead of "$450.00", leaks `password_hash` fields, and hallucinates tool names.
 
-The **Presenter** is MCP Fusion's answer. It's the **View** in the [MVA pattern](/mva-pattern) — it separates *what the AI sees* from *how data is fetched*. Define it once, reuse it across every tool and prompt that touches that entity.
+The **Presenter** is Vurb.ts's answer. It's the **View** in the [MVA pattern](/mva-pattern) — it separates *what the AI sees* from *how data is fetched*. Define it once, reuse it across every tool and prompt that touches that entity.
 
 ## What is a Presenter? {#what}
 
@@ -35,7 +35,7 @@ The handler just queries the database. The Presenter does everything else.
 ## Creating Your First Presenter {#first}
 
 ```typescript
-import { createPresenter, t } from '@vinkius-core/mcp-fusion';
+import { createPresenter, t } from 'Vurb.ts';
 
 export const UserPresenter = createPresenter('User')
   .schema({
@@ -89,9 +89,9 @@ const InvoicePresenter = createPresenter('Invoice')
 Connect a Presenter with `.returns()`. The handler returns raw data, the Presenter handles everything else:
 
 ```typescript
-import { initFusion } from '@vinkius-core/mcp-fusion';
+import { initVurb } from 'Vurb.ts';
 
-const f = initFusion<AppContext>();
+const f = initVurb<AppContext>();
 
 export const getInvoice = f.query('billing.get_invoice')
   .describe('Get an invoice by its ID')
@@ -163,7 +163,7 @@ The AI automatically receives these rules when invoice data is in the response �
 Render charts, tables, and diagrams server-side. The AI passes them through unchanged:
 
 ```typescript
-import { createPresenter, t, ui } from '@vinkius-core/mcp-fusion';
+import { createPresenter, t, ui } from 'Vurb.ts';
 
 const InvoicePresenter = createPresenter('Invoice')
   .schema({ id: t.string, amount_cents: t.number, status: t.enum('paid', 'pending', 'overdue') })
@@ -189,7 +189,7 @@ ui.summary('3 invoices found.')         // Collection summaries
 Here's a production-ready Presenter that combines every feature:
 
 ```typescript
-import { createPresenter, t, suggest, ui } from '@vinkius-core/mcp-fusion';
+import { createPresenter, t, suggest, ui } from 'Vurb.ts';
 
 export const InvoicePresenter = createPresenter('Invoice')
   .schema({
