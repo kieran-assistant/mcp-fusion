@@ -2,6 +2,7 @@
 title: OAuth — Device Authorization Grant
 description: Drop-in OAuth 2.0 Device Flow (RFC 8628) for MCP servers built with Vurb.ts.
 ---
+<a href="https://www.npmjs.com/package/@vurb/oauth"><img src="https://img.shields.io/npm/v/@vurb/oauth?color=blue" alt="npm" /></a>
 
 # OAuth — Device Authorization Grant
 

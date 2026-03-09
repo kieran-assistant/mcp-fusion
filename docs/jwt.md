@@ -2,6 +2,7 @@
 title: JWT Verification — Standards-Compliant Token Validation
 description: Drop-in JWT verification middleware for MCP servers built with Vurb.ts. HS256 native fallback, jose integration for RS256/ES256/JWKS, claims validation, and self-healing errors.
 ---
+<a href="https://www.npmjs.com/package/@vurb/jwt"><img src="https://img.shields.io/npm/v/@vurb/jwt?color=blue" alt="npm" /></a>
 
 # JWT Verification
 

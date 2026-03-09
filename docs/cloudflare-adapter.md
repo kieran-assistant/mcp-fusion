@@ -1,5 +1,7 @@
 # Cloudflare Workers Adapter
 
+<a href="https://www.npmjs.com/package/@vurb/cloudflare"><img src="https://img.shields.io/npm/v/@vurb/cloudflare?color=blue" alt="npm" /></a>
+
 - [Why This Matters](#why-this-matters)
 - [Installation](#installation)
 - [Architecture](#architecture)

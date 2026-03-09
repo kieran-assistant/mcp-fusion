@@ -2,6 +2,7 @@
 title: API Key Validation — Timing-Safe Key Management
 description: Drop-in API key validation middleware for MCP servers built with Vurb.ts. SHA-256 hashing, timing-safe comparison, async validators, and self-healing errors. Zero external dependencies.
 ---
+<a href="https://www.npmjs.com/package/@vurb/api-key"><img src="https://img.shields.io/npm/v/@vurb/api-key?color=blue" alt="npm" /></a>
 
 # API Key Validation
 

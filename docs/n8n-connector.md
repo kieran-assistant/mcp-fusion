@@ -1,5 +1,7 @@
 # n8n Connector
 
+<a href="https://www.npmjs.com/package/@vurb/n8n"><img src="https://img.shields.io/npm/v/@vurb/n8n?color=blue" alt="npm" /></a>
+
 - [Install](#install)
 - [Dynamic Ingestion](#ingestion)
 - [Semantic Inference](#semantic)

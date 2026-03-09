@@ -8,8 +8,8 @@
 **The MVA framework for production MCP servers.**<br>
 Structured perception for AI agents. Zero hallucination. Zero data leaks.
 
-[![npm version](https://img.shields.io/npm/v/vurb.svg?color=0ea5e9)](https://www.npmjs.com/package/vurb)
-[![Downloads](https://img.shields.io/npm/dw/vurb)](https://www.npmjs.com/package/vurb)
+[![npm version](https://img.shields.io/npm/v/@vurb/core.svg?color=0ea5e9)](https://www.npmjs.com/package/@vurb/core)
+[![Downloads](https://img.shields.io/npm/dw/@vurb/core)](https://www.npmjs.com/package/@vurb/core)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7+-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![MCP Standard](https://img.shields.io/badge/MCP-Standard-purple)](https://modelcontextprotocol.io/)
 [![License](https://img.shields.io/badge/License-Apache_2.0-green)](https://github.com/vinkius-labs/vurb.ts/blob/main/LICENSE)

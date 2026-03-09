@@ -1,5 +1,7 @@
 # OpenAPI Generator
 
+<a href="https://www.npmjs.com/package/@vurb/openapi-gen"><img src="https://img.shields.io/npm/v/@vurb/openapi-gen?color=blue" alt="npm" /></a>
+
 - [Install](#install)
 - [Generated Output](#output)
 - [Schema Fidelity — OpenAPI to Strict Zod](#schema-fidelity)

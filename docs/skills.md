@@ -126,6 +126,7 @@ metadata:
   version: "2.1"
   tags: infrastructure, devops
 ---
+<a href="https://www.npmjs.com/package/@vurb/skills"><img src="https://img.shields.io/npm/v/@vurb/skills?color=blue" alt="npm" /></a>
 
 # Kubernetes Deployment
 

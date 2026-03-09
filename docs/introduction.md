@@ -2,9 +2,9 @@
 
 <div class="ms-badges">
 <a href="https://github.com/vinkius-labs/vurb.ts/releases"><img src="https://img.shields.io/badge/First%20Release-Feb%2012%2C%202026-blue" alt="First Release"></a>
-<a href="https://www.npmjs.com/package/vurb"><img src="https://img.shields.io/npm/dt/vurb" alt="Downloads"></a>
-<a href="https://www.npmjs.com/package/vurb"><img src="https://img.shields.io/npm/dw/vurb" alt="Weekly Downloads"></a>
-<a href="https://www.npmjs.com/package/vurb"><img src="https://img.shields.io/npm/v/vurb.svg?style=flat-square&color=0ea5e9" alt="npm version"></a>
+<a href="https://www.npmjs.com/package/@vurb/core"><img src="https://img.shields.io/npm/dt/@vurb/core" alt="Downloads"></a>
+<a href="https://www.npmjs.com/package/@vurb/core"><img src="https://img.shields.io/npm/dw/@vurb/core" alt="Weekly Downloads"></a>
+<a href="https://www.npmjs.com/package/@vurb/core"><img src="https://img.shields.io/npm/v/@vurb/core.svg?style=flat-square&color=0ea5e9" alt="npm version"></a>
 <a href="https://bundlephobia.com/package/vurb"><img src="https://img.shields.io/bundlephobia/minzip/vurb" alt="Package Size"></a>
 <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.7+-blue.svg?style=flat-square&logo=typescript" alt="TypeScript"></a>
 <a href="https://modelcontextprotocol.io/"><img src="https://img.shields.io/badge/MCP-Standard-purple.svg?style=flat-square" alt="MCP SDK"></a>

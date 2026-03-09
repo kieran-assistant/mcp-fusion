@@ -1,5 +1,7 @@
 # Vercel Adapter
 
+<a href="https://www.npmjs.com/package/@vurb/vercel"><img src="https://img.shields.io/npm/v/@vurb/vercel?color=blue" alt="npm" /></a>
+
 - [Why This Matters](#why-this-matters)
 - [Installation](#installation)
 - [Architecture](#architecture)

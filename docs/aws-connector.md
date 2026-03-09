@@ -1,5 +1,7 @@
 # AWS Connector
 
+<a href="https://www.npmjs.com/package/@vurb/aws"><img src="https://img.shields.io/npm/v/@vurb/aws?color=blue" alt="npm" /></a>
+
 - [Install](#install)
 - [Resource Tagging Convention](#tagging)
 - [Dynamic Ingestion](#ingestion)

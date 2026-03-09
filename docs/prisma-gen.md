@@ -1,5 +1,7 @@
 # Prisma Generator
 
+<a href="https://www.npmjs.com/package/@vurb/prisma-gen"><img src="https://img.shields.io/npm/v/@vurb/prisma-gen?color=blue" alt="npm" /></a>
+
 - [Install](#install)
 - [Field-Level Security](#field-security)
 - [OOM Guard & Tenant Isolation](#oom-guard)
