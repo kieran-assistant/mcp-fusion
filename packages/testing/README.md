@@ -241,7 +241,7 @@ npm install @vurb/testing
 
 | Package | Version |
 |---------|---------|
-| `Vurb.ts` | `^2.0.0` |
+| `vurb` | `^2.0.0` |
 | `zod` | `^3.25.1 \|\| ^4.0.0` |
 
 ## Requirements

@@ -18,7 +18,7 @@ import { createAwsConnector } from '@vurb/aws';
 import { LambdaClient } from '@aws-sdk/client-lambda';
 import { SFNClient } from '@aws-sdk/client-sfn';
 import { createLambdaAdapter, createSfnAdapter } from '@vurb/aws';
-import { defineTool, ToolRegistry } from 'Vurb.ts';
+import { defineTool, ToolRegistry } from 'vurb';
 
 const connector = await createAwsConnector({
   lambdaClient: await createLambdaAdapter(new LambdaClient({ region: 'us-east-1' })),
@@ -201,7 +201,7 @@ The fingerprint includes tool names, descriptions, and action annotations — an
 ```typescript
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { defineTool, ToolRegistry, createServerAttachment } from 'Vurb.ts';
+import { defineTool, ToolRegistry, createServerAttachment } from 'vurb';
 import { createAwsConnector, createLambdaAdapter, createSfnAdapter, defineAwsTool } from '@vurb/aws';
 import { LambdaClient } from '@aws-sdk/client-lambda';
 import { SFNClient } from '@aws-sdk/client-sfn';

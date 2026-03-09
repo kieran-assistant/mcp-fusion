@@ -1,7 +1,7 @@
 # Without MVA vs With MVA
 
 ::: info Prerequisites
-Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install vurb @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx vurb create`](/quickstart-lightspeed).
 :::
 
 - [Before & After: Invoice](#invoice)
@@ -55,8 +55,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 **With MVA:**
 
 ```typescript
-import { createPresenter, suggest, ui } from 'Vurb.ts';
-import { initVurb } from 'Vurb.ts';
+import { createPresenter, suggest, ui } from 'vurb';
+import { initVurb } from 'vurb';
 import { z } from 'zod';
 
 const f = initVurb<AppContext>();

@@ -1,7 +1,7 @@
 # Tracing
 
 ::: info Prerequisites
-Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install vurb @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx vurb create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -25,7 +25,7 @@ Vurb.ts produces OpenTelemetry-compatible spans with **zero dependencies** — s
 
 ```typescript
 import { trace } from '@opentelemetry/api';
-import { ToolRegistry } from 'Vurb.ts';
+import { ToolRegistry } from 'vurb';
 
 const registry = new ToolRegistry<AppContext>();
 registry.registerAll(projectsTool, billingTool, usersTool);
@@ -170,7 +170,7 @@ const dbQuery = f.query('db.query')
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
 import { trace } from '@opentelemetry/api';
-import { ToolRegistry } from 'Vurb.ts';
+import { ToolRegistry } from 'vurb';
 
 const sdk = new NodeSDK({
   traceExporter: new OTLPTraceExporter({

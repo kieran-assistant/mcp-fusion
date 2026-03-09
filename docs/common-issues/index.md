@@ -1,7 +1,7 @@
 # Common Issues in Agentic Systems
 
 ::: info Prerequisites
-Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install vurb @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx vurb create`](/quickstart-lightspeed).
 :::
 
 AI agents are stochastic — they hallucinate parameters, misformat inputs, retry blindly, and lose context between calls. A raw MCP server treats each tool call as independent, leaving your application vulnerable to data corruption, token waste, and unpredictable failures.
@@ -40,7 +40,7 @@ This happens because **AI is stochastic**. The agent can misformat Zod parameter
 **Compose the workflow into a single tool** using the Fluent API. The agent calls one tool — the server orchestrates all steps internally and handles failure atomically:
 
 ```typescript
-import { initVurb, toolError, success } from 'Vurb.ts';
+import { initVurb, toolError, success } from 'vurb';
 
 const f = initVurb<AppContext>();
 

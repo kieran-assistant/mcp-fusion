@@ -1,7 +1,7 @@
 # VurbClient
 
 ::: info Prerequisites
-Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install vurb @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx vurb create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -24,8 +24,8 @@ VurbClient brings **tRPC-style type inference** to MCP. Export a router type fro
 
 ```typescript
 // server.ts
-import { initVurb, createTypedRegistry } from 'Vurb.ts';
-import type { InferRouter } from 'Vurb.ts';
+import { initVurb, createTypedRegistry } from 'vurb';
+import type { InferRouter } from 'vurb';
 
 const f = initVurb<AppContext>();
 
@@ -57,7 +57,7 @@ export type AppRouter = InferRouter<typeof registry>;
 
 ```typescript
 // agent.ts
-import { createVurbClient } from 'Vurb.ts';
+import { createVurbClient } from 'vurb';
 import type { AppRouter } from './server.js';
 
 const client = createVurbClient<AppRouter>(transport);
@@ -122,7 +122,7 @@ const client = createVurbClient<AppRouter>(transport);
 Onion-pattern interceptors for every outgoing call:
 
 ```typescript
-import type { ClientMiddleware } from 'Vurb.ts';
+import type { ClientMiddleware } from 'vurb';
 
 const authMiddleware: ClientMiddleware = async (action, args, next) => {
   return next(action, { ...args, _token: await getToken() });
@@ -147,7 +147,7 @@ Compiled once at creation — O(1) per call.
 Enable `throwOnError` to parse `<tool_error>` XML into `VurbClientError`:
 
 ```typescript
-import { createVurbClient, VurbClientError } from 'Vurb.ts';
+import { createVurbClient, VurbClientError } from 'vurb';
 
 const client = createVurbClient<AppRouter>(transport, { throwOnError: true });
 

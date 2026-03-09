@@ -18,7 +18,7 @@
 ## Quick Start
 
 ```typescript
-import { initVurb } from 'Vurb.ts';
+import { initVurb } from 'vurb';
 import { jwtGuard } from '@vurb/jwt';
 
 const f = initVurb<AppContext>();
@@ -66,7 +66,7 @@ npm install @vurb/jwt jose
 
 | Package | Version |
 |---------|---------|
-| `Vurb.ts` | `^2.0.0` |
+| `vurb` | `^2.0.0` |
 | `jose` | `^5.0.0` (optional) |
 
 ## Requirements

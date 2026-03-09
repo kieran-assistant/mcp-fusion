@@ -3,19 +3,19 @@
 Manual setup for when you need full control over every file.
 
 ::: tip Looking for the fast path?
-[Quickstart — Lightspeed](/quickstart-lightspeed) scaffolds a complete project with one command: `npx Vurb.ts create my-server`
+[Quickstart — Lightspeed](/quickstart-lightspeed) scaffolds a complete project with one command: `npx vurb create my-server`
 :::
 
 ## Install {#install}
 
 ```bash
-npm install Vurb.ts @modelcontextprotocol/sdk zod
+npm install vurb @modelcontextprotocol/sdk zod
 ```
 
 ## Create a Vurb.ts Instance {#init}
 
 ```typescript
-import { initVurb } from 'Vurb.ts';
+import { initVurb } from 'vurb';
 
 const f = initVurb();
 ```
@@ -38,7 +38,7 @@ const getWeather = f.query('weather.get')
 ## Register and Start {#server}
 
 ```typescript
-import { ToolRegistry } from 'Vurb.ts';
+import { ToolRegistry } from 'vurb';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 
@@ -65,7 +65,7 @@ main().catch(console.error);
 ## Complete File {#complete}
 
 ```typescript
-import { initVurb, ToolRegistry } from 'Vurb.ts';
+import { initVurb, ToolRegistry } from 'vurb';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 
@@ -104,7 +104,7 @@ Connect to any MCP client:
 
 ### Cursor
 
-Add `.cursor/mcp.json` to your project root (or use [`npx Vurb.ts create`](/quickstart-lightspeed) which generates it automatically):
+Add `.cursor/mcp.json` to your project root (or use [`npx vurb create`](/quickstart-lightspeed) which generates it automatically):
 
 ```json
 {

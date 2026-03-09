@@ -1,7 +1,7 @@
 # Observability
 
 ::: info Prerequisites
-Install Vurb.ts before following this recipe: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install vurb @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx vurb create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -20,7 +20,7 @@ The pattern is simple: create a shared middleware that captures timing and conte
 A single middleware that logs every tool call:
 
 ```typescript
-import { initVurb } from 'Vurb.ts';
+import { initVurb } from 'vurb';
 
 const f = initVurb<AppContext>();
 

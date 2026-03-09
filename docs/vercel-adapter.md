@@ -16,7 +16,7 @@ Deploy your Vurb.ts server as a Next.js App Router route handler or standalone V
 
 ```typescript
 // app/api/mcp/route.ts — the entire file
-import { initVurb } from 'Vurb.ts';
+import { initVurb } from 'vurb';
 import { vercelAdapter } from '@vurb/vercel';
 
 interface AppContext { tenantId: string; dbUrl: string }
@@ -131,7 +131,7 @@ Build tools exactly as you would for a Node.js MCP server. Nothing changes:
 
 ```typescript
 // src/tools.ts
-import { initVurb } from 'Vurb.ts';
+import { initVurb } from 'vurb';
 
 interface AppContext {
   tenantId: string;

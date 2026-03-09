@@ -1,7 +1,7 @@
 # Advanced Configuration
 
 ::: info Prerequisites
-Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install vurb @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx vurb create`](/quickstart-lightspeed).
 :::
 
 - [TOON Token Compression](#toon)
@@ -14,7 +14,7 @@ Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextp
 Vurb.ts generates Markdown descriptions for tool actions by default. `.toonDescription()` switches to [Token-Oriented Object Notation (TOON)](https://github.com/toon-format/toon) — a pipe-delimited table format that preserves LLM structural perception at roughly half the tokens:
 
 ```typescript
-import { initVurb } from 'Vurb.ts';
+import { initVurb } from 'vurb';
 
 const f = initVurb<AppContext>();
 
@@ -66,7 +66,7 @@ A public chat assistant never sees the `billing` tool. The LLM can't call what i
 The default routing field is `"action"`. Some domains have their own vocabulary. Use `createTool()` to set a custom discriminator at the group level:
 
 ```typescript
-import { createTool } from 'Vurb.ts';
+import { createTool } from 'vurb';
 
 const storage = createTool<AppContext>('storage')
   .discriminator('operation')

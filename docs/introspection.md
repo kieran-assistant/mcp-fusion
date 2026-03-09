@@ -1,7 +1,7 @@
 # Introspection
 
 ::: info Prerequisites
-Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install vurb @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx vurb create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -19,7 +19,7 @@ Runtime access to action metadata — registered tools, schemas, middleware cove
 After building a tool, call `getActionNames()` to list available actions:
 
 ```typescript
-import { initVurb } from 'Vurb.ts';
+import { initVurb } from 'vurb';
 
 const f = initVurb<AppContext>();
 

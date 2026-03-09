@@ -1,7 +1,7 @@
 # Custom Responses
 
 ::: info Prerequisites
-Install Vurb.ts before following this recipe: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install vurb @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx vurb create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -21,7 +21,7 @@ The `response()` builder gives you direct access to Vurb.ts's response pipeline.
 `response(data)` starts a builder chain. Add blocks, then call `.build()` to produce the MCP response:
 
 ```typescript
-import { initVurb, response, ui } from 'Vurb.ts';
+import { initVurb, response, ui } from 'vurb';
 
 const f = initVurb<AppContext>();
 

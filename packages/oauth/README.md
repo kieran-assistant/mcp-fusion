@@ -19,7 +19,7 @@
 
 ```typescript
 import { createAuthTool, TokenManager } from '@vurb/oauth';
-import { ToolRegistry, createTool } from 'Vurb.ts';
+import { ToolRegistry, createTool } from 'vurb';
 
 const auth = createAuthTool({
     clientId: 'your-client-id',
@@ -89,7 +89,7 @@ npm install @vurb/oauth
 
 | Package | Version |
 |---------|---------|
-| `Vurb.ts` | `^2.0.0` |
+| `vurb` | `^2.0.0` |
 
 ## Requirements
 

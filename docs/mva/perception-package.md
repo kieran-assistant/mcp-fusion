@@ -197,7 +197,7 @@ The difference is architectural, not cosmetic. The AI operating on the second re
 Not all responses need a Presenter. The `ResponseBuilder` allows manual composition for handlers that need full control:
 
 ```typescript
-import { response, ui } from 'Vurb.ts';
+import { response, ui } from 'vurb';
 
 handler: async (ctx, args) => {
     const stats = await ctx.analytics.getMonthlyStats();

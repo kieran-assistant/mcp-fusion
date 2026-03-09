@@ -1,7 +1,7 @@
 # Building Tools
 
 ::: info Prerequisites
-Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install vurb @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx vurb create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -26,7 +26,7 @@ Vurb.ts's **Fluent API** eliminates all of that. You declare what your tool does
 If your goal is building **Zero-Hallucination Agent Workflows**, this is how you do it. The tools you build work with every MCP client — Cursor, Claude Desktop, Claude Code, Windsurf, Cline, VS Code with Copilot — and deploy unchanged to [Vercel](/vercel-adapter) or [Cloudflare Workers](/cloudflare-adapter).
 
 ```typescript
-import { initVurb } from 'Vurb.ts';
+import { initVurb } from 'vurb';
 
 interface AppContext {
   db: DatabaseClient;
@@ -55,7 +55,7 @@ Before building tools, define the **application context** — the shared state e
 
 ```typescript
 // src/vurb.ts
-import { initVurb } from 'Vurb.ts';
+import { initVurb } from 'vurb';
 
 interface AppContext {
   db: DatabaseClient;
@@ -231,7 +231,7 @@ registry.attachToServer(server, {
 The `.returns()` method attaches an MVA [Presenter](/presenter) that controls exactly what the agent sees:
 
 ```typescript
-import { createPresenter, t } from 'Vurb.ts';
+import { createPresenter, t } from 'vurb';
 
 const ProjectPresenter = createPresenter('Project')
   .schema({
@@ -353,7 +353,7 @@ See the [Runtime Guards guide](/runtime-guards) for the full configuration refer
 Long-running operations report progress via generator handlers. Each `yield progress()` becomes an MCP `notifications/progress` event:
 
 ```typescript
-import { progress } from 'Vurb.ts';
+import { progress } from 'vurb';
 
 export const deploy = f.mutation('infra.deploy')
   .describe('Deploy infrastructure to the target environment')
@@ -380,7 +380,7 @@ See the [Streaming Progress cookbook](/cookbook/streaming) for real-world exampl
 Once your tools are built, registration is straightforward:
 
 ```typescript
-import { ToolRegistry } from 'Vurb.ts';
+import { ToolRegistry } from 'vurb';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 

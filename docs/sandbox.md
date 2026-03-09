@@ -91,7 +91,7 @@ When `.sandboxed()` is called, the framework appends a system instruction to the
 For advanced use cases where you need direct control over the engine lifecycle:
 
 ```typescript
-import { SandboxEngine } from 'Vurb.ts';
+import { SandboxEngine } from 'vurb';
 
 const engine = new SandboxEngine({
     timeout: 5000,        // Kill after 5 seconds
@@ -237,7 +237,7 @@ The Context is created empty. No references to the host environment are injected
 Before code reaches the V8 isolate, `validateSandboxCode()` performs a fast structural check:
 
 ```typescript
-import { validateSandboxCode } from 'Vurb.ts';
+import { validateSandboxCode } from 'vurb';
 
 const guard = validateSandboxCode('(data) => data.filter(d => d.risk > 90)');
 // { ok: true }

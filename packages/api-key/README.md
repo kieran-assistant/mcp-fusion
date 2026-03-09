@@ -18,7 +18,7 @@
 ## Quick Start
 
 ```typescript
-import { initVurb } from 'Vurb.ts';
+import { initVurb } from 'vurb';
 import { apiKeyGuard } from '@vurb/api-key';
 
 const f = initVurb<AppContext>();
@@ -75,7 +75,7 @@ npm install @vurb/api-key
 
 | Package | Version |
 |---------|---------|
-| `Vurb.ts` | `^2.0.0` |
+| `vurb` | `^2.0.0` |
 
 ## Requirements
 

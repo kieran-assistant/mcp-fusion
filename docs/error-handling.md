@@ -1,7 +1,7 @@
 # Error Handling
 
 ::: info Prerequisites
-Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install vurb @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx vurb create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -36,7 +36,7 @@ With Vurb.ts errors:
 For straightforward failures, the `error()` helper wraps your message in a standard MCP `isError: true` response:
 
 ```typescript
-import { initVurb, error, success } from 'Vurb.ts';
+import { initVurb, error, success } from 'vurb';
 
 const f = initVurb<AppContext>();
 
@@ -63,7 +63,7 @@ This works, but the AI only sees a text message — it doesn't know what to try 
 Shortcut for missing fields — tells the agent exactly which parameter to provide:
 
 ```typescript
-import { required } from 'Vurb.ts';
+import { required } from 'vurb';
 
 .handle(async (input, ctx) => {
   if (!input.workspace_id) return required('workspace_id');
@@ -83,7 +83,7 @@ import { required } from 'Vurb.ts';
 `toolError()` creates a rich error envelope with everything the AI needs to self-correct:
 
 ```typescript
-import { toolError, success } from 'Vurb.ts';
+import { toolError, success } from 'vurb';
 
 export const getInvoice = f.query('billing.get_invoice')
   .describe('Get an invoice by its ID')
@@ -259,7 +259,7 @@ Missing or misspelled discriminators produce structured corrections:
 For multi-step operations, use the [Result monad](/result-monad) to compose validation chains:
 
 ```typescript
-import { succeed, fail, error, success, type Result } from 'Vurb.ts';
+import { succeed, fail, error, success, type Result } from 'vurb';
 
 function findUser(db: Database, id: string): Result<User> {
   const user = db.users.get(id);

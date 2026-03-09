@@ -5,8 +5,6 @@
   <img src="https://github.com/user-attachments/assets/86ae1b28-a938-4e12-af29-bfc60a55dbe8" style="border-radius:8px;background:#000000;padding:10px;border:1px solid #414141;"  alt="Vurb.ts">
 </picture>
 
-# Vurb.ts
-
 **The MVA framework for production MCP servers.**<br>
 Structured perception for AI agents. Zero hallucination. Zero data leaks.
 
@@ -25,8 +23,8 @@ Structured perception for AI agents. Zero hallucination. Zero data leaks.
 ## Get Started in 5 Seconds
 
 ```bash
-npx Vurb.ts create my-server
-cd my-server && Vurb.ts dev
+npx vurb create my-server
+cd my-server && vurb dev
 ```
 
 That's it. A production-ready MCP server with file-based routing, Presenters, middleware, tests, and pre-configured connections for **Cursor**, **Claude Desktop**, **Claude Code**, **Windsurf**, **Cline**, and **VS Code + GitHub Copilot**.
@@ -38,7 +36,7 @@ That's it. A production-ready MCP server with file-based routing, Presenters, mi
 
   ● Scaffolding project — 14 files (6ms)
   ● Installing dependencies...
-  ✔ Done — Vurb.ts dev to start
+  ✔ Done — vurb dev to start
 ```
 
 Choose a vector to scaffold exactly the project you need:
@@ -53,13 +51,13 @@ Choose a vector to scaffold exactly the project you need:
 
 ```bash
 # Database-driven server with Presenter egress firewall
-npx Vurb.ts create my-api --vector prisma --transport sse --yes
+npx vurb create my-api --vector prisma --transport sse --yes
 
 # Bridge your n8n workflows to any MCP client
-npx Vurb.ts create ops-bridge --vector n8n --yes
+npx vurb create ops-bridge --vector n8n --yes
 
 # REST API → MCP in one command
-npx Vurb.ts create petstore --vector openapi --yes
+npx vurb create petstore --vector openapi --yes
 ```
 
 Drop a file in `src/tools/`, restart — it's a live MCP tool. No central import file, no merge conflicts:
@@ -149,7 +147,7 @@ case 'get_invoice':
 **After** — Vurb.ts with MVA:
 
 ```typescript
-import { createPresenter, suggest, ui, t } from 'Vurb.ts';
+import { createPresenter, suggest, ui, t } from 'vurb';
 
 const InvoicePresenter = createPresenter('Invoice')
     .schema({
@@ -425,7 +423,7 @@ Discriminator enum compilation. Per-field annotations tell the LLM which paramet
 ### tRPC-Style Client — Compile-Time Route Validation
 
 ```typescript
-import { createVurbClient } from 'Vurb.ts';
+import { createVurbClient } from 'vurb';
 import type { AppRouter } from './server.js';
 
 const client = createVurbClient<AppRouter>(transport);
@@ -458,8 +456,8 @@ return f.error('NOT_FOUND', `Project '${input.id}' not found`)
 Nine modules for SOC2-auditable AI deployments:
 
 ```bash
-npx Vurb.ts lock --server ./src/server.ts       # Generate vurb.lock
-npx Vurb.ts lock --check --server ./src/server.ts  # Gate CI builds
+npx vurb lock --server ./src/server.ts       # Generate vurb.lock
+npx vurb lock --check --server ./src/server.ts  # Gate CI builds
 ```
 
 - **Capability Lockfile** — deterministic, git-diffable artifact capturing every tool's behavioral contract
@@ -507,7 +505,7 @@ A Prisma Generator that produces Vurb.ts tools and Presenters with field-level s
 
 ```prisma
 generator mcp {
-  provider = "Vurb.ts-prisma-gen"
+  provider = "vurb-prisma-gen"
   output   = "../src/tools/database"
 }
 
@@ -544,8 +542,8 @@ n8n handles the Stripe/Salesforce/webhook logic. Vurb.ts provides typing, Presen
 ## Inspector — Real-Time Dashboard
 
 ```bash
-npx Vurb.ts inspect        # Auto-discover and connect
-npx Vurb.ts inspect --demo  # Built-in simulator
+npx vurb inspect        # Auto-discover and connect
+npx vurb inspect --demo  # Built-in simulator
 ```
 
 ```

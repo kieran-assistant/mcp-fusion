@@ -18,7 +18,7 @@
 ## Quick Start
 
 ```typescript
-import { initVurb } from 'Vurb.ts';
+import { initVurb } from 'vurb';
 import { discoverLambdas } from '@vurb/aws';
 
 const f = initVurb<AppContext>();
@@ -62,7 +62,7 @@ npm install @vurb/aws @aws-sdk/client-lambda
 
 | Package | Version |
 |---------|---------|
-| `Vurb.ts` | `^2.0.0` |
+| `vurb` | `^2.0.0` |
 | `@aws-sdk/client-lambda` | `^3.0.0` (optional) |
 | `@aws-sdk/client-sfn` | `^3.0.0` (optional) |
 

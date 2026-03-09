@@ -13,7 +13,7 @@ A Prisma Generator that reads `schema.prisma` annotations and produces Vurb.ts T
 
 ```prisma
 generator mcp {
-  provider = "Vurb.ts-prisma-gen"
+  provider = "vurb-prisma-gen"
   output   = "../src/tools/database"
 }
 
@@ -180,7 +180,7 @@ The generator produces `ToolBuilder` instances and `Presenter` files — no serv
 ```typescript
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { ToolRegistry, createServerAttachment } from 'Vurb.ts';
+import { ToolRegistry, createServerAttachment } from 'vurb';
 import { userTools } from './tools/database/userTools.js';
 import { prisma } from './lib/prisma.js';
 
@@ -215,7 +215,7 @@ await server.connect(new StdioServerTransport());
 
 ```prisma
 generator mcp {
-  provider = "Vurb.ts-prisma-gen"
+  provider = "vurb-prisma-gen"
   output   = "../src/tools/database"
 }
 ```

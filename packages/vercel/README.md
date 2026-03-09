@@ -67,7 +67,7 @@ npm install @vurb/vercel
 
 | Package | Version |
 |---------|---------|
-| `Vurb.ts` | `^2.0.0` |
+| `vurb` | `^2.0.0` |
 | `@modelcontextprotocol/sdk` | `^1.12.0` |
 
 ## Requirements

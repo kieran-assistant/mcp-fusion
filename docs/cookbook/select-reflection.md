@@ -1,7 +1,7 @@
 # Select Reflection
 
 ::: info Prerequisites
-Install Vurb.ts before following this recipe: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install vurb @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx vurb create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -34,7 +34,7 @@ The Presenter already strips the extra fields — but you still paid for the dat
 Since Presenter schemas are standard Zod objects, you can extract the field names using Zod's `.shape` property:
 
 ```typescript
-import { createPresenter, t } from 'Vurb.ts';
+import { createPresenter, t } from 'vurb';
 
 const UserPresenter = createPresenter('User')
   .schema({

@@ -150,7 +150,7 @@ Each failed retry is a full round-trip: input tokens + output tokens + latency +
 **Vurb.ts** provides `toolError()` — a structured error builder that includes recovery hints, suggested actions, and corrective arguments:
 
 ```typescript
-import { toolError, success } from 'Vurb.ts';
+import { toolError, success } from 'vurb';
 
 handler: async (ctx, args) => {
     const invoice = await ctx.db.invoices.findUnique(args.id);

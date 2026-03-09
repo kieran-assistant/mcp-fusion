@@ -19,7 +19,7 @@
 
 ```prisma
 generator mcp {
-  provider = "Vurb.ts-prisma-gen"
+  provider = "vurb-prisma-gen"
   output   = "../src/tools/database"
 }
 
@@ -61,14 +61,14 @@ npx prisma generate
 ## Installation
 
 ```bash
-npm install @vurb/prisma-gen Vurb.ts zod
+npm install @vurb/prisma-gen vurb zod
 ```
 
 ### Peer Dependencies
 
 | Package | Version |
 |---------|---------|
-| `Vurb.ts` | `^2.0.0` |
+| `vurb` | `^2.0.0` |
 | `zod` | `^3.25.1 \|\| ^4.0.0` |
 | `prisma` | `^6.0.0` |
 

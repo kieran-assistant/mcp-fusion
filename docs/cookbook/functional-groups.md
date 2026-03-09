@@ -1,7 +1,7 @@
 # Functional Groups
 
 ::: info Prerequisites
-Install Vurb.ts before following this recipe: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install vurb @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx vurb create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -18,7 +18,7 @@ When your domain has many entities that share the same middleware (auth, logging
 Use `f.group()` to create a functional group that applies shared configuration to all tools registered inside it:
 
 ```typescript
-import { initVurb } from 'Vurb.ts';
+import { initVurb } from 'vurb';
 
 const f = initVurb<AppContext>();
 
@@ -66,7 +66,7 @@ Every tool created from `authenticated` automatically has `withAuth` middleware 
 `autoDiscover()` scans a directory for exported tool builders and registers them automatically:
 
 ```typescript
-import { autoDiscover, ToolRegistry } from 'Vurb.ts';
+import { autoDiscover, ToolRegistry } from 'vurb';
 
 const registry = new ToolRegistry();
 const tools = await autoDiscover('./src/tools');

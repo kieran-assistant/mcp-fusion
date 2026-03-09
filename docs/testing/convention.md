@@ -6,7 +6,7 @@ description: "The tests/ layer in the MVA convention — folder structure, file 
 # Convention
 
 ::: info Prerequisites
-Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install vurb @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx vurb create`](/quickstart-lightspeed).
 :::
 
 The **MVA Convention** organizes code into three architectural layers: **Model**, **View**, **Agent**. The `@vurb/testing` package introduces a fourth layer: **Tests**.

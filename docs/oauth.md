@@ -17,7 +17,7 @@ Peer dependency: `Vurb.ts ^2.0.0`
 
 ```typescript
 import { createAuthTool } from '@vurb/oauth';
-import { ToolRegistry } from 'Vurb.ts';
+import { ToolRegistry } from 'vurb';
 
 const auth = createAuthTool<AppContext>({
     clientId: 'your-client-id',
@@ -54,7 +54,7 @@ The auth tool exposes 4 actions:
 
 ```typescript
 import { requireAuth } from '@vurb/oauth';
-import { createTool, success } from 'Vurb.ts';
+import { createTool, success } from 'vurb';
 
 const projects = createTool<AppContext>('projects')
     .use(requireAuth({

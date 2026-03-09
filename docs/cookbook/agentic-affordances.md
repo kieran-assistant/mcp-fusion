@@ -1,7 +1,7 @@
 # Agentic Affordances
 
 ::: info Prerequisites
-Install Vurb.ts before following this recipe: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
+Install Vurb.ts before following this recipe: `npm install vurb @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx vurb create`](/quickstart-lightspeed).
 :::
 
 - [Introduction](#introduction)
@@ -35,7 +35,7 @@ The AI wastes tokens scanning tool lists and may hallucinate non-existent tool n
 The `suggest()` helper creates HATEOAS-style hints inside a Presenter's `.suggest()` method. Each hint carries a tool name and a human-readable reason:
 
 ```typescript
-import { createPresenter, t, suggest } from 'Vurb.ts';
+import { createPresenter, t, suggest } from 'vurb';
 
 const InvoicePresenter = createPresenter('Invoice')
   .schema({
@@ -109,7 +109,7 @@ const UserPresenter = createPresenter('User')
 Connect your Presenter to a tool with `.returns()`. The handler just returns raw data — the Presenter handles validation, rules, UI blocks, and affordances automatically:
 
 ```typescript
-import { initVurb } from 'Vurb.ts';
+import { initVurb } from 'vurb';
 
 const f = initVurb<AppContext>();
 

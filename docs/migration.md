@@ -1,7 +1,7 @@
 # Migration Guide
 
 ::: info Prerequisites
-Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install vurb @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx vurb create`](/quickstart-lightspeed).
 :::
 
 Convert an existing raw-SDK MCP server to Vurb.ts incrementally — one domain at a time, without breaking your running server. Typical migration: 15-30 minutes per tool domain.
@@ -47,7 +47,7 @@ users    → list, invite, remove
 ## Step 2: Initialize Vurb.ts {#step-2}
 
 ```typescript
-import { initVurb } from 'Vurb.ts';
+import { initVurb } from 'vurb';
 
 interface AppContext {
   userId: string;

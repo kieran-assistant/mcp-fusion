@@ -36,7 +36,7 @@ Request → Key Extraction → Format Checks → Validation Strategy → Handler
 
 ```typescript
 import { requireApiKey } from '@vurb/api-key';
-import { createTool, success } from 'Vurb.ts';
+import { createTool, success } from 'vurb';
 
 const projects = createTool<AppContext>('projects')
     .use(requireApiKey({

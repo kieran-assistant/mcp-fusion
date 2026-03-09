@@ -1,7 +1,7 @@
 # MVA Convention
 
 ::: info Prerequisites
-Install Vurb.ts before following this guide: `npm install Vurb.ts @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx Vurb.ts create`](/quickstart-lightspeed).
+Install Vurb.ts before following this guide: `npm install vurb @modelcontextprotocol/sdk zod` — or scaffold a project with [`npx vurb create`](/quickstart-lightspeed).
 :::
 
 The MVA Convention maps each architectural layer — Model, View, Agent — to a file-system layout. Two generators produce this layout automatically: the OpenAPI generator creates three directories, the Prisma generator creates a flat structure.
@@ -66,7 +66,7 @@ Presenters pair a Zod schema with perception logic — rules, UI blocks, afforda
 
 ```typescript
 // views/pet.presenter.ts — OpenAPI generator
-import { createPresenter, ui } from 'Vurb.ts';
+import { createPresenter, ui } from 'vurb';
 import { PetResponseSchema } from '../models/pet.schema.js';
 
 export const PetPresenter = createPresenter('Pet')
@@ -81,7 +81,7 @@ The Prisma generator uses the fluent builder instead:
 
 ```typescript
 // userPresenter.ts — Prisma generator
-import { createPresenter } from 'Vurb.ts';
+import { createPresenter } from 'vurb';
 
 export const UserPresenter = createPresenter('User')
   .schema(UserResponseSchema)
@@ -96,7 +96,7 @@ Tools import their Presenter, declare input, and attach a handler. The handler r
 
 ```typescript
 // agents/pet.tool.ts
-import { initVurb } from 'Vurb.ts';
+import { initVurb } from 'vurb';
 import { z } from 'zod';
 import { PetPresenter } from '../views/pet.presenter.js';
 

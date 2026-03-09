@@ -34,7 +34,7 @@ Request → Token Extraction → Signature Verification → Claims Validation �
 
 ```typescript
 import { requireJwt } from '@vurb/jwt';
-import { createTool, success } from 'Vurb.ts';
+import { createTool, success } from 'vurb';
 
 const projects = createTool<AppContext>('projects')
     .use(requireJwt({

@@ -50,14 +50,14 @@ The perfect balance between the agility of low-code integrations and hardcore so
 ## Installation
 
 ```bash
-npm install @vurb/n8n Vurb.ts zod
+npm install @vurb/n8n vurb zod
 ```
 
 ### Peer Dependencies
 
 | Package | Version |
 |---------|---------|
-| `Vurb.ts` | `^2.0.0` |
+| `vurb` | `^2.0.0` |
 | `zod` | `^3.25.1 \|\| ^4.0.0` |
 
 ## Requirements

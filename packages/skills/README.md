@@ -71,7 +71,7 @@ This mirrors how developers browse documentation: **search → read overview →
 ## Quick Start
 
 ```typescript
-import { initVurb } from 'Vurb.ts';
+import { initVurb } from 'vurb';
 import {
     SkillRegistry,
     autoDiscoverSkills,
@@ -295,7 +295,7 @@ npm install @vurb/skills
 
 | Package | Version |
 |---------|---------|
-| `Vurb.ts` | `^3.0.0` |
+| `vurb` | `^3.0.0` |
 | `zod` | `^3.25.1 \|\| ^4.0.0` |
 
 ## Requirements
